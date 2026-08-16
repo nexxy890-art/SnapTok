@@ -2,15 +2,14 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Snap-Tok | Ultra-Fast TikTok Downloader</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Snap-Tok | Next-Gen TikTok Downloader</title>
   <style>
     :root {
       --bg-dark: #030712;
-      --card-bg: rgba(14, 23, 42, 0.7);
-      --card-border: rgba(255, 255, 255, 0.18);
-      --sky-glow: #38bdf8;
-      --sky-light: #f0f9ff;
+      --card-bg: rgba(15, 23, 42, 0.75);
+      --card-border: rgba(255, 255, 255, 0.25);
+      --neon-white: rgba(255, 255, 255, 0.9);
       --text-main: #f8fafc;
       --text-muted: #94a3b8;
     }
@@ -20,21 +19,42 @@
       margin: 0;
       padding: 0;
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      touch-action: manipulation;
+    }
+
+    html, body {
+      width: 100%;
+      height: 100%;
+      overflow-x: hidden;
+      background-color: var(--bg-dark);
+      color: var(--text-main);
     }
 
     body {
-      background-color: var(--bg-dark);
       background-image: 
-        radial-gradient(circle at 50% -10%, rgba(255, 255, 255, 0.15) 0%, transparent 60%),
-        radial-gradient(circle at 100% 60%, rgba(56, 189, 248, 0.12) 0%, transparent 50%),
-        radial-gradient(circle at 0% 100%, rgba(14, 165, 233, 0.15) 0%, transparent 40%);
-      color: var(--text-main);
-      min-height: 100vh;
+        radial-gradient(circle at 50% 0%, rgba(255, 255, 255, 0.12) 0%, transparent 50%),
+        radial-gradient(circle at 100% 100%, rgba(255, 255, 255, 0.05) 0%, transparent 40%);
       display: flex;
       flex-direction: column;
       align-items: center;
       padding: 24px 16px;
-      overflow-x: hidden;
+    }
+
+    /* Live White Neon Pulse Animation */
+    @keyframes whiteNeonPulse {
+      0%, 100% {
+        border-color: rgba(255, 255, 255, 0.25);
+        box-shadow: 0 0 12px rgba(255, 255, 255, 0.15), inset 0 0 8px rgba(255, 255, 255, 0.05);
+      }
+      50% {
+        border-color: rgba(255, 255, 255, 0.85);
+        box-shadow: 0 0 22px rgba(255, 255, 255, 0.45), inset 0 0 12px rgba(255, 255, 255, 0.15);
+      }
+    }
+
+    @keyframes liveGlowText {
+      0%, 100% { text-shadow: 0 0 10px rgba(255, 255, 255, 0.3); }
+      50% { text-shadow: 0 0 25px rgba(255, 255, 255, 0.9); }
     }
 
     .container {
@@ -49,7 +69,6 @@
       display: flex;
       justify-content: flex-start;
       align-items: center;
-      width: 100%;
     }
 
     .status-badge {
@@ -58,42 +77,37 @@
       gap: 8px;
       padding: 6px 14px;
       background: rgba(255, 255, 255, 0.05);
-      border: 1px solid rgba(255, 255, 255, 0.2);
+      border: 1px solid var(--card-border);
       border-radius: 20px;
       font-size: 11px;
       font-weight: 600;
-      color: #fff;
-      box-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
+      letter-spacing: 1px;
+      animation: whiteNeonPulse 3s infinite ease-in-out;
     }
 
     .status-dot {
       width: 7px;
       height: 7px;
-      background-color: var(--sky-glow);
+      background-color: #ffffff;
       border-radius: 50%;
-      box-shadow: 0 0 8px var(--sky-glow);
-      animation: pulseDot 1.8s infinite;
-    }
-
-    @keyframes pulseDot {
-      0%, 100% { opacity: 1; }
-      50% { opacity: 0.3; }
+      box-shadow: 0 0 8px #ffffff;
     }
 
     .header { text-align: center; }
 
     .header h1 {
-      font-size: 34px;
-      font-weight: 800;
+      font-size: 36px;
+      font-weight: 900;
       color: #ffffff;
-      text-shadow: 0 0 20px rgba(255, 255, 255, 0.6), 0 0 35px rgba(56, 189, 248, 0.4);
-      margin-bottom: 6px;
       letter-spacing: -0.5px;
+      animation: liveGlowText 3s infinite ease-in-out;
+      margin-bottom: 6px;
     }
 
     .header p {
       font-size: 13px;
       color: var(--text-muted);
+      letter-spacing: 0.3px;
     }
 
     .main-box {
@@ -102,7 +116,7 @@
       border: 1px solid var(--card-border);
       border-radius: 22px;
       padding: 22px;
-      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.6), 0 0 15px rgba(255, 255, 255, 0.05);
+      animation: whiteNeonPulse 3s infinite ease-in-out;
     }
 
     .input-group {
@@ -112,18 +126,19 @@
 
     .input-group input {
       width: 100%;
-      padding: 15px 85px 15px 14px;
-      background: rgba(3, 7, 18, 0.7);
+      padding: 16px 85px 16px 14px;
+      background: rgba(3, 7, 18, 0.8);
       border: 1px solid var(--card-border);
       border-radius: 14px;
       color: #fff;
       font-size: 14px;
       outline: none;
+      transition: all 0.3s ease;
     }
 
     .input-group input:focus {
       border-color: #ffffff;
-      box-shadow: 0 0 18px rgba(255, 255, 255, 0.25);
+      box-shadow: 0 0 15px rgba(255, 255, 255, 0.3);
     }
 
     .input-actions {
@@ -135,9 +150,9 @@
 
     .btn-paste {
       background: rgba(255, 255, 255, 0.1);
-      border: 1px solid rgba(255, 255, 255, 0.25);
+      border: 1px solid rgba(255, 255, 255, 0.3);
       color: #ffffff;
-      padding: 6px 12px;
+      padding: 7px 14px;
       border-radius: 8px;
       font-size: 11px;
       font-weight: 700;
@@ -146,39 +161,41 @@
 
     .btn {
       width: 100%;
-      padding: 14px;
+      padding: 15px;
       border-radius: 14px;
-      border: none;
-      font-size: 15px;
+      border: 1px solid var(--card-border);
+      font-size: 14px;
       font-weight: 700;
       cursor: pointer;
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 8px;
-      transition: all 0.25s ease;
+      transition: all 0.3s ease;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
     }
 
     .btn-fetch {
-      background: linear-gradient(135deg, #ffffff, var(--sky-glow));
+      background: #ffffff;
       color: #030712;
       margin-bottom: 10px;
-      box-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
+      border: none;
+      box-shadow: 0 0 15px rgba(255, 255, 255, 0.3);
     }
 
     .btn-refresh {
-      background: rgba(255, 255, 255, 0.04);
+      background: rgba(255, 255, 255, 0.03);
       color: var(--text-main);
-      border: 1px solid var(--card-border);
     }
 
     .result-card {
       display: none;
       margin-top: 18px;
-      background: rgba(3, 7, 18, 0.7);
+      background: rgba(3, 7, 18, 0.8);
       border: 1px solid var(--card-border);
       border-radius: 16px;
       padding: 16px;
+      animation: whiteNeonPulse 3s infinite ease-in-out;
     }
 
     .preview-header {
@@ -188,8 +205,8 @@
     }
 
     .cover-img {
-      width: 80px;
-      height: 105px;
+      width: 85px;
+      height: 110px;
       border-radius: 10px;
       object-fit: cover;
       background: #111;
@@ -223,34 +240,22 @@
     }
 
     .btn-dl {
-      padding: 12px;
+      padding: 13px;
       border-radius: 10px;
-      font-size: 13px;
+      font-size: 12px;
       font-weight: 700;
-      border: none;
+      border: 1px solid var(--card-border);
       cursor: pointer;
       display: flex;
       align-items: center;
       justify-content: center;
-      text-decoration: none;
-      width: 100%;
-    }
-
-    .dl-nowm {
-      background: #ffffff;
-      color: #030712;
-    }
-
-    .dl-wm {
-      background: rgba(56, 189, 248, 0.15);
-      color: var(--sky-light);
-      border: 1px solid rgba(56, 189, 248, 0.3);
-    }
-
-    .dl-mp3 {
-      background: rgba(255, 255, 255, 0.08);
+      background: rgba(255, 255, 255, 0.05);
       color: #ffffff;
-      border: 1px solid rgba(255, 255, 255, 0.2);
+      transition: all 0.2s ease;
+    }
+
+    .btn-dl:active {
+      transform: scale(0.98);
     }
 
     .stats-grid {
@@ -265,6 +270,7 @@
       border-radius: 16px;
       padding: 16px;
       text-align: center;
+      animation: whiteNeonPulse 3s infinite ease-in-out;
     }
 
     .stat-val {
@@ -287,12 +293,11 @@
     }
 
     .section-title {
-      font-size: 15px;
+      font-size: 14px;
       font-weight: 700;
       color: #ffffff;
-      display: flex;
-      align-items: center;
-      gap: 8px;
+      letter-spacing: 1px;
+      text-transform: uppercase;
     }
 
     .feature-box {
@@ -303,63 +308,15 @@
       display: flex;
       flex-direction: column;
       gap: 12px;
+      animation: whiteNeonPulse 3s infinite ease-in-out;
     }
 
-    .feature-header {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-
-    .feature-icon-box {
-      width: 34px;
-      height: 34px;
-      border-radius: 10px;
-      background: rgba(255, 255, 255, 0.08);
-      border: 1px solid rgba(255, 255, 255, 0.2);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: #ffffff;
-      font-size: 14px;
-    }
-
-    .feature-title { font-size: 15px; font-weight: 700; color: #fff; }
+    .feature-title { font-size: 14px; font-weight: 700; color: #fff; }
     .feature-desc { font-size: 12px; color: var(--text-muted); line-height: 1.5; }
-
-    .mockup-container {
-      height: 80px;
-      background: rgba(3, 7, 18, 0.6);
-      border-radius: 12px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 14px;
-      border: 1px solid rgba(255, 255, 255, 0.08);
-    }
-
-    .phone-mockup {
-      width: 44px;
-      height: 60px;
-      border: 2px solid var(--text-muted);
-      border-radius: 8px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 9px;
-      color: var(--text-muted);
-    }
-
-    .phone-mockup.hd {
-      border-color: #ffffff;
-      background: rgba(255, 255, 255, 0.1);
-      color: #ffffff;
-      box-shadow: 0 0 15px rgba(255, 255, 255, 0.3);
-    }
 
     .progress-track {
       width: 100%;
-      height: 6px;
+      height: 4px;
       background: rgba(255,255,255,0.08);
       border-radius: 4px;
       overflow: hidden;
@@ -368,38 +325,14 @@
     .progress-fill {
       height: 100%;
       width: 100%;
-      background: linear-gradient(90deg, var(--sky-glow), #ffffff);
+      background: #ffffff;
+      box-shadow: 0 0 10px #ffffff;
       animation: fastProgress 1.5s infinite ease-in-out;
     }
 
     @keyframes fastProgress {
       0% { transform: translateX(-100%); }
       100% { transform: translateX(100%); }
-    }
-
-    .equalizer {
-      display: flex;
-      align-items: flex-end;
-      gap: 4px;
-      height: 24px;
-    }
-
-    .eq-bar {
-      width: 4px;
-      background: #ffffff;
-      border-radius: 2px;
-      animation: bounceBar 1.2s infinite ease-in-out alternate;
-    }
-
-    .eq-bar:nth-child(1) { height: 40%; animation-delay: 0.1s; }
-    .eq-bar:nth-child(2) { height: 80%; animation-delay: 0.3s; }
-    .eq-bar:nth-child(3) { height: 60%; animation-delay: 0.2s; }
-    .eq-bar:nth-child(4) { height: 100%; animation-delay: 0.4s; }
-    .eq-bar:nth-child(5) { height: 50%; animation-delay: 0.15s; }
-
-    @keyframes bounceBar {
-      0% { height: 20%; }
-      100% { height: 100%; }
     }
 
     .footer {
@@ -417,30 +350,25 @@
     <div class="top-bar">
       <div class="status-badge">
         <span class="status-dot"></span>
-        API V2.5 ONLINE
+        SYSTEM ONLINE V2.5
       </div>
     </div>
 
     <div class="header">
       <h1>Snap-Tok</h1>
-      <p>Ultra-Fast Sky-Glow TikTok Downloader — Clean HD Streams & MP3 Rips.</p>
+      <p>Ultra-Fast TikTok Engine — Direct CDN Downloads</p>
     </div>
 
     <div class="main-box">
       <div class="input-group">
-        <input type="text" id="tiktokUrl" placeholder="Paste TikTok link here...">
+        <input type="text" id="tiktokUrl" placeholder="Paste TikTok video link...">
         <div class="input-actions">
-          <button type="button" class="btn-paste" onclick="pasteLink()">Paste</button>
+          <button type="button" class="btn-paste" onclick="pasteLink()">PASTE</button>
         </div>
       </div>
 
-      <button type="button" class="btn btn-fetch" id="fetchBtn" onclick="processVideo()">
-        <span id="btnText">&#9889; Fetch Video</span>
-      </button>
-
-      <button type="button" class="btn btn-refresh" onclick="window.location.reload()">
-        &#8634; Refresh Page
-      </button>
+      <button type="button" class="btn btn-fetch" id="fetchBtn" onclick="processVideo()">FETCH VIDEO</button>
+      <button type="button" class="btn btn-refresh" onclick="window.location.reload()">REFRESH PAGE</button>
 
       <div class="result-card" id="resultCard">
         <div class="preview-header">
@@ -452,9 +380,9 @@
         </div>
 
         <div class="download-btns">
-          <a id="dlNoWmBtn" class="btn-dl dl-nowm" download="SnapTok_NoWatermark.mp4">Download Without Watermark</a>
-          <a id="dlWmBtn" class="btn-dl dl-wm" download="SnapTok_Watermark.mp4">Download With Watermark</a>
-          <a id="dlMp3Btn" class="btn-dl dl-mp3" download="SnapTok_Audio.mp3">Download MP3 Audio</a>
+          <button class="btn-dl" onclick="downloadDirect('nowm')">DOWNLOAD WITHOUT WATERMARK</button>
+          <button class="btn-dl" onclick="downloadDirect('wm')">DOWNLOAD WITH WATERMARK</button>
+          <button class="btn-dl" onclick="downloadDirect('mp3')">DOWNLOAD MP3 AUDIO</button>
         </div>
       </div>
     </div>
@@ -462,73 +390,50 @@
     <div class="stats-grid">
       <div class="stat-card">
         <div class="stat-val">15.4M+</div>
-        <div class="stat-lbl">Videos Downloaded</div>
+        <div class="stat-lbl">Downloads Processed</div>
       </div>
       <div class="stat-card">
         <div class="stat-val">0.6s</div>
-        <div class="stat-lbl">Avg Response Speed</div>
+        <div class="stat-lbl">Fetch Speed</div>
       </div>
       <div class="stat-card">
         <div class="stat-val">1080p</div>
-        <div class="stat-lbl">Ultra HD Stream</div>
+        <div class="stat-lbl">Master Quality</div>
       </div>
       <div class="stat-card">
         <div class="stat-val">100%</div>
-        <div class="stat-lbl">Free Forever</div>
+        <div class="stat-lbl">Free Access</div>
       </div>
     </div>
 
     <div class="features-section">
-      <div class="section-title">&#9888; Futuristic Features</div>
+      <div class="section-title">CORE ARCHITECTURE</div>
 
       <div class="feature-box">
-        <div class="feature-header">
-          <div class="feature-icon-box">&#10003;</div>
-          <div class="feature-title">No Watermark. Ever.</div>
-        </div>
-        <div class="feature-desc">Direct master stream extraction from TikTok CDN without logos or overlays.</div>
-        <div class="mockup-container">
-          <div class="phone-mockup">TikTok</div>
-          <div style="color:#fff">&rarr;</div>
-          <div class="phone-mockup hd">HD</div>
-        </div>
+        <div class="feature-title">No Watermark Engine</div>
+        <div class="feature-desc">Direct extraction from master edge servers bypassing graphic overlays.</div>
       </div>
 
       <div class="feature-box">
-        <div class="feature-header">
-          <div class="feature-icon-box">&#9889;</div>
-          <div class="feature-title">Fetched Under a Second</div>
-        </div>
-        <div class="feature-desc">Short-links like vt.tiktok.com are resolved server-side instantaneously.</div>
+        <div class="feature-title">Instant Response Time</div>
+        <div class="feature-desc">Shortened links are decoded dynamically in real time.</div>
         <div class="progress-track"><div class="progress-fill"></div></div>
       </div>
 
       <div class="feature-box">
-        <div class="feature-header">
-          <div class="feature-icon-box">&#9835;</div>
-          <div class="feature-title">MP3 Audio Rip Visualizer</div>
-        </div>
-        <div class="feature-desc">Extract sound tracks with live dynamic frequency equalizer support.</div>
-        <div class="equalizer">
-          <div class="eq-bar"></div><div class="eq-bar"></div><div class="eq-bar"></div><div class="eq-bar"></div><div class="eq-bar"></div>
-        </div>
-      </div>
-
-      <div class="feature-box">
-        <div class="feature-header">
-          <div class="feature-icon-box">&#128737;</div>
-          <div class="feature-title">Custom Vector Shield</div>
-        </div>
-        <div class="feature-desc">Client-side execution with zero logging. Your links never touch database storage.</div>
+        <div class="feature-title">Zero Log Network</div>
+        <div class="feature-desc">Client-side operations ensure links are never cached or logged.</div>
       </div>
     </div>
 
     <div class="footer">
-      &copy; 2026 Snap-Tok &bull; Ultra-Fast TikTok Downloader
+      SNAP-TOK ENGINE &bull; 2026
     </div>
   </div>
 
   <script>
+    var mediaStore = { nowm: '', wm: '', mp3: '' };
+
     async function pasteLink() {
       try {
         if (navigator.clipboard && navigator.clipboard.readText) {
@@ -539,44 +444,71 @@
     }
 
     async function processVideo() {
-      var input = document.getElementById('tiktokUrl');
-      var url = input.value.trim();
-      var btnText = document.getElementById('btnText');
+      var url = document.getElementById('tiktokUrl').value.trim();
+      var btn = document.getElementById('fetchBtn');
       var resultCard = document.getElementById('resultCard');
 
       if (!url) {
-        btnText.innerText = 'Paste Link First!';
-        setTimeout(() => btnText.innerText = '⚡ Fetch Video', 2000);
+        btn.innerText = 'PASTE LINK FIRST!';
+        setTimeout(() => btn.innerText = 'FETCH VIDEO', 2000);
         return;
       }
 
-      btnText.innerText = 'Fetching...';
+      btn.innerText = 'FETCHING...';
       resultCard.style.display = 'none';
 
       try {
-        let res = await fetch('https://www.tikwm.com/api/?url=' + encodeURIComponent(url) + '&hd=1');
+        let res = await fetch('https://www.tikwm.com/api/?url=' + encodeURIComponent(url));
         let json = await res.json();
 
         if (json && json.code === 0 && json.data) {
-          var videoId = json.data.id || 'video';
-          
-          // Direct force-download stream URLs
-          document.getElementById('dlNoWmBtn').href = 'https://www.tikwm.com/api/?url=' + encodeURIComponent(url) + '&hd=1&dl=1';
-          document.getElementById('dlWmBtn').href = 'https://www.tikwm.com/api/?url=' + encodeURIComponent(url) + '&wm=1&dl=1';
-          document.getElementById('dlMp3Btn').href = 'https://www.tikwm.com/api/?url=' + encodeURIComponent(url) + '&music=1&dl=1';
+          mediaStore.nowm = json.data.play;
+          mediaStore.wm = json.data.wmplay || json.data.play;
+          mediaStore.mp3 = json.data.music;
 
           document.getElementById('coverImg').src = json.data.cover || '';
           document.getElementById('authorTag').innerText = '@' + (json.data.author ? json.data.author.unique_id : 'user');
           document.getElementById('videoCaption').innerText = json.data.title || 'TikTok Video';
-          
+
           resultCard.style.display = 'block';
-          btnText.innerText = '⚡ Fetch Video';
+          btn.innerText = 'FETCH VIDEO';
           return;
         }
       } catch (err) {}
 
-      btnText.innerText = 'Try Again';
-      setTimeout(() => btnText.innerText = '⚡ Fetch Video', 2000);
+      btn.innerText = 'TRY AGAIN';
+      setTimeout(() => btn.innerText = 'FETCH VIDEO', 2000);
+    }
+
+    // Direct Download Handler (Prevents tab opening)
+    async function downloadDirect(type) {
+      var targetUrl = mediaStore[type];
+      if (!targetUrl) return;
+
+      var ext = type === 'mp3' ? '.mp3' : '.mp4';
+      var filename = 'SnapTok_' + Date.now() + ext;
+
+      try {
+        let response = await fetch(targetUrl);
+        let blob = await response.blob();
+        let blobUrl = window.URL.createObjectURL(blob);
+        
+        let a = document.createElement('a');
+        a.style.display = 'none';
+        a.href = blobUrl;
+        a.download = filename;
+        document.body.appendChild(a);
+        a.click();
+        
+        window.URL.revokeObjectURL(blobUrl);
+        document.body.removeChild(a);
+      } catch (e) {
+        // Fallback for CORS restricted streams
+        let a = document.createElement('a');
+        a.href = targetUrl;
+        a.download = filename;
+        a.click();
+      }
     }
   </script>
 </body>
