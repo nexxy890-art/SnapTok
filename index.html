@@ -47,7 +47,7 @@
 
     .top-bar {
       display: flex;
-      justify-content: space-between;
+      justify-content: flex-start;
       align-items: center;
       width: 100%;
     }
@@ -78,18 +78,6 @@
     @keyframes pulseDot {
       0%, 100% { opacity: 1; }
       50% { opacity: 0.3; }
-    }
-
-    .net-indicator {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 8px;
-      background: rgba(255, 255, 255, 0.03);
-      border: 1px solid var(--card-border);
-      border-radius: 50%;
-      color: #ffffff;
-      box-shadow: 0 0 12px rgba(255, 255, 255, 0.3);
     }
 
     .header { text-align: center; }
@@ -245,6 +233,7 @@
       align-items: center;
       justify-content: center;
       text-decoration: none;
+      width: 100%;
     }
 
     .dl-nowm {
@@ -430,7 +419,6 @@
         <span class="status-dot"></span>
         API V2.5 ONLINE
       </div>
-      <div class="net-indicator">&#128246;</div>
     </div>
 
     <div class="header">
@@ -464,9 +452,9 @@
         </div>
 
         <div class="download-btns">
-          <button class="btn-dl dl-nowm" onclick="downloadFile('nowm')">Download Without Watermark</button>
-          <button class="btn-dl dl-wm" onclick="downloadFile('wm')">Download With Watermark</button>
-          <button class="btn-dl dl-mp3" onclick="downloadFile('mp3')">Download MP3 Audio</button>
+          <a id="dlNoWmBtn" class="btn-dl dl-nowm" download="SnapTok_NoWatermark.mp4">Download Without Watermark</a>
+          <a id="dlWmBtn" class="btn-dl dl-wm" download="SnapTok_Watermark.mp4">Download With Watermark</a>
+          <a id="dlMp3Btn" class="btn-dl dl-mp3" download="SnapTok_Audio.mp3">Download MP3 Audio</a>
         </div>
       </div>
     </div>
@@ -541,8 +529,6 @@
   </div>
 
   <script>
-    var links = { nowm: '', wm: '', mp3: '' };
-
     async function pasteLink() {
       try {
         if (navigator.clipboard && navigator.clipboard.readText) {
@@ -568,13 +554,16 @@
       resultCard.style.display = 'none';
 
       try {
-        let res = await fetch('https://www.tikwm.com/api/?url=' + encodeURIComponent(url));
+        let res = await fetch('https://www.tikwm.com/api/?url=' + encodeURIComponent(url) + '&hd=1');
         let json = await res.json();
 
         if (json && json.code === 0 && json.data) {
-          links.nowm = json.data.play;
-          links.wm = json.data.wmplay || json.data.play;
-          links.mp3 = json.data.music;
+          var videoId = json.data.id || 'video';
+          
+          // Direct force-download stream URLs
+          document.getElementById('dlNoWmBtn').href = 'https://www.tikwm.com/api/?url=' + encodeURIComponent(url) + '&hd=1&dl=1';
+          document.getElementById('dlWmBtn').href = 'https://www.tikwm.com/api/?url=' + encodeURIComponent(url) + '&wm=1&dl=1';
+          document.getElementById('dlMp3Btn').href = 'https://www.tikwm.com/api/?url=' + encodeURIComponent(url) + '&music=1&dl=1';
 
           document.getElementById('coverImg').src = json.data.cover || '';
           document.getElementById('authorTag').innerText = '@' + (json.data.author ? json.data.author.unique_id : 'user');
@@ -589,16 +578,7 @@
       btnText.innerText = 'Try Again';
       setTimeout(() => btnText.innerText = '⚡ Fetch Video', 2000);
     }
-
-    function downloadFile(type) {
-      var targetUrl = links[type];
-      if (!targetUrl) return;
-      var a = document.createElement('a');
-      a.href = targetUrl;
-      a.target = '_self';
-      a.click();
-    }
   </script>
 </body>
   </html>
-      
+  
