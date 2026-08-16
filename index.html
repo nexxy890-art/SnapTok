@@ -7,9 +7,8 @@
   <style>
     :root {
       --bg-dark: #030712;
-      --card-bg: rgba(15, 23, 42, 0.75);
-      --card-border: rgba(255, 255, 255, 0.25);
-      --neon-white: rgba(255, 255, 255, 0.9);
+      --card-bg: #0f172a;
+      --card-border: rgba(255, 255, 255, 0.3);
       --text-main: #f8fafc;
       --text-muted: #94a3b8;
     }
@@ -24,37 +23,17 @@
 
     html, body {
       width: 100%;
-      height: 100%;
+      min-height: 100%;
       overflow-x: hidden;
       background-color: var(--bg-dark);
       color: var(--text-main);
     }
 
     body {
-      background-image: 
-        radial-gradient(circle at 50% 0%, rgba(255, 255, 255, 0.12) 0%, transparent 50%),
-        radial-gradient(circle at 100% 100%, rgba(255, 255, 255, 0.05) 0%, transparent 40%);
       display: flex;
       flex-direction: column;
       align-items: center;
       padding: 24px 16px;
-    }
-
-    /* Live White Neon Pulse Animation */
-    @keyframes whiteNeonPulse {
-      0%, 100% {
-        border-color: rgba(255, 255, 255, 0.25);
-        box-shadow: 0 0 12px rgba(255, 255, 255, 0.15), inset 0 0 8px rgba(255, 255, 255, 0.05);
-      }
-      50% {
-        border-color: rgba(255, 255, 255, 0.85);
-        box-shadow: 0 0 22px rgba(255, 255, 255, 0.45), inset 0 0 12px rgba(255, 255, 255, 0.15);
-      }
-    }
-
-    @keyframes liveGlowText {
-      0%, 100% { text-shadow: 0 0 10px rgba(255, 255, 255, 0.3); }
-      50% { text-shadow: 0 0 25px rgba(255, 255, 255, 0.9); }
     }
 
     .container {
@@ -82,7 +61,6 @@
       font-size: 11px;
       font-weight: 600;
       letter-spacing: 1px;
-      animation: whiteNeonPulse 3s infinite ease-in-out;
     }
 
     .status-dot {
@@ -90,7 +68,6 @@
       height: 7px;
       background-color: #ffffff;
       border-radius: 50%;
-      box-shadow: 0 0 8px #ffffff;
     }
 
     .header { text-align: center; }
@@ -100,7 +77,6 @@
       font-weight: 900;
       color: #ffffff;
       letter-spacing: -0.5px;
-      animation: liveGlowText 3s infinite ease-in-out;
       margin-bottom: 6px;
     }
 
@@ -112,11 +88,9 @@
 
     .main-box {
       background: var(--card-bg);
-      backdrop-filter: blur(16px);
       border: 1px solid var(--card-border);
       border-radius: 22px;
       padding: 22px;
-      animation: whiteNeonPulse 3s infinite ease-in-out;
     }
 
     .input-group {
@@ -127,18 +101,16 @@
     .input-group input {
       width: 100%;
       padding: 16px 85px 16px 14px;
-      background: rgba(3, 7, 18, 0.8);
+      background: rgba(3, 7, 18, 0.9);
       border: 1px solid var(--card-border);
       border-radius: 14px;
       color: #fff;
       font-size: 14px;
       outline: none;
-      transition: all 0.3s ease;
     }
 
     .input-group input:focus {
       border-color: #ffffff;
-      box-shadow: 0 0 15px rgba(255, 255, 255, 0.3);
     }
 
     .input-actions {
@@ -170,7 +142,6 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      transition: all 0.3s ease;
       text-transform: uppercase;
       letter-spacing: 0.5px;
     }
@@ -180,7 +151,6 @@
       color: #030712;
       margin-bottom: 10px;
       border: none;
-      box-shadow: 0 0 15px rgba(255, 255, 255, 0.3);
     }
 
     .btn-refresh {
@@ -191,11 +161,10 @@
     .result-card {
       display: none;
       margin-top: 18px;
-      background: rgba(3, 7, 18, 0.8);
+      background: rgba(3, 7, 18, 0.9);
       border: 1px solid var(--card-border);
       border-radius: 16px;
       padding: 16px;
-      animation: whiteNeonPulse 3s infinite ease-in-out;
     }
 
     .preview-header {
@@ -251,11 +220,6 @@
       justify-content: center;
       background: rgba(255, 255, 255, 0.05);
       color: #ffffff;
-      transition: all 0.2s ease;
-    }
-
-    .btn-dl:active {
-      transform: scale(0.98);
     }
 
     .stats-grid {
@@ -270,7 +234,6 @@
       border-radius: 16px;
       padding: 16px;
       text-align: center;
-      animation: whiteNeonPulse 3s infinite ease-in-out;
     }
 
     .stat-val {
@@ -308,7 +271,6 @@
       display: flex;
       flex-direction: column;
       gap: 12px;
-      animation: whiteNeonPulse 3s infinite ease-in-out;
     }
 
     .feature-title { font-size: 14px; font-weight: 700; color: #fff; }
@@ -317,7 +279,7 @@
     .progress-track {
       width: 100%;
       height: 4px;
-      background: rgba(255,255,255,0.08);
+      background: rgba(255,255,255,0.1);
       border-radius: 4px;
       overflow: hidden;
     }
@@ -326,13 +288,6 @@
       height: 100%;
       width: 100%;
       background: #ffffff;
-      box-shadow: 0 0 10px #ffffff;
-      animation: fastProgress 1.5s infinite ease-in-out;
-    }
-
-    @keyframes fastProgress {
-      0% { transform: translateX(-100%); }
-      100% { transform: translateX(100%); }
     }
 
     .footer {
@@ -421,6 +376,11 @@
       </div>
 
       <div class="feature-box">
+        <div class="feature-title">MP3 Audio Rip Engine</div>
+        <div class="feature-desc">High quality direct MP3 audio extraction straight from original source files.</div>
+      </div>
+
+      <div class="feature-box">
         <div class="feature-title">Zero Log Network</div>
         <div class="feature-desc">Client-side operations ensure links are never cached or logged.</div>
       </div>
@@ -480,7 +440,6 @@
       setTimeout(() => btn.innerText = 'FETCH VIDEO', 2000);
     }
 
-    // Direct Download Handler (Prevents tab opening)
     async function downloadDirect(type) {
       var targetUrl = mediaStore[type];
       if (!targetUrl) return;
@@ -503,7 +462,6 @@
         window.URL.revokeObjectURL(blobUrl);
         document.body.removeChild(a);
       } catch (e) {
-        // Fallback for CORS restricted streams
         let a = document.createElement('a');
         a.href = targetUrl;
         a.download = filename;
@@ -512,5 +470,5 @@
     }
   </script>
 </body>
-  </html>
-  
+          </html>
+              
