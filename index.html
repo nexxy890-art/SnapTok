@@ -27,11 +27,11 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            padding: 20px 12px 40px;
+            padding: 20px 12px 60px;
             position: relative;
         }
 
-        /* Qwen Floating Ambient Grid Background */
+        /* Smooth Background Orbs & Grid */
         .bg-grid {
             position: fixed;
             top: 0;
@@ -42,46 +42,46 @@
                 radial-gradient(rgba(0, 242, 254, 0.08) 1px, transparent 0),
                 radial-gradient(rgba(254, 0, 80, 0.06) 1px, transparent 0);
             background-size: 28px 28px;
-            background-position: 0 0, 14px 14px;
             z-index: 0;
             pointer-events: none;
         }
 
         .bg-orb-1, .bg-orb-2 {
             position: fixed;
-            width: 380px;
-            height: 380px;
-            filter: blur(80px);
+            width: 300px;
+            height: 300px;
+            filter: blur(90px);
             border-radius: 50%;
             z-index: 0;
             pointer-events: none;
+            will-change: transform;
         }
 
         .bg-orb-1 {
-            top: -100px;
-            left: -80px;
-            background: radial-gradient(circle, rgba(0, 242, 254, 0.25) 0%, transparent 70%);
-            animation: orbFloat1 10s ease-in-out infinite alternate;
+            top: -60px;
+            left: -60px;
+            background: radial-gradient(circle, rgba(0, 242, 254, 0.2) 0%, transparent 70%);
+            animation: orbFloat1 12s ease-in-out infinite alternate;
         }
 
         .bg-orb-2 {
-            bottom: -100px;
-            right: -80px;
-            background: radial-gradient(circle, rgba(254, 0, 80, 0.22) 0%, transparent 70%);
-            animation: orbFloat2 12s ease-in-out infinite alternate;
+            bottom: -60px;
+            right: -60px;
+            background: radial-gradient(circle, rgba(254, 0, 80, 0.18) 0%, transparent 70%);
+            animation: orbFloat2 14s ease-in-out infinite alternate;
         }
 
         @keyframes orbFloat1 {
-            0% { transform: translate(0, 0) scale(1); }
-            100% { transform: translate(60px, 80px) scale(1.25); }
+            0% { transform: translate(0, 0); }
+            100% { transform: translate(40px, 50px); }
         }
 
         @keyframes orbFloat2 {
-            0% { transform: translate(0, 0) scale(1); }
-            100% { transform: translate(-60px, -80px) scale(1.25); }
+            0% { transform: translate(0, 0); }
+            100% { transform: translate(-40px, -50px); }
         }
 
-        /* Main Container */
+        /* Container */
         .app-container {
             position: relative;
             z-index: 2;
@@ -92,7 +92,6 @@
             gap: 22px;
         }
 
-        /* Top Header */
         .header {
             text-align: center;
         }
@@ -108,9 +107,7 @@
             border-radius: 30px;
             font-size: 0.76rem;
             font-weight: 700;
-            letter-spacing: 0.5px;
             margin-bottom: 12px;
-            box-shadow: 0 0 15px rgba(16, 185, 129, 0.2);
         }
 
         .badge-dot {
@@ -118,24 +115,22 @@
             height: 8px;
             background: #10b981;
             border-radius: 50%;
-            box-shadow: 0 0 10px #10b981;
+            box-shadow: 0 0 8px #10b981;
             animation: pulseDot 1.4s infinite;
         }
 
         @keyframes pulseDot {
             0%, 100% { opacity: 1; transform: scale(1); }
-            50% { opacity: 0.3; transform: scale(0.8); }
+            50% { opacity: 0.3; transform: scale(0.85); }
         }
 
         .header h1 {
-            font-size: 2.6rem;
+            font-size: 2.5rem;
             font-weight: 900;
-            letter-spacing: -0.5px;
             background: linear-gradient(135deg, #00f2fe 0%, #fe0050 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             margin-bottom: 6px;
-            filter: drop-shadow(0 2px 12px rgba(0, 242, 254, 0.25));
         }
 
         .header p {
@@ -143,40 +138,22 @@
             font-size: 0.88rem;
         }
 
-        /* Main Glass Card with Sky-Blue & Neon Border Glow */
+        /* Main Form Card */
         .card {
             position: relative;
-            background: rgba(15, 23, 42, 0.75);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border-radius: 22px;
-            padding: 22px;
-            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.8);
+            background: rgba(15, 23, 42, 0.85);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border-radius: 20px;
+            padding: 20px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.6);
             border: 1px solid rgba(255, 255, 255, 0.08);
-        }
-
-        .card::before {
-            content: '';
-            position: absolute;
-            top: -2px; left: -2px; right: -2px; bottom: -2px;
-            background: linear-gradient(90deg, #00f2fe, #fe0050, #00f2fe);
-            border-radius: 24px;
-            z-index: -1;
-            opacity: 0.45;
-            background-size: 200% 200%;
-            animation: neonGlow 4s linear infinite;
-        }
-
-        @keyframes neonGlow {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
         }
 
         .input-group {
             display: flex;
             flex-direction: column;
-            gap: 14px;
+            gap: 12px;
         }
 
         .input-wrapper {
@@ -186,20 +163,19 @@
 
         .input-wrapper input {
             width: 100%;
-            padding: 16px 42px 16px 16px;
-            background: rgba(30, 41, 59, 0.85);
+            padding: 15px 42px 15px 15px;
+            background: rgba(30, 41, 59, 0.9);
             border: 1px solid rgba(0, 242, 254, 0.35);
-            border-radius: 14px;
+            border-radius: 12px;
             color: #ffffff;
-            font-size: 0.92rem;
+            font-size: 0.9rem;
             outline: none;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            box-shadow: inset 0 2px 4px rgba(0,0,0,0.4);
+            transition: border-color 0.2s, box-shadow 0.2s;
         }
 
         .input-wrapper input:focus {
             border-color: #00f2fe;
-            box-shadow: 0 0 18px rgba(0, 242, 254, 0.45), inset 0 2px 4px rgba(0,0,0,0.4);
+            box-shadow: 0 0 12px rgba(0, 242, 254, 0.4);
         }
 
         .clear-btn {
@@ -215,13 +191,11 @@
             display: none;
         }
 
-        .clear-btn:hover { color: #fe0050; }
-
         .btn {
             width: 100%;
-            padding: 15px;
+            padding: 14px;
             border: none;
-            border-radius: 14px;
+            border-radius: 12px;
             font-weight: 700;
             font-size: 0.95rem;
             cursor: pointer;
@@ -229,7 +203,7 @@
             align-items: center;
             justify-content: center;
             gap: 8px;
-            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: transform 0.15s ease, opacity 0.2s;
         }
 
         .btn:active { transform: scale(0.98); }
@@ -237,27 +211,23 @@
         .btn-fetch {
             background: linear-gradient(135deg, #00f2fe 0%, #00a8ff 100%);
             color: #05070e;
-            box-shadow: 0 4px 20px rgba(0, 242, 254, 0.4);
+            box-shadow: 0 4px 18px rgba(0, 242, 254, 0.35);
         }
-
-        .btn-fetch:hover { box-shadow: 0 6px 25px rgba(0, 242, 254, 0.6); }
 
         .btn-refresh {
-            background: rgba(30, 41, 59, 0.7);
+            background: rgba(30, 41, 59, 0.8);
             color: #e2e8f0;
-            border: 1px solid rgba(255, 255, 255, 0.12);
+            border: 1px solid rgba(255, 255, 255, 0.1);
         }
-
-        .btn-refresh:hover { border-color: rgba(0, 242, 254, 0.5); color: #00f2fe; }
 
         /* Toast Status */
         .status-toast {
             display: none;
             text-align: center;
             padding: 12px;
-            border-radius: 12px;
-            font-size: 0.86rem;
-            margin-top: 14px;
+            border-radius: 10px;
+            font-size: 0.85rem;
+            margin-top: 12px;
         }
 
         .status-loading {
@@ -271,8 +241,8 @@
         }
 
         .spinner {
-            width: 18px;
-            height: 18px;
+            width: 16px;
+            height: 16px;
             border: 2px solid rgba(0, 242, 254, 0.3);
             border-top: 2px solid #00f2fe;
             border-radius: 50%;
@@ -287,36 +257,35 @@
             border: 1px solid rgba(254, 0, 80, 0.3);
         }
 
-        /* Preview Card */
+        /* Preview Section */
         .preview-card {
             display: none;
-            margin-top: 20px;
-            background: rgba(30, 41, 59, 0.65);
-            border-radius: 16px;
-            padding: 16px;
+            margin-top: 18px;
+            background: rgba(30, 41, 59, 0.7);
+            border-radius: 14px;
+            padding: 14px;
             border: 1px solid rgba(0, 242, 254, 0.3);
-            animation: fadeIn 0.4s ease;
+            animation: fadeIn 0.3s ease;
         }
 
         @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(12px); }
+            from { opacity: 0; transform: translateY(8px); }
             to { opacity: 1; transform: translateY(0); }
         }
 
         .video-meta {
             display: flex;
-            gap: 14px;
-            margin-bottom: 16px;
+            gap: 12px;
+            margin-bottom: 14px;
             align-items: center;
         }
 
         .thumb {
-            width: 85px;
-            height: 110px;
-            border-radius: 12px;
+            width: 80px;
+            height: 105px;
+            border-radius: 10px;
             object-fit: cover;
             border: 1px solid rgba(0, 242, 254, 0.4);
-            box-shadow: 0 4px 14px rgba(0,0,0,0.5);
             flex-shrink: 0;
         }
 
@@ -330,8 +299,8 @@
         }
 
         .author-avatar {
-            width: 24px;
-            height: 24px;
+            width: 22px;
+            height: 22px;
             border-radius: 50%;
             object-fit: cover;
             border: 1px solid #00f2fe;
@@ -340,70 +309,61 @@
         .author-name { font-size: 0.85rem; font-weight: 700; color: #00f2fe; }
 
         .caption {
-            font-size: 0.82rem;
+            font-size: 0.8rem;
             color: #cbd5e1;
             display: -webkit-box;
             -webkit-line-clamp: 3;
             -webkit-box-orient: vertical;
             overflow: hidden;
-            line-height: 1.35;
+            line-height: 1.3;
         }
 
         .actions { display: flex; flex-direction: column; gap: 10px; }
 
-        .btn-dl-nowm { background: #10b981; color: #ffffff; box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3); }
-        .btn-dl-wm { background: #6366f1; color: #ffffff; box-shadow: 0 4px 15px rgba(99, 102, 241, 0.3); }
-        .btn-dl-mp3 { background: #fe0050; color: #ffffff; box-shadow: 0 4px 15px rgba(254, 0, 80, 0.3); }
+        .btn-dl-nowm { background: #10b981; color: #ffffff; }
+        .btn-dl-wm { background: #6366f1; color: #ffffff; }
+        .btn-dl-mp3 { background: #fe0050; color: #ffffff; }
 
-        /* Dynamic Stats Grid */
+        /* Stats Grid */
         .stats-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 12px;
+            gap: 10px;
         }
 
         .stat-box {
             background: rgba(15, 23, 42, 0.65);
             border: 1px solid rgba(255, 255, 255, 0.08);
-            border-radius: 16px;
-            padding: 16px;
+            border-radius: 14px;
+            padding: 14px;
             text-align: center;
-            backdrop-filter: blur(12px);
-            transition: border-color 0.3s;
         }
 
-        .stat-box:hover { border-color: rgba(0, 242, 254, 0.4); }
-
         .stat-box h3 {
-            font-size: 1.45rem;
+            font-size: 1.35rem;
             font-weight: 800;
             color: #00f2fe;
             margin-bottom: 2px;
-            letter-spacing: -0.5px;
         }
 
-        .stat-box p { font-size: 0.75rem; color: #94a3b8; }
+        .stat-box p { font-size: 0.72rem; color: #94a3b8; }
 
-        /* Qwen AI Section Features */
+        /* Animated Qwen Sections */
         .section-title {
-            font-size: 1.1rem;
+            font-size: 1.05rem;
             font-weight: 800;
             color: #f8fafc;
-            display: flex;
-            align-items: center;
-            gap: 8px;
             margin-top: 10px;
         }
 
         .feature-card {
             background: rgba(15, 23, 42, 0.65);
             border: 1px solid rgba(255, 255, 255, 0.08);
-            border-radius: 18px;
-            padding: 18px;
+            border-radius: 16px;
+            padding: 16px;
             display: flex;
             flex-direction: column;
-            gap: 12px;
-            backdrop-filter: blur(12px);
+            gap: 10px;
         }
 
         .feature-head {
@@ -412,74 +372,70 @@
             gap: 10px;
         }
 
-        .feature-head h4 { font-size: 0.95rem; color: #f8fafc; }
+        .feature-head h4 { font-size: 0.92rem; color: #f8fafc; }
 
-        .feature-desc { font-size: 0.8rem; color: #94a3b8; line-height: 1.4; }
+        .feature-desc { font-size: 0.78rem; color: #94a3b8; line-height: 1.35; }
 
-        /* Qwen 2 Phones Animation Box */
+        /* Phone Demo Animation */
         .phone-demo-wrapper {
             display: flex;
             align-items: center;
             justify-content: center;
             gap: 14px;
-            margin-top: 8px;
-            padding: 12px;
+            margin-top: 6px;
+            padding: 10px;
             background: rgba(30, 41, 59, 0.4);
-            border-radius: 14px;
+            border-radius: 12px;
         }
 
         .mini-phone {
-            width: 52px;
-            height: 90px;
+            width: 48px;
+            height: 82px;
             border: 2px solid rgba(255, 255, 255, 0.2);
-            border-radius: 10px;
-            position: relative;
+            border-radius: 8px;
             background: #090d16;
             display: flex;
-            flex-direction: column;
             align-items: center;
             justify-content: center;
-            overflow: hidden;
         }
 
         .mini-phone.wm-phone { border-color: rgba(254, 0, 80, 0.5); }
-        .mini-phone.clean-phone { border-color: rgba(0, 242, 254, 0.8); box-shadow: 0 0 12px rgba(0, 242, 254, 0.3); }
+        .mini-phone.clean-phone { border-color: rgba(0, 242, 254, 0.8); box-shadow: 0 0 10px rgba(0, 242, 254, 0.25); }
 
         .wm-tag {
             background: #fe0050;
             color: #fff;
-            font-size: 0.45rem;
+            font-size: 0.42rem;
             padding: 2px 4px;
             border-radius: 3px;
             font-weight: bold;
-            animation: wmBounce 1.8s infinite alternate;
+            animation: wmBounce 1.6s infinite alternate;
         }
 
         @keyframes wmBounce {
             0% { transform: translateY(0); }
-            100% { transform: translateY(-4px); }
+            100% { transform: translateY(-3px); }
         }
 
         .arrow-flow {
             color: #00f2fe;
-            font-size: 1.2rem;
+            font-size: 1.1rem;
             animation: arrowPulse 1.2s infinite;
         }
 
         @keyframes arrowPulse {
-            0% { opacity: 0.3; transform: translateX(-3px); }
-            100% { opacity: 1; transform: translateX(3px); }
+            0% { opacity: 0.3; transform: translateX(-2px); }
+            100% { opacity: 1; transform: translateX(2px); }
         }
 
-        /* Qwen Gradient Animated Line */
+        /* Dual Gradient Animated Line */
         .gradient-line-box {
             width: 100%;
             height: 4px;
-            background: rgba(255,255,255,0.1);
+            background: rgba(255,255,255,0.08);
             border-radius: 4px;
             overflow: hidden;
-            position: relative;
-            margin-top: 6px;
+            margin-top: 4px;
         }
 
         .gradient-line-inner {
@@ -495,19 +451,19 @@
             100% { background-position: 200% 0%; }
         }
 
-        /* Qwen Multi-Color Audio Visualizer */
+        /* Equalizer Visualizer */
         .audio-wave-box {
             display: flex;
             align-items: flex-end;
-            gap: 5px;
-            height: 24px;
-            margin-top: 6px;
+            gap: 4px;
+            height: 22px;
+            margin-top: 4px;
         }
 
         .wave-bar {
-            width: 5px;
+            width: 4px;
             height: 100%;
-            border-radius: 3px;
+            border-radius: 2px;
             animation: soundWave 1.2s ease-in-out infinite alternate;
         }
 
@@ -518,47 +474,35 @@
         .wave-bar:nth-child(5) { background: #3b82f6; animation-delay: 0.4s; }
 
         @keyframes soundWave {
-            0% { height: 25%; }
+            0% { height: 20%; }
             100% { height: 100%; }
         }
 
-        /* Qwen Animated Shield Icon */
+        /* Pulse Shield */
         .shield-icon {
-            width: 28px;
-            height: 28px;
+            width: 26px;
+            height: 26px;
             border-radius: 50%;
             background: rgba(16, 185, 129, 0.15);
             border: 1px solid #10b981;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 0.85rem;
+            font-size: 0.8rem;
             color: #10b981;
-            box-shadow: 0 0 10px rgba(16, 185, 129, 0.3);
-            animation: shieldGlow 2s infinite alternate;
+            animation: shieldGlow 1.8s infinite alternate;
         }
 
         @keyframes shieldGlow {
-            0% { box-shadow: 0 0 5px rgba(16, 185, 129, 0.3); }
-            100% { box-shadow: 0 0 16px rgba(16, 185, 129, 0.7); }
-        }
-
-        /* Device Adaptive Icon */
-        .device-icon {
-            font-size: 1.2rem;
-            animation: devicePulse 2s infinite ease-in-out;
-        }
-
-        @keyframes devicePulse {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.15); }
+            0% { box-shadow: 0 0 4px rgba(16, 185, 129, 0.3); }
+            100% { box-shadow: 0 0 14px rgba(16, 185, 129, 0.7); }
         }
 
         .footer {
             text-align: center;
-            padding: 16px 0 0;
+            padding: 10px 0 0;
             color: #64748b;
-            font-size: 0.75rem;
+            font-size: 0.72rem;
         }
     </style>
 </head>
@@ -575,7 +519,7 @@
                 <span class="badge-dot"></span> API ONLINE & READY
             </div>
             <h1>Snap-Tok</h1>
-            <p>Ultra-Fast TikTok Video & Audio Downloader</p>
+            <p>Ultra-Fast TikTok Video & MP3 Downloader</p>
         </div>
 
         <div class="card">
@@ -633,7 +577,7 @@
 
         <div class="feature-card">
             <div class="feature-head">
-                <span style="font-size: 1.2rem;">💧</span>
+                <span style="font-size: 1.1rem;">💧</span>
                 <h4>No Watermark. Ever.</h4>
             </div>
             <p class="feature-desc">We resolve clean, logo-free master stream links straight from CDN.</p>
@@ -643,4 +587,62 @@
                     <span class="wm-tag">TikTok</span>
                 </div>
                 <div class="arrow-flow">➔</div>
-                <div class="mini-phone clean-phon
+                <div class="mini-phone clean-phone">
+                    <span style="color:#00f2fe; font-size:0.55rem; font-weight:bold;">HD</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="feature-card">
+            <div class="feature-head">
+                <span style="font-size: 1.1rem;">⚡</span>
+                <h4>Fetched Under a Second</h4>
+            </div>
+            <p class="feature-desc">Short-links like vt.tiktok.com are un-shortened and resolved server-side instantaneously.</p>
+            <div class="gradient-line-box">
+                <div class="gradient-line-inner"></div>
+            </div>
+        </div>
+
+        <div class="feature-card">
+            <div class="feature-head">
+                <span style="font-size: 1.1rem;">🎵</span>
+                <h4>MP3 Audio Rip Visualizer</h4>
+            </div>
+            <p class="feature-desc">Extract sound tracks with live dynamic frequency equalizer.</p>
+            <div class="audio-wave-box">
+                <div class="wave-bar"></div>
+                <div class="wave-bar"></div>
+                <div class="wave-bar"></div>
+                <div class="wave-bar"></div>
+                <div class="wave-bar"></div>
+            </div>
+        </div>
+
+        <div class="feature-card">
+            <div class="feature-head">
+                <div class="shield-icon">🛡️</div>
+                <h4>Private by Design</h4>
+            </div>
+            <p class="feature-desc">Everything runs client-side seamlessly. No logs, no uploads, no accounts — your links never touch our servers.</p>
+        </div>
+
+        <div class="feature-card">
+            <div class="feature-head">
+                <span style="font-size: 1.1rem;">📱</span>
+                <h4>Every Device Supported</h4>
+            </div>
+            <p class="feature-desc">Phone, tablet, laptop — the interface adapts fluidly from 320px to ultra-wide screens.</p>
+        </div>
+
+        <div class="footer">
+            © 2026 Snap-Tok • Fast & Free TikTok Downloader
+        </div>
+
+    </div>
+
+    <script>
+        const inputField = document.getElementById('videoUrl');
+        const clearBtn = document.getElementById('clearBtn');
+        const statusToast = document.getElementById('statusToast');
+        const
