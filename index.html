@@ -311,7 +311,7 @@
       border: 1px solid rgba(255, 255, 255, 0.2);
     }
 
-    /* SVG Custom Vector Icons */
+    /* Custom SVGs */
     .custom-icon {
       width: 16px;
       height: 16px;
@@ -541,17 +541,17 @@
         </div>
 
         <div class="download-btns">
-          <button class="btn-dl dl-nowm" onclick="triggerDirectDownload('nowm')">
+          <button class="btn-dl dl-nowm" id="btnNoWm" onclick="triggerDirectDownload('nowm')">
             <svg class="custom-icon" viewBox="0 0 24 24"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg>
-            Download Without Watermark
+            <span id="txtNoWm">Download Without Watermark</span>
           </button>
-          <button class="btn-dl dl-wm" onclick="triggerDirectDownload('wm')">
+          <button class="btn-dl dl-wm" id="btnWm" onclick="triggerDirectDownload('wm')">
             <svg class="custom-icon" viewBox="0 0 24 24"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg>
-            Download With Watermark
+            <span id="txtWm">Download With Watermark</span>
           </button>
-          <button class="btn-dl dl-mp3" onclick="triggerDirectDownload('mp3')">
+          <button class="btn-dl dl-mp3" id="btnMp3" onclick="triggerDirectDownload('mp3')">
             <svg class="custom-icon" viewBox="0 0 24 24"><path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/></svg>
-            Download MP3 Audio
+            <span id="txtMp3">Download MP3 Audio</span>
           </button>
         </div>
       </div>
@@ -621,7 +621,6 @@
         </div>
       </div>
 
-      <!-- Cyber Shield VPN Trust Icon -->
       <div class="feature-box">
         <div class="feature-header">
           <div class="feature-icon-box">
@@ -641,7 +640,6 @@
   <script>
     let activeMedia = { nowm: '', wm: '', mp3: '' };
 
-    // Dynamic Connection Speed Detector
     function updateNetStatus() {
       const indicator = document.getElementById('netIndicator');
       const text = document.getElementById('netText');
@@ -678,7 +676,7 @@
     async function doPaste() {
       try {
         const text = await navigator.clipboard.readText();
-        document.getElementById('tiktokUrl').value = text;
+        if (text) document.getElementById('tiktokUrl').value = text;
       } catch (err) {
         let input = prompt("Please paste your TikTok link below:");
         if (input) document.getElementById('tiktokUrl').value = input;
@@ -686,10 +684,10 @@
     }
 
     function doRefresh() {
-      window.location.reload();
+      document.getElementById('tiktokUrl').value = '';
+      document.getElementById('resultCard').style.display = 'none';
+      activeMedia = { nowm: '', wm: '', mp3: '' };
     }
 
     async function doFetch() {
-      const urlInput = document.getElementById('tiktokUrl').value.trim();
-      const btnText = document.getElementById('btnText');
-      const resultCard = document.getElementById('resultCar
+      const urlInput = d
