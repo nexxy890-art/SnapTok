@@ -8,10 +8,11 @@
     :root {
       --bg-dark: #030712;
       --card-bg: rgba(14, 23, 42, 0.7);
-      --card-border: rgba(186, 230, 253, 0.22);
+      --card-border: rgba(255, 255, 255, 0.18);
       --sky-glow: #38bdf8;
       --sky-light: #f0f9ff;
       --sky-bright: #0ea5e9;
+      --white-glow: #ffffff;
       --text-main: #f8fafc;
       --text-muted: #94a3b8;
     }
@@ -26,8 +27,8 @@
     body {
       background-color: var(--bg-dark);
       background-image: 
-        radial-gradient(circle at 50% -10%, rgba(56, 189, 248, 0.28) 0%, transparent 60%),
-        radial-gradient(circle at 100% 60%, rgba(240, 249, 255, 0.12) 0%, transparent 50%),
+        radial-gradient(circle at 50% -10%, rgba(255, 255, 255, 0.15) 0%, transparent 60%),
+        radial-gradient(circle at 100% 60%, rgba(56, 189, 248, 0.12) 0%, transparent 50%),
         radial-gradient(circle at 0% 100%, rgba(14, 165, 233, 0.15) 0%, transparent 40%);
       color: var(--text-main);
       min-height: 100vh;
@@ -59,12 +60,13 @@
       align-items: center;
       gap: 8px;
       padding: 6px 14px;
-      background: rgba(56, 189, 248, 0.08);
-      border: 1px solid rgba(56, 189, 248, 0.25);
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.2);
       border-radius: 20px;
       font-size: 11px;
       font-weight: 600;
-      color: var(--sky-glow);
+      color: #fff;
+      box-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
     }
 
     .status-dot {
@@ -81,7 +83,8 @@
       50% { opacity: 0.3; }
     }
 
-    .wifi-status {
+    /* Dynamic Network Indicator */
+    .net-indicator {
       display: flex;
       align-items: center;
       gap: 6px;
@@ -90,8 +93,32 @@
       border: 1px solid var(--card-border);
       border-radius: 20px;
       font-size: 11px;
-      color: var(--sky-light);
       font-weight: 600;
+      transition: all 0.4s ease;
+    }
+
+    .net-icon {
+      width: 14px;
+      height: 14px;
+      fill: currentColor;
+    }
+
+    .net-fast {
+      color: #ffffff;
+      border-color: rgba(255, 255, 255, 0.4);
+      box-shadow: 0 0 12px rgba(255, 255, 255, 0.3);
+    }
+
+    .net-medium {
+      color: #facc15;
+      border-color: rgba(250, 204, 21, 0.4);
+      box-shadow: 0 0 12px rgba(250, 204, 21, 0.3);
+    }
+
+    .net-slow {
+      color: #ef4444;
+      border-color: rgba(239, 68, 68, 0.4);
+      box-shadow: 0 0 12px rgba(239, 68, 68, 0.3);
     }
 
     /* Header */
@@ -100,10 +127,10 @@
     .header h1 {
       font-size: 34px;
       font-weight: 800;
-      background: linear-gradient(135deg, var(--sky-light) 20%, var(--sky-glow) 70%, var(--sky-bright) 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
+      color: #ffffff;
+      text-shadow: 0 0 20px rgba(255, 255, 255, 0.6), 0 0 35px rgba(56, 189, 248, 0.4);
       margin-bottom: 6px;
+      letter-spacing: -0.5px;
     }
 
     .header p {
@@ -111,14 +138,14 @@
       color: var(--text-muted);
     }
 
-    /* Main Box */
+    /* Main Card */
     .main-box {
       background: var(--card-bg);
       backdrop-filter: blur(16px);
       border: 1px solid var(--card-border);
       border-radius: 22px;
       padding: 22px;
-      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.6);
+      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.6), 0 0 15px rgba(255, 255, 255, 0.05);
     }
 
     .input-group {
@@ -135,11 +162,12 @@
       color: #fff;
       font-size: 14px;
       outline: none;
+      transition: all 0.3s ease;
     }
 
     .input-group input:focus {
-      border-color: var(--sky-glow);
-      box-shadow: 0 0 15px rgba(56, 189, 248, 0.3);
+      border-color: #ffffff;
+      box-shadow: 0 0 18px rgba(255, 255, 255, 0.25);
     }
 
     .input-actions {
@@ -152,14 +180,17 @@
     }
 
     .btn-paste {
-      background: rgba(56, 189, 248, 0.2);
-      border: 1px solid rgba(56, 189, 248, 0.4);
-      color: var(--sky-light);
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      color: #ffffff;
       padding: 6px 12px;
       border-radius: 8px;
       font-size: 11px;
       font-weight: 700;
       cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 5px;
     }
 
     .btn-paste:active { transform: scale(0.95); }
@@ -176,25 +207,27 @@
       align-items: center;
       justify-content: center;
       gap: 8px;
+      transition: all 0.25s ease;
     }
 
     .btn-fetch {
-      background: linear-gradient(135deg, var(--sky-light), var(--sky-glow));
+      background: linear-gradient(135deg, #ffffff, var(--sky-glow));
       color: #030712;
       margin-bottom: 10px;
+      box-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
     }
 
     .btn-fetch:active { transform: scale(0.98); }
 
     .btn-refresh {
-      background: rgba(255, 255, 255, 0.05);
+      background: rgba(255, 255, 255, 0.04);
       color: var(--text-main);
       border: 1px solid var(--card-border);
     }
 
     .btn-refresh:active { transform: scale(0.98); }
 
-    /* Result Card */
+    /* Result Preview Card */
     .result-card {
       display: none;
       margin-top: 18px;
@@ -216,7 +249,7 @@
       border-radius: 10px;
       object-fit: cover;
       background: #111;
-      border: 1px solid var(--sky-glow);
+      border: 1px solid rgba(255, 255, 255, 0.3);
     }
 
     .meta-info {
@@ -229,7 +262,8 @@
     .user-tag {
       font-size: 14px;
       font-weight: 700;
-      color: var(--sky-glow);
+      color: #ffffff;
+      text-shadow: 0 0 10px rgba(255, 255, 255, 0.4);
       margin-bottom: 4px;
     }
 
@@ -250,17 +284,41 @@
       border-radius: 10px;
       font-size: 13px;
       font-weight: 700;
-      text-decoration: none;
-      text-align: center;
+      border: none;
       cursor: pointer;
-      display: block;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      text-decoration: none;
     }
 
-    .dl-nowm { background: var(--sky-glow); color: #030712; }
-    .dl-wm { background: rgba(56, 189, 248, 0.15); color: var(--sky-light); border: 1px solid rgba(56, 189, 248, 0.3); }
-    .dl-mp3 { background: rgba(240, 249, 255, 0.1); color: var(--sky-light); border: 1px solid rgba(240, 249, 255, 0.2); }
+    .dl-nowm {
+      background: #ffffff;
+      color: #030712;
+      box-shadow: 0 0 15px rgba(255, 255, 255, 0.35);
+    }
 
-    /* Grid Stats */
+    .dl-wm {
+      background: rgba(56, 189, 248, 0.15);
+      color: var(--sky-light);
+      border: 1px solid rgba(56, 189, 248, 0.3);
+    }
+
+    .dl-mp3 {
+      background: rgba(255, 255, 255, 0.08);
+      color: #ffffff;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    /* SVG Custom Vector Icons */
+    .custom-icon {
+      width: 16px;
+      height: 16px;
+      fill: currentColor;
+    }
+
+    /* Stats Grid */
     .stats-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
@@ -278,7 +336,8 @@
     .stat-val {
       font-size: 20px;
       font-weight: 800;
-      color: var(--sky-glow);
+      color: #ffffff;
+      text-shadow: 0 0 12px rgba(255, 255, 255, 0.4);
     }
 
     .stat-lbl {
@@ -298,7 +357,10 @@
     .section-title {
       font-size: 15px;
       font-weight: 700;
-      color: var(--sky-light);
+      color: #ffffff;
+      display: flex;
+      align-items: center;
+      gap: 8px;
     }
 
     .feature-box {
@@ -311,10 +373,28 @@
       gap: 12px;
     }
 
-    .feature-title { font-size: 15px; font-weight: 700; }
+    .feature-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .feature-icon-box {
+      width: 34px;
+      height: 34px;
+      border-radius: 10px;
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #ffffff;
+    }
+
+    .feature-title { font-size: 15px; font-weight: 700; color: #fff; }
     .feature-desc { font-size: 12px; color: var(--text-muted); line-height: 1.5; }
 
-    /* Phone Mockup */
+    /* Phone Animation Mockup */
     .mockup-container {
       height: 80px;
       background: rgba(3, 7, 18, 0.6);
@@ -323,6 +403,7 @@
       align-items: center;
       justify-content: center;
       gap: 14px;
+      border: 1px solid rgba(255, 255, 255, 0.08);
     }
 
     .phone-mockup {
@@ -335,19 +416,27 @@
       justify-content: center;
       font-size: 9px;
       color: var(--text-muted);
+      transition: all 0.5s ease;
     }
 
     .phone-mockup.hd {
-      border-color: var(--sky-glow);
-      background: rgba(56, 189, 248, 0.15);
-      color: var(--sky-glow);
+      border-color: #ffffff;
+      background: rgba(255, 255, 255, 0.1);
+      color: #ffffff;
+      box-shadow: 0 0 15px rgba(255, 255, 255, 0.3);
+      animation: hdPulse 2s infinite ease-in-out;
+    }
+
+    @keyframes hdPulse {
+      0%, 100% { box-shadow: 0 0 10px rgba(255, 255, 255, 0.2); }
+      50% { box-shadow: 0 0 22px rgba(255, 255, 255, 0.6); }
     }
 
     /* Speed Track */
     .progress-track {
       width: 100%;
       height: 6px;
-      background: rgba(255,255,255,0.1);
+      background: rgba(255,255,255,0.08);
       border-radius: 4px;
       overflow: hidden;
     }
@@ -355,7 +444,8 @@
     .progress-fill {
       height: 100%;
       width: 100%;
-      background: linear-gradient(90deg, var(--sky-bright), var(--sky-light));
+      background: linear-gradient(90deg, var(--sky-glow), #ffffff);
+      box-shadow: 0 0 10px #ffffff;
       animation: fastProgress 1.5s infinite ease-in-out;
     }
 
@@ -374,8 +464,9 @@
 
     .eq-bar {
       width: 4px;
-      background: var(--sky-glow);
+      background: #ffffff;
       border-radius: 2px;
+      box-shadow: 0 0 8px rgba(255, 255, 255, 0.5);
       animation: bounceBar 1.2s infinite ease-in-out alternate;
     }
 
@@ -408,8 +499,9 @@
         API V2.5 ONLINE
       </div>
 
-      <div class="wifi-status">
-        📶 Fast 5G
+      <div class="net-indicator net-fast" id="netIndicator">
+        <svg class="net-icon" viewBox="0 0 24 24"><path d="M12 3c-4.97 0-9.47 2.01-12.73 5.27l2.12 2.12c2.72-2.72 6.47-4.39 10.61-4.39 4.14 0 7.89 1.67 10.61 4.39l2.12-2.12c-3.26-3.26-7.76-5.27-12.73-5.27zm0 6c-3.31 0-6.31 1.34-8.49 3.51l2.12 2.12c1.63-1.63 3.88-2.63 6.37-2.63 2.49 0 4.74 1 6.37 2.63l2.12-2.12c-2.18-2.17-5.18-3.51-8.49-3.51zm0 6c-1.66 0-3.16.67-4.24 1.76l4.24 4.24 4.24-4.24c-1.08-1.09-2.58-1.76-4.24-1.76z"/></svg>
+        <span id="netText">Fast 5G</span>
       </div>
     </div>
 
@@ -422,16 +514,21 @@
       <div class="input-group">
         <input type="text" id="tiktokUrl" placeholder="Paste TikTok link here...">
         <div class="input-actions">
-          <button class="btn-paste" onclick="doPaste()">📋 Paste</button>
+          <button class="btn-paste" onclick="doPaste()">
+            <svg class="custom-icon" viewBox="0 0 24 24"><path d="M19 2h-4.18C14.4 0.84 13.3 0 12 0c-1.3 0-2.4 0.84-2.82 2H5c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-7 0c.55 0 1 .45 1 1s-.45 1-1 1-1-.45-1-1 .45-1 1-1zm7 18H5V4h2v3h10V4h2v16z"/></svg>
+            Paste
+          </button>
         </div>
       </div>
 
       <button class="btn btn-fetch" id="fetchBtn" onclick="doFetch()">
-        ⚡ <span id="btnText">Fetch Video</span>
+        <svg class="custom-icon" viewBox="0 0 24 24"><path d="M7 2v11h3v9l7-12h-4l4-8z"/></svg>
+        <span id="btnText">Fetch Video</span>
       </button>
 
       <button class="btn btn-refresh" onclick="doRefresh()">
-        🔄 Refresh Page
+        <svg class="custom-icon" viewBox="0 0 24 24"><path d="M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"/></svg>
+        Refresh Page
       </button>
 
       <div class="result-card" id="resultCard">
@@ -444,9 +541,18 @@
         </div>
 
         <div class="download-btns">
-          <a href="#" target="_blank" class="btn-dl dl-nowm" id="dlNoWm">⬇️ Download Without Watermark</a>
-          <a href="#" target="_blank" class="btn-dl dl-wm" id="dlWm">⬇️ Download With Watermark</a>
-          <a href="#" target="_blank" class="btn-dl dl-mp3" id="dlMp3">🎵 Download MP3 Audio</a>
+          <button class="btn-dl dl-nowm" onclick="triggerDirectDownload('nowm')">
+            <svg class="custom-icon" viewBox="0 0 24 24"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg>
+            Download Without Watermark
+          </button>
+          <button class="btn-dl dl-wm" onclick="triggerDirectDownload('wm')">
+            <svg class="custom-icon" viewBox="0 0 24 24"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg>
+            Download With Watermark
+          </button>
+          <button class="btn-dl dl-mp3" onclick="triggerDirectDownload('mp3')">
+            <svg class="custom-icon" viewBox="0 0 24 24"><path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/></svg>
+            Download MP3 Audio
+          </button>
         </div>
       </div>
     </div>
@@ -471,34 +577,58 @@
     </div>
 
     <div class="features-section">
-      <div class="section-title">⚠️ Futuristic Features</div>
+      <div class="section-title">
+        <svg class="custom-icon" viewBox="0 0 24 24"><path d="M12 2L1 21h22L12 2zm0 3.45l8.15 14.1H3.85L12 5.45zM11 10h2v4h-2zm0 5h2v2h-2z"/></svg>
+        Futuristic Features
+      </div>
 
       <div class="feature-box">
-        <div class="feature-title">✔️ No Watermark. Ever.</div>
+        <div class="feature-header">
+          <div class="feature-icon-box">
+            <svg class="custom-icon" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
+          </div>
+          <div class="feature-title">No Watermark. Ever.</div>
+        </div>
         <div class="feature-desc">Direct master stream extraction from TikTok CDN without logos or overlays.</div>
         <div class="mockup-container">
           <div class="phone-mockup">TikTok</div>
-          <div style="color:var(--sky-glow)">➔</div>
+          <div style="color:#fff">➔</div>
           <div class="phone-mockup hd">HD</div>
         </div>
       </div>
 
       <div class="feature-box">
-        <div class="feature-title">⚡ Fetched Under a Second</div>
+        <div class="feature-header">
+          <div class="feature-icon-box">
+            <svg class="custom-icon" viewBox="0 0 24 24"><path d="M7 2v11h3v9l7-12h-4l4-8z"/></svg>
+          </div>
+          <div class="feature-title">Fetched Under a Second</div>
+        </div>
         <div class="feature-desc">Short-links like vt.tiktok.com are resolved server-side instantaneously.</div>
         <div class="progress-track"><div class="progress-fill"></div></div>
       </div>
 
       <div class="feature-box">
-        <div class="feature-title">🎵 MP3 Audio Rip Visualizer</div>
+        <div class="feature-header">
+          <div class="feature-icon-box">
+            <svg class="custom-icon" viewBox="0 0 24 24"><path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/></svg>
+          </div>
+          <div class="feature-title">MP3 Audio Rip Visualizer</div>
+        </div>
         <div class="feature-desc">Extract sound tracks with live dynamic frequency equalizer support.</div>
         <div class="equalizer">
           <div class="eq-bar"></div><div class="eq-bar"></div><div class="eq-bar"></div><div class="eq-bar"></div><div class="eq-bar"></div>
         </div>
       </div>
 
+      <!-- Cyber Shield VPN Trust Icon -->
       <div class="feature-box">
-        <div class="feature-title">🛡️ Custom Vector Shield</div>
+        <div class="feature-header">
+          <div class="feature-icon-box">
+            <svg class="custom-icon" viewBox="0 0 24 24"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm0 10.99h7c-.53 4.12-3.28 7.79-7 8.94V12H5V6.3l7-3.11v8.8s0 0 0 0z"/></svg>
+          </div>
+          <div class="feature-title">Custom Vector Shield</div>
+        </div>
         <div class="feature-desc">Client-side execution with zero logging. Your links never touch database storage.</div>
       </div>
     </div>
@@ -509,7 +639,42 @@
   </div>
 
   <script>
-    // Fail-Safe Inline JavaScript Functions
+    let activeMedia = { nowm: '', wm: '', mp3: '' };
+
+    // Dynamic Connection Speed Detector
+    function updateNetStatus() {
+      const indicator = document.getElementById('netIndicator');
+      const text = document.getElementById('netText');
+      const conn = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
+
+      if (!navigator.onLine) {
+        indicator.className = 'net-indicator net-slow';
+        text.innerText = 'Offline';
+        return;
+      }
+
+      if (conn) {
+        const speed = conn.downlink || 10;
+        if (speed >= 5 || conn.effectiveType === '4g') {
+          indicator.className = 'net-indicator net-fast';
+          text.innerText = 'Fast 5G';
+        } else if (speed >= 1.5 || conn.effectiveType === '3g') {
+          indicator.className = 'net-indicator net-medium';
+          text.innerText = 'Stable 4G';
+        } else {
+          indicator.className = 'net-indicator net-slow';
+          text.innerText = 'Slow Net';
+        }
+      } else {
+        indicator.className = 'net-indicator net-fast';
+        text.innerText = 'Fast 5G';
+      }
+    }
+
+    window.addEventListener('online', updateNetStatus);
+    window.addEventListener('offline', updateNetStatus);
+    updateNetStatus();
+
     async function doPaste() {
       try {
         const text = await navigator.clipboard.readText();
@@ -527,63 +692,4 @@
     async function doFetch() {
       const urlInput = document.getElementById('tiktokUrl').value.trim();
       const btnText = document.getElementById('btnText');
-      const resultCard = document.getElementById('resultCard');
-
-      if (!urlInput) {
-        alert('Please enter or paste a TikTok link!');
-        return;
-      }
-
-      btnText.innerText = 'Fetching Video...';
-      resultCard.style.display = 'none';
-
-      try {
-        // Multi-API Strategy to bypass GitHub Pages CORS Restriction
-        let success = false;
-        
-        // Primary API: TikWM
-        try {
-          const res1 = await fetch(`https://www.tikwm.com/api/?url=${encodeURIComponent(urlInput)}`);
-          const json1 = await res1.json();
-          if (json1.code === 0 && json1.data) {
-            document.getElementById('coverImg').src = json1.data.cover;
-            document.getElementById('authorTag').innerText = `@${json1.data.author.unique_id || 'tiktok_user'}`;
-            document.getElementById('videoCaption').innerText = json1.data.title || 'TikTok Video';
-            document.getElementById('dlNoWm').href = json1.data.play;
-            document.getElementById('dlWm').href = json1.data.wmplay || json1.data.play;
-            document.getElementById('dlMp3').href = json1.data.music;
-            success = true;
-          }
-        } catch (e) { console.log('Primary API failed, switching to backup...'); }
-
-        // Secondary API Backup
-        if (!success) {
-          const res2 = await fetch(`https://api.tiklydown.eu.org/api/download?url=${encodeURIComponent(urlInput)}`);
-          const json2 = await res2.json();
-          if (json2 && json2.video) {
-            document.getElementById('coverImg').src = json2.video.cover || json2.thumbnail;
-            document.getElementById('authorTag').innerText = `@${json2.author.username || 'user'}`;
-            document.getElementById('videoCaption').innerText = json2.title || 'TikTok Video Stream';
-            document.getElementById('dlNoWm').href = json2.video.noWatermark;
-            document.getElementById('dlWm').href = json2.video.watermark || json2.video.noWatermark;
-            document.getElementById('dlMp3').href = json2.music ? json2.music.play_url : json2.video.noWatermark;
-            success = true;
-          }
-        }
-
-        if (success) {
-          resultCard.style.display = 'block';
-        } else {
-          alert('Could not fetch video. Please make sure the video link is public.');
-        }
-
-      } catch (err) {
-        alert('Network or CORS error. Please try again or check link.');
-      } finally {
-        btnText.innerText = 'Fetch Video';
-      }
-    }
-  </script>
-</body>
-  </html>
-  
+      const resultCard = document.getElementById('resultCar
