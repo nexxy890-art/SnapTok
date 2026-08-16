@@ -80,23 +80,22 @@
       50% { opacity: 0.3; }
     }
 
+    /* Icon only net indicator */
     .net-indicator {
       display: flex;
       align-items: center;
-      gap: 6px;
-      padding: 6px 12px;
+      justify-content: center;
+      padding: 8px;
       background: rgba(255, 255, 255, 0.03);
       border: 1px solid var(--card-border);
-      border-radius: 20px;
-      font-size: 11px;
-      font-weight: 600;
+      border-radius: 50%;
       color: #ffffff;
       box-shadow: 0 0 12px rgba(255, 255, 255, 0.3);
     }
 
     .net-icon {
-      width: 14px;
-      height: 14px;
+      width: 16px;
+      height: 16px;
       fill: currentColor;
     }
 
@@ -450,7 +449,6 @@
 
       <div class="net-indicator">
         <svg class="net-icon" viewBox="0 0 24 24"><path d="M12 3c-4.97 0-9.47 2.01-12.73 5.27l2.12 2.12c2.72-2.72 6.47-4.39 10.61-4.39 4.14 0 7.89 1.67 10.61 4.39l2.12-2.12c-3.26-3.26-7.76-5.27-12.73-5.27zm0 6c-3.31 0-6.31 1.34-8.49 3.51l2.12 2.12c1.63-1.63 3.88-2.63 6.37-2.63 2.49 0 4.74 1 6.37 2.63l2.12-2.12c-2.18-2.17-5.18-3.51-8.49-3.51zm0 6c-1.66 0-3.16.67-4.24 1.76l4.24 4.24 4.24-4.24c-1.08-1.09-2.58-1.76-4.24-1.76z"/></svg>
-        <span>Fast 5G</span>
       </div>
     </div>
 
@@ -595,7 +593,6 @@
       var btnText = document.getElementById('btnText');
       var resultCard = document.getElementById('resultCard');
 
-      // Paste Action
       pasteBtn.addEventListener('click', function(e) {
         e.preventDefault();
         if (navigator.clipboard && navigator.clipboard.readText) {
@@ -611,14 +608,12 @@
         }
       });
 
-      // Refresh Action
       refreshBtn.addEventListener('click', function(e) {
         e.preventDefault();
         window.location.reload();
       });
 
-      // Fetch Action via Dynamic Script Tag (Bypasses CORS completely)
-      fetchBtn.addEventListener('click', function(e) {
+      fetchBtn.addEventListener('click', async function(e) {
         e.preventDefault();
         var targetUrl = urlInput.value.trim();
 
@@ -630,17 +625,19 @@
         btnText.innerText = 'Fetching...';
         resultCard.style.display = 'none';
 
-        // Script Tag Injection Bypass
-        var callbackName = 'snaptok_cb_' + Math.floor(Math.random() * 100000);
-        
-        window[callbackName] = function(data) {
+        // CORS Bypass Proxy Route
+        var proxyUrl = 'https://api.allorigins.win/get?url=' + encodeURIComponent('https://www.tikwm.com/api/?url=' + encodeURIComponent(targetUrl));
+
+        try {
+          var res = await fetch(proxyUrl);
+          var proxyData = await res.json();
+          var data = JSON.parse(proxyData.contents);
+
           btnText.innerText = 'Fetch Video';
-          delete window[callbackName];
-          document.body.removeChild(script);
 
           if (data && data.code === 0 && data.data) {
             document.getElementById('coverImg').src = data.data.cover || '';
-            document.getElementById('authorTag').innerText = '@' + (data.data.author.unique_id || 'user');
+            document.getElementById('authorTag').innerText = '@' + (data.data.author ? data.data.author.unique_id : 'user');
             document.getElementById('videoCaption').innerText = data.data.title || 'TikTok Video';
 
             document.getElementById('dlNoWmBtn').href = data.data.play;
@@ -649,20 +646,15 @@
 
             resultCard.style.display = 'block';
           } else {
-            alert('Unable to fetch video. Please check the URL.');
+            alert('Unable to fetch video. Check link.');
           }
-        };
-
-        var script = document.createElement('script');
-        script.src = 'https://www.tikwm.com/api/?url=' + encodeURIComponent(targetUrl) + '&callback=' + callbackName;
-        script.onerror = function() {
+        } catch (err) {
           btnText.innerText = 'Fetch Video';
-          alert('Network Error / API blocked.');
-        };
-        document.body.appendChild(script);
+          alert('Connection Error. Try again in a few seconds.');
+        }
       });
     });
   </script>
 </body>
   </html>
-  
+                                                    
