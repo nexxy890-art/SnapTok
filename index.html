@@ -1,648 +1,510 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Snap-Tok | Ultra-Fast TikTok Downloader</title>
-    <style>
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-            -webkit-tap-highlight-color: transparent;
-        }
-
-        html, body {
-            width: 100%;
-            max-width: 100%;
-            overflow-x: hidden;
-            background-color: #030712;
-            color: #f3f4f6;
-            touch-action: pan-y;
-            min-height: 100vh;
-        }
-
-        body {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            padding: 20px 12px 60px;
-            position: relative;
-        }
-
-        /* Smooth Background Orbs & Grid */
-        .bg-grid {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
-            background-image: 
-                radial-gradient(rgba(0, 242, 254, 0.08) 1px, transparent 0),
-                radial-gradient(rgba(254, 0, 80, 0.06) 1px, transparent 0);
-            background-size: 28px 28px;
-            z-index: 0;
-            pointer-events: none;
-        }
-
-        .bg-orb-1, .bg-orb-2 {
-            position: fixed;
-            width: 300px;
-            height: 300px;
-            filter: blur(90px);
-            border-radius: 50%;
-            z-index: 0;
-            pointer-events: none;
-            will-change: transform;
-        }
-
-        .bg-orb-1 {
-            top: -60px;
-            left: -60px;
-            background: radial-gradient(circle, rgba(0, 242, 254, 0.2) 0%, transparent 70%);
-            animation: orbFloat1 12s ease-in-out infinite alternate;
-        }
-
-        .bg-orb-2 {
-            bottom: -60px;
-            right: -60px;
-            background: radial-gradient(circle, rgba(254, 0, 80, 0.18) 0%, transparent 70%);
-            animation: orbFloat2 14s ease-in-out infinite alternate;
-        }
-
-        @keyframes orbFloat1 {
-            0% { transform: translate(0, 0); }
-            100% { transform: translate(40px, 50px); }
-        }
-
-        @keyframes orbFloat2 {
-            0% { transform: translate(0, 0); }
-            100% { transform: translate(-40px, -50px); }
-        }
-
-        /* Container */
-        .app-container {
-            position: relative;
-            z-index: 2;
-            width: 100%;
-            max-width: 480px;
-            display: flex;
-            flex-direction: column;
-            gap: 22px;
-        }
-
-        .header {
-            text-align: center;
-        }
-
-        .status-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            background: rgba(16, 185, 129, 0.12);
-            border: 1px solid rgba(16, 185, 129, 0.4);
-            color: #10b981;
-            padding: 6px 16px;
-            border-radius: 30px;
-            font-size: 0.76rem;
-            font-weight: 700;
-            margin-bottom: 12px;
-        }
-
-        .badge-dot {
-            width: 8px;
-            height: 8px;
-            background: #10b981;
-            border-radius: 50%;
-            box-shadow: 0 0 8px #10b981;
-            animation: pulseDot 1.4s infinite;
-        }
-
-        @keyframes pulseDot {
-            0%, 100% { opacity: 1; transform: scale(1); }
-            50% { opacity: 0.3; transform: scale(0.85); }
-        }
-
-        .header h1 {
-            font-size: 2.5rem;
-            font-weight: 900;
-            background: linear-gradient(135deg, #00f2fe 0%, #fe0050 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            margin-bottom: 6px;
-        }
-
-        .header p {
-            color: #9ca3af;
-            font-size: 0.88rem;
-        }
-
-        /* Main Form Card */
-        .card {
-            position: relative;
-            background: rgba(15, 23, 42, 0.85);
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
-            border-radius: 20px;
-            padding: 20px;
-            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.6);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-        }
-
-        .input-group {
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-        }
-
-        .input-wrapper {
-            position: relative;
-            width: 100%;
-        }
-
-        .input-wrapper input {
-            width: 100%;
-            padding: 15px 42px 15px 15px;
-            background: rgba(30, 41, 59, 0.9);
-            border: 1px solid rgba(0, 242, 254, 0.35);
-            border-radius: 12px;
-            color: #ffffff;
-            font-size: 0.9rem;
-            outline: none;
-            transition: border-color 0.2s, box-shadow 0.2s;
-        }
-
-        .input-wrapper input:focus {
-            border-color: #00f2fe;
-            box-shadow: 0 0 12px rgba(0, 242, 254, 0.4);
-        }
-
-        .clear-btn {
-            position: absolute;
-            right: 14px;
-            top: 50%;
-            transform: translateY(-50%);
-            background: none;
-            border: none;
-            color: #9ca3af;
-            cursor: pointer;
-            font-size: 1.1rem;
-            display: none;
-        }
-
-        .btn {
-            width: 100%;
-            padding: 14px;
-            border: none;
-            border-radius: 12px;
-            font-weight: 700;
-            font-size: 0.95rem;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            transition: transform 0.15s ease, opacity 0.2s;
-        }
-
-        .btn:active { transform: scale(0.98); }
-
-        .btn-fetch {
-            background: linear-gradient(135deg, #00f2fe 0%, #00a8ff 100%);
-            color: #05070e;
-            box-shadow: 0 4px 18px rgba(0, 242, 254, 0.35);
-        }
-
-        .btn-refresh {
-            background: rgba(30, 41, 59, 0.8);
-            color: #e2e8f0;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-        }
-
-        /* Toast Status */
-        .status-toast {
-            display: none;
-            text-align: center;
-            padding: 12px;
-            border-radius: 10px;
-            font-size: 0.85rem;
-            margin-top: 12px;
-        }
-
-        .status-loading {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-            background: rgba(0, 242, 254, 0.1);
-            color: #00f2fe;
-            border: 1px solid rgba(0, 242, 254, 0.3);
-        }
-
-        .spinner {
-            width: 16px;
-            height: 16px;
-            border: 2px solid rgba(0, 242, 254, 0.3);
-            border-top: 2px solid #00f2fe;
-            border-radius: 50%;
-            animation: spin 0.8s linear infinite;
-        }
-
-        @keyframes spin { 100% { transform: rotate(360deg); } }
-
-        .status-error {
-            background: rgba(254, 0, 80, 0.12);
-            color: #fe0050;
-            border: 1px solid rgba(254, 0, 80, 0.3);
-        }
-
-        /* Preview Section */
-        .preview-card {
-            display: none;
-            margin-top: 18px;
-            background: rgba(30, 41, 59, 0.7);
-            border-radius: 14px;
-            padding: 14px;
-            border: 1px solid rgba(0, 242, 254, 0.3);
-            animation: fadeIn 0.3s ease;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(8px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        .video-meta {
-            display: flex;
-            gap: 12px;
-            margin-bottom: 14px;
-            align-items: center;
-        }
-
-        .thumb {
-            width: 80px;
-            height: 105px;
-            border-radius: 10px;
-            object-fit: cover;
-            border: 1px solid rgba(0, 242, 254, 0.4);
-            flex-shrink: 0;
-        }
-
-        .meta-details { flex: 1; overflow: hidden; }
-
-        .author-info {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            margin-bottom: 6px;
-        }
-
-        .author-avatar {
-            width: 22px;
-            height: 22px;
-            border-radius: 50%;
-            object-fit: cover;
-            border: 1px solid #00f2fe;
-        }
-
-        .author-name { font-size: 0.85rem; font-weight: 700; color: #00f2fe; }
-
-        .caption {
-            font-size: 0.8rem;
-            color: #cbd5e1;
-            display: -webkit-box;
-            -webkit-line-clamp: 3;
-            -webkit-box-orient: vertical;
-            overflow: hidden;
-            line-height: 1.3;
-        }
-
-        .actions { display: flex; flex-direction: column; gap: 10px; }
-
-        .btn-dl-nowm { background: #10b981; color: #ffffff; }
-        .btn-dl-wm { background: #6366f1; color: #ffffff; }
-        .btn-dl-mp3 { background: #fe0050; color: #ffffff; }
-
-        /* Stats Grid */
-        .stats-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 10px;
-        }
-
-        .stat-box {
-            background: rgba(15, 23, 42, 0.65);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            border-radius: 14px;
-            padding: 14px;
-            text-align: center;
-        }
-
-        .stat-box h3 {
-            font-size: 1.35rem;
-            font-weight: 800;
-            color: #00f2fe;
-            margin-bottom: 2px;
-        }
-
-        .stat-box p { font-size: 0.72rem; color: #94a3b8; }
-
-        /* Animated Qwen Sections */
-        .section-title {
-            font-size: 1.05rem;
-            font-weight: 800;
-            color: #f8fafc;
-            margin-top: 10px;
-        }
-
-        .feature-card {
-            background: rgba(15, 23, 42, 0.65);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            border-radius: 16px;
-            padding: 16px;
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-        }
-
-        .feature-head {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .feature-head h4 { font-size: 0.92rem; color: #f8fafc; }
-
-        .feature-desc { font-size: 0.78rem; color: #94a3b8; line-height: 1.35; }
-
-        /* Phone Demo Animation */
-        .phone-demo-wrapper {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 14px;
-            margin-top: 6px;
-            padding: 10px;
-            background: rgba(30, 41, 59, 0.4);
-            border-radius: 12px;
-        }
-
-        .mini-phone {
-            width: 48px;
-            height: 82px;
-            border: 2px solid rgba(255, 255, 255, 0.2);
-            border-radius: 8px;
-            background: #090d16;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .mini-phone.wm-phone { border-color: rgba(254, 0, 80, 0.5); }
-        .mini-phone.clean-phone { border-color: rgba(0, 242, 254, 0.8); box-shadow: 0 0 10px rgba(0, 242, 254, 0.25); }
-
-        .wm-tag {
-            background: #fe0050;
-            color: #fff;
-            font-size: 0.42rem;
-            padding: 2px 4px;
-            border-radius: 3px;
-            font-weight: bold;
-            animation: wmBounce 1.6s infinite alternate;
-        }
-
-        @keyframes wmBounce {
-            0% { transform: translateY(0); }
-            100% { transform: translateY(-3px); }
-        }
-
-        .arrow-flow {
-            color: #00f2fe;
-            font-size: 1.1rem;
-            animation: arrowPulse 1.2s infinite;
-        }
-
-        @keyframes arrowPulse {
-            0% { opacity: 0.3; transform: translateX(-2px); }
-            100% { opacity: 1; transform: translateX(2px); }
-        }
-
-        /* Dual Gradient Animated Line */
-        .gradient-line-box {
-            width: 100%;
-            height: 4px;
-            background: rgba(255,255,255,0.08);
-            border-radius: 4px;
-            overflow: hidden;
-            margin-top: 4px;
-        }
-
-        .gradient-line-inner {
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, #00f2fe, #fe0050, #00f2fe);
-            background-size: 200% 100%;
-            animation: lineFlow 2s linear infinite;
-        }
-
-        @keyframes lineFlow {
-            0% { background-position: 0% 0%; }
-            100% { background-position: 200% 0%; }
-        }
-
-        /* Equalizer Visualizer */
-        .audio-wave-box {
-            display: flex;
-            align-items: flex-end;
-            gap: 4px;
-            height: 22px;
-            margin-top: 4px;
-        }
-
-        .wave-bar {
-            width: 4px;
-            height: 100%;
-            border-radius: 2px;
-            animation: soundWave 1.2s ease-in-out infinite alternate;
-        }
-
-        .wave-bar:nth-child(1) { background: #00f2fe; animation-delay: 0.1s; }
-        .wave-bar:nth-child(2) { background: #8b5cf6; animation-delay: 0.3s; }
-        .wave-bar:nth-child(3) { background: #fe0050; animation-delay: 0.5s; }
-        .wave-bar:nth-child(4) { background: #10b981; animation-delay: 0.2s; }
-        .wave-bar:nth-child(5) { background: #3b82f6; animation-delay: 0.4s; }
-
-        @keyframes soundWave {
-            0% { height: 20%; }
-            100% { height: 100%; }
-        }
-
-        /* Pulse Shield */
-        .shield-icon {
-            width: 26px;
-            height: 26px;
-            border-radius: 50%;
-            background: rgba(16, 185, 129, 0.15);
-            border: 1px solid #10b981;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 0.8rem;
-            color: #10b981;
-            animation: shieldGlow 1.8s infinite alternate;
-        }
-
-        @keyframes shieldGlow {
-            0% { box-shadow: 0 0 4px rgba(16, 185, 129, 0.3); }
-            100% { box-shadow: 0 0 14px rgba(16, 185, 129, 0.7); }
-        }
-
-        .footer {
-            text-align: center;
-            padding: 10px 0 0;
-            color: #64748b;
-            font-size: 0.72rem;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Snap-Tok | Ultra-Fast TikTok Video & MP3 Downloader</title>
+  <style>
+    :root {
+      --bg-color: #0b0f19;
+      --card-bg: rgba(22, 28, 45, 0.7);
+      --card-border: rgba(255, 255, 255, 0.08);
+      --accent-cyan: #00f2fe;
+      --accent-blue: #4facfe;
+      --accent-green: #10b981;
+      --accent-purple: #6366f1;
+      --accent-pink: #ec4899;
+      --text-main: #f3f4f6;
+      --text-muted: #9ca3af;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    }
+
+    body {
+      background-color: var(--bg-color);
+      background-image: 
+        radial-gradient(circle at 50% 0%, rgba(0, 242, 254, 0.15) 0%, transparent 50%),
+        radial-gradient(circle at 100% 100%, rgba(236, 72, 153, 0.1) 0%, transparent 40%);
+      color: var(--text-main);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 20px 16px;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 480px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    /* Top Status Tag */
+    .status-badge {
+      align-self: center;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 16px;
+      background: rgba(16, 185, 129, 0.1);
+      border: 1px solid rgba(16, 185, 129, 0.3);
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--accent-green);
+      letter-spacing: 0.5px;
+    }
+
+    .status-dot {
+      width: 8px;
+      height: 8px;
+      background-color: var(--accent-green);
+      border-radius: 50%;
+      box-shadow: 0 0 8px var(--accent-green);
+    }
+
+    /* Header */
+    .header {
+      text-align: center;
+    }
+
+    .header h1 {
+      font-size: 32px;
+      font-weight: 800;
+      background: linear-gradient(135deg, var(--accent-cyan), var(--accent-pink));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 6px;
+    }
+
+    .header p {
+      font-size: 13px;
+      color: var(--text-muted);
+      line-height: 1.4;
+    }
+
+    /* Main Box */
+    .main-box {
+      background: var(--card-bg);
+      backdrop-filter: blur(12px);
+      border: 1px solid var(--card-border);
+      border-radius: 20px;
+      padding: 20px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    }
+
+    .input-group {
+      position: relative;
+      margin-bottom: 12px;
+    }
+
+    .input-group input {
+      width: 100%;
+      padding: 14px 40px 14px 14px;
+      background: rgba(0, 0, 0, 0.3);
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      color: #fff;
+      font-size: 14px;
+      outline: none;
+      transition: border 0.3s;
+    }
+
+    .input-group input:focus {
+      border-color: var(--accent-cyan);
+    }
+
+    .clear-input {
+      position: absolute;
+      right: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: none;
+      border: none;
+      color: var(--text-muted);
+      font-size: 18px;
+      cursor: pointer;
+      display: none;
+    }
+
+    .btn {
+      width: 100%;
+      padding: 14px;
+      border-radius: 12px;
+      border: none;
+      font-size: 15px;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: all 0.2s;
+    }
+
+    .btn-fetch {
+      background: linear-gradient(90deg, var(--accent-cyan), var(--accent-blue));
+      color: #000;
+      margin-bottom: 10px;
+      box-shadow: 0 4px 15px rgba(0, 242, 254, 0.3);
+    }
+
+    .btn-fetch:active {
+      transform: scale(0.98);
+    }
+
+    .btn-refresh {
+      background: rgba(255, 255, 255, 0.05);
+      color: var(--text-main);
+      border: 1px solid var(--card-border);
+    }
+
+    /* Result Card (Preview & Downloads) */
+    .result-card {
+      display: none;
+      margin-top: 16px;
+      background: rgba(0, 0, 0, 0.4);
+      border: 1px solid var(--card-border);
+      border-radius: 16px;
+      padding: 16px;
+      animation: fadeIn 0.3s ease-in-out;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .preview-header {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+
+    .cover-img {
+      width: 80px;
+      height: 110px;
+      border-radius: 10px;
+      object-fit: cover;
+      background: #111;
+    }
+
+    .meta-info {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .user-tag {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--accent-cyan);
+      margin-bottom: 4px;
+    }
+
+    .caption-text {
+      font-size: 12px;
+      color: var(--text-muted);
+      display: -webkit-box;
+      -webkit-line-clamp: 3;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      line-height: 1.4;
+    }
+
+    .download-btns {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .btn-dl-no-wm {
+      background: var(--accent-green);
+      color: #000;
+    }
+
+    .btn-dl-wm {
+      background: var(--accent-purple);
+      color: #fff;
+    }
+
+    .btn-dl-mp3 {
+      background: var(--accent-pink);
+      color: #fff;
+    }
+
+    /* Stats Grid */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    .stat-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 14px;
+      padding: 16px;
+      text-align: center;
+    }
+
+    .stat-val {
+      font-size: 20px;
+      font-weight: 800;
+      color: var(--accent-cyan);
+    }
+
+    .stat-lbl {
+      font-size: 11px;
+      color: var(--text-muted);
+      margin-top: 2px;
+    }
+
+    /* Features Section (Qwen Style Rich Cards) */
+    .features-section {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      margin-top: 10px;
+    }
+
+    .section-title {
+      font-size: 16px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .feature-box {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 16px;
+      padding: 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .feature-icon-title {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .feature-icon {
+      width: 36px;
+      height: 36px;
+      border-radius: 10px;
+      background: rgba(255, 255, 255, 0.05);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+    }
+
+    .feature-h3 {
+      font-size: 15px;
+      font-weight: 700;
+    }
+
+    .feature-desc {
+      font-size: 12px;
+      color: var(--text-muted);
+      line-height: 1.5;
+    }
+
+    .footer {
+      text-align: center;
+      font-size: 11px;
+      color: var(--text-muted);
+      margin-top: 20px;
+      padding-bottom: 20px;
+    }
+  </style>
 </head>
 <body>
 
-    <div class="bg-grid"></div>
-    <div class="bg-orb-1"></div>
-    <div class="bg-orb-2"></div>
-
-    <div class="app-container">
-        
-        <div class="header">
-            <div class="status-badge">
-                <span class="badge-dot"></span> API ONLINE & READY
-            </div>
-            <h1>Snap-Tok</h1>
-            <p>Ultra-Fast TikTok Video & MP3 Downloader</p>
-        </div>
-
-        <div class="card">
-            <div class="input-group">
-                <div class="input-wrapper">
-                    <input type="text" id="videoUrl" placeholder="Paste TikTok video link here..." autocomplete="off">
-                    <button class="clear-btn" id="clearBtn" onclick="clearInput()">✕</button>
-                </div>
-                <button class="btn btn-fetch" id="fetchBtn" onclick="fetchVideo()">⚡ Fetch Video</button>
-                <button class="btn btn-refresh" id="refreshBtn" onclick="resetPage()">🔄 Refresh Page</button>
-            </div>
-
-            <div id="statusToast" class="status-toast"></div>
-
-            <div class="preview-card" id="previewCard">
-                <div class="video-meta">
-                    <img id="coverImg" class="thumb" src="" alt="Cover">
-                    <div class="meta-details">
-                        <div class="author-info">
-                            <img id="authorAvatar" class="author-avatar" src="" alt="Avatar">
-                            <span id="authorName" class="author-name">@user</span>
-                        </div>
-                        <p id="videoCaption" class="caption">Video Description...</p>
-                    </div>
-                </div>
-
-                <div class="actions">
-                    <button id="dlNoWmBtn" class="btn btn-dl-nowm" onclick="downloadFile('nowm')">⬇ Download Without Watermark</button>
-                    <button id="dlWmBtn" class="btn btn-dl-wm" onclick="downloadFile('wm')">⬇ Download With Watermark</button>
-                    <button id="dlMp3Btn" class="btn btn-dl-mp3" onclick="downloadFile('mp3')">🎵 Download MP3 Audio</button>
-                </div>
-            </div>
-        </div>
-
-        <div class="stats-grid">
-            <div class="stat-box">
-                <h3 id="downloadsCounter">14.2M+</h3>
-                <p>Videos Downloaded</p>
-            </div>
-            <div class="stat-box">
-                <h3>0.9s</h3>
-                <p>Avg Fetch Speed</p>
-            </div>
-            <div class="stat-box">
-                <h3>1080p</h3>
-                <p>Max HD Quality</p>
-            </div>
-            <div class="stat-box">
-                <h3>100%</h3>
-                <p>Free Forever</p>
-            </div>
-        </div>
-
-        <div class="section-title">✨ Why Choose Snap-Tok?</div>
-
-        <div class="feature-card">
-            <div class="feature-head">
-                <span style="font-size: 1.1rem;">💧</span>
-                <h4>No Watermark. Ever.</h4>
-            </div>
-            <p class="feature-desc">We resolve clean, logo-free master stream links straight from CDN.</p>
-            
-            <div class="phone-demo-wrapper">
-                <div class="mini-phone wm-phone">
-                    <span class="wm-tag">TikTok</span>
-                </div>
-                <div class="arrow-flow">➔</div>
-                <div class="mini-phone clean-phone">
-                    <span style="color:#00f2fe; font-size:0.55rem; font-weight:bold;">HD</span>
-                </div>
-            </div>
-        </div>
-
-        <div class="feature-card">
-            <div class="feature-head">
-                <span style="font-size: 1.1rem;">⚡</span>
-                <h4>Fetched Under a Second</h4>
-            </div>
-            <p class="feature-desc">Short-links like vt.tiktok.com are un-shortened and resolved server-side instantaneously.</p>
-            <div class="gradient-line-box">
-                <div class="gradient-line-inner"></div>
-            </div>
-        </div>
-
-        <div class="feature-card">
-            <div class="feature-head">
-                <span style="font-size: 1.1rem;">🎵</span>
-                <h4>MP3 Audio Rip Visualizer</h4>
-            </div>
-            <p class="feature-desc">Extract sound tracks with live dynamic frequency equalizer.</p>
-            <div class="audio-wave-box">
-                <div class="wave-bar"></div>
-                <div class="wave-bar"></div>
-                <div class="wave-bar"></div>
-                <div class="wave-bar"></div>
-                <div class="wave-bar"></div>
-            </div>
-        </div>
-
-        <div class="feature-card">
-            <div class="feature-head">
-                <div class="shield-icon">🛡️</div>
-                <h4>Private by Design</h4>
-            </div>
-            <p class="feature-desc">Everything runs client-side seamlessly. No logs, no uploads, no accounts — your links never touch our servers.</p>
-        </div>
-
-        <div class="feature-card">
-            <div class="feature-head">
-                <span style="font-size: 1.1rem;">📱</span>
-                <h4>Every Device Supported</h4>
-            </div>
-            <p class="feature-desc">Phone, tablet, laptop — the interface adapts fluidly from 320px to ultra-wide screens.</p>
-        </div>
-
-        <div class="footer">
-            © 2026 Snap-Tok • Fast & Free TikTok Downloader
-        </div>
-
+  <div class="container">
+    <div class="status-badge">
+      <span class="status-dot"></span>
+      API ONLINE & READY
     </div>
 
-    <script>
-        const inputField = document.getElementById('videoUrl');
-        const clearBtn = document.getElementById('clearBtn');
-        const statusToast = document.getElementById('statusToast');
-        const
+    <div class="header">
+      <h1>Snap-Tok</h1>
+      <p>Ultra-Fast TikTok Video & Audio Downloader — HD, watermark-free, and 100% free.</p>
+    </div>
+
+    <div class="main-box">
+      <div class="input-group">
+        <input type="text" id="tiktokUrl" placeholder="Paste TikTok link here..." oninput="toggleClearBtn()">
+        <button class="clear-input" id="clearInputBtn" onclick="clearInput()">✕</button>
+      </div>
+
+      <button class="btn btn-fetch" id="fetchBtn" onclick="fetchVideo()">
+        ⚡ Fetch Video
+      </button>
+      <button class="btn btn-refresh" onclick="resetPage()">
+        🔄 Refresh Page
+      </button>
+
+      <div class="result-card" id="resultCard">
+        <div class="preview-header">
+          <img src="" alt="Cover" class="cover-img" id="coverImg">
+          <div class="meta-info">
+            <div class="user-tag" id="authorTag">@user</div>
+            <div class="caption-text" id="videoCaption">Loading caption...</div>
+          </div>
+        </div>
+
+        <div class="download-btns">
+          <a href="#" target="_blank" class="btn btn-dl-no-wm" id="dlNoWm">⬇ Download Without Watermark</a>
+          <a href="#" target="_blank" class="btn btn-dl-wm" id="dlWm">⬇ Download With Watermark</a>
+          <a href="#" target="_blank" class="btn btn-dl-mp3" id="dlMp3">🎵 Download MP3 Audio</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-val">14.2M+</div>
+        <div class="stat-lbl">Videos Downloaded</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-val">0.9s</div>
+        <div class="stat-lbl">Avg. Fetch Speed</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-val">1080p</div>
+        <div class="stat-lbl">Max HD Quality</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-val">100%</div>
+        <div class="stat-lbl">Free Forever</div>
+      </div>
+    </div>
+
+    <div class="features-section">
+      <div class="section-title">✨ Why Choose Snap-Tok?</div>
+
+      <div class="feature-box">
+        <div class="feature-icon-title">
+          <div class="feature-icon">💧</div>
+          <div class="feature-h3">No Watermark. Ever.</div>
+        </div>
+        <div class="feature-desc">
+          We resolve clean, logo-free master stream links straight from CDN for seamless edits and reposts.
+        </div>
+      </div>
+
+      <div class="feature-box">
+        <div class="feature-icon-title">
+          <div class="feature-icon">⚡</div>
+          <div class="feature-h3">Fetched Under a Second</div>
+        </div>
+        <div class="feature-desc">
+          Short-links like <code>vt.tiktok.com</code> are un-shortened and resolved server-side instantaneously.
+        </div>
+      </div>
+
+      <div class="feature-box">
+        <div class="feature-icon-title">
+          <div class="feature-icon">🛡️</div>
+          <div class="feature-h3">Private by Design</div>
+        </div>
+        <div class="feature-desc">
+          Everything runs client-side seamlessly. No logs, no uploads, no accounts — your links never touch our servers.
+        </div>
+      </div>
+
+      <div class="feature-box">
+        <div class="feature-icon-title">
+          <div class="feature-icon">📱</div>
+          <div class="feature-h3">Every Device Supported</div>
+        </div>
+        <div class="feature-desc">
+          Phone, tablet, laptop — the interface adapts fluidly from 320px to ultra-wide screens.
+        </div>
+      </div>
+    </div>
+
+    <div class="footer">
+      © 2026 Snap-Tok • Fast & Free TikTok Downloader
+    </div>
+  </div>
+
+  <script>
+    function toggleClearBtn() {
+      const urlInput = document.getElementById('tiktokUrl');
+      const clearBtn = document.getElementById('clearInputBtn');
+      clearBtn.style.display = urlInput.value.length > 0 ? 'block' : 'none';
+    }
+
+    function clearInput() {
+      document.getElementById('tiktokUrl').value = '';
+      toggleClearBtn();
+    }
+
+    function resetPage() {
+      clearInput();
+      document.getElementById('resultCard').style.display = 'none';
+      const fetchBtn = document.getElementById('fetchBtn');
+      fetchBtn.disabled = false;
+      fetchBtn.innerHTML = '⚡ Fetch Video';
+    }
+
+    async function fetchVideo() {
+      const urlInput = document.getElementById('tiktokUrl').value.trim();
+      const fetchBtn = document.getElementById('fetchBtn');
+      const resultCard = document.getElementById('resultCard');
+
+      if (!urlInput) {
+        alert('Kripya TikTok video ka link enter karein!');
+        return;
+      }
+
+      fetchBtn.disabled = true;
+      fetchBtn.innerHTML = '⏳ Fetching...';
+      resultCard.style.display = 'none';
+
+      try {
+        // TikWM Public API for resolving TikTok video link
+        const response = await fetch(`https://www.tikwm.com/api/?url=${encodeURIComponent(urlInput)}`);
+        const result = await response.json();
+
+        if (result.code === 0 && result.data) {
+          const data = result.data;
+
+          document.getElementById('coverImg').src = data.cover;
+          document.getElementById('authorTag').innerText = `@${data.author.unique_id || 'creator'}`;
+          document.getElementById('videoCaption').innerText = data.title || 'TikTok Video';
+
+          document.getElementById('dlNoWm').href = data.play;
+          document.getElementById('dlWm').href = data.wmplay;
+          document.getElementById('dlMp3').href = data.music;
+
+          resultCard.style.display = 'block';
+        } else {
+          alert('Video fetch karne me dikkat aayi. Kripya URL check karke dobara try karein.');
+        }
+      } catch (error) {
+        console.error(error);
+        alert('Server/Network error. Refresh karke try karein.');
+      } finally {
+        fetchBtn.disabled = false;
+        fetchBtn.innerHTML = '⚡ Fetch Video';
+      }
+    }
+  </script>
+</body>
+    </html>
+              
