@@ -9,7 +9,7 @@
             box-sizing: border-box;
             margin: 0;
             padding: 0;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
             -webkit-tap-highlight-color: transparent;
         }
 
@@ -17,87 +17,100 @@
             width: 100%;
             max-width: 100%;
             overflow-x: hidden;
-            background-color: #070a12;
+            background-color: #030712;
             color: #f3f4f6;
             touch-action: pan-y;
+            min-height: 100vh;
         }
 
         body {
             display: flex;
             flex-direction: column;
             align-items: center;
-            padding: 20px 12px;
+            padding: 20px 12px 40px;
             position: relative;
-            min-height: 100vh;
         }
 
-        /* Qwen AI Style Live Animated Glowing Background */
-        .bg-glow-1 {
+        /* Qwen Floating Ambient Grid Background */
+        .bg-grid {
             position: fixed;
-            top: -100px;
-            left: -100px;
-            width: 350px;
-            height: 350px;
-            background: radial-gradient(circle, rgba(0, 242, 254, 0.25) 0%, rgba(0,0,0,0) 70%);
-            filter: blur(60px);
-            border-radius: 50%;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background-image: 
+                radial-gradient(rgba(0, 242, 254, 0.08) 1px, transparent 0),
+                radial-gradient(rgba(254, 0, 80, 0.06) 1px, transparent 0);
+            background-size: 28px 28px;
+            background-position: 0 0, 14px 14px;
             z-index: 0;
-            animation: moveGlow1 8s ease-in-out infinite alternate;
             pointer-events: none;
         }
 
-        .bg-glow-2 {
+        .bg-orb-1, .bg-orb-2 {
             position: fixed;
-            bottom: -100px;
-            right: -100px;
             width: 380px;
             height: 380px;
-            background: radial-gradient(circle, rgba(254, 0, 80, 0.25) 0%, rgba(0,0,0,0) 70%);
-            filter: blur(60px);
+            filter: blur(80px);
             border-radius: 50%;
             z-index: 0;
-            animation: moveGlow2 10s ease-in-out infinite alternate;
             pointer-events: none;
         }
 
-        @keyframes moveGlow1 {
-            0% { transform: translate(0, 0) scale(1); }
-            100% { transform: translate(60px, 80px) scale(1.2); }
+        .bg-orb-1 {
+            top: -100px;
+            left: -80px;
+            background: radial-gradient(circle, rgba(0, 242, 254, 0.25) 0%, transparent 70%);
+            animation: orbFloat1 10s ease-in-out infinite alternate;
         }
 
-        @keyframes moveGlow2 {
+        .bg-orb-2 {
+            bottom: -100px;
+            right: -80px;
+            background: radial-gradient(circle, rgba(254, 0, 80, 0.22) 0%, transparent 70%);
+            animation: orbFloat2 12s ease-in-out infinite alternate;
+        }
+
+        @keyframes orbFloat1 {
+            0% { transform: translate(0, 0) scale(1); }
+            100% { transform: translate(60px, 80px) scale(1.25); }
+        }
+
+        @keyframes orbFloat2 {
             0% { transform: translate(0, 0) scale(1); }
             100% { transform: translate(-60px, -80px) scale(1.25); }
         }
 
-        /* Container Layout */
-        .app-wrapper {
+        /* Main Container */
+        .app-container {
             position: relative;
-            z-index: 1;
+            z-index: 2;
             width: 100%;
-            max-width: 500px;
+            max-width: 480px;
             display: flex;
             flex-direction: column;
-            gap: 20px;
+            gap: 22px;
         }
 
+        /* Top Header */
         .header {
             text-align: center;
-            margin-top: 10px;
         }
 
         .status-badge {
             display: inline-flex;
             align-items: center;
-            gap: 6px;
+            gap: 8px;
             background: rgba(16, 185, 129, 0.12);
-            border: 1px solid rgba(16, 185, 129, 0.3);
+            border: 1px solid rgba(16, 185, 129, 0.4);
             color: #10b981;
-            padding: 6px 14px;
-            border-radius: 20px;
-            font-size: 0.78rem;
+            padding: 6px 16px;
+            border-radius: 30px;
+            font-size: 0.76rem;
             font-weight: 700;
+            letter-spacing: 0.5px;
             margin-bottom: 12px;
+            box-shadow: 0 0 15px rgba(16, 185, 129, 0.2);
         }
 
         .badge-dot {
@@ -105,22 +118,24 @@
             height: 8px;
             background: #10b981;
             border-radius: 50%;
-            box-shadow: 0 0 8px #10b981;
-            animation: blink 1.5s infinite;
+            box-shadow: 0 0 10px #10b981;
+            animation: pulseDot 1.4s infinite;
         }
 
-        @keyframes blink {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.3; }
+        @keyframes pulseDot {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.3; transform: scale(0.8); }
         }
 
         .header h1 {
-            font-size: 2.3rem;
+            font-size: 2.6rem;
             font-weight: 900;
+            letter-spacing: -0.5px;
             background: linear-gradient(135deg, #00f2fe 0%, #fe0050 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             margin-bottom: 6px;
+            filter: drop-shadow(0 2px 12px rgba(0, 242, 254, 0.25));
         }
 
         .header p {
@@ -128,21 +143,40 @@
             font-size: 0.88rem;
         }
 
-        /* Glass Box Card */
+        /* Main Glass Card with Sky-Blue & Neon Border Glow */
         .card {
-            background: rgba(17, 24, 39, 0.8);
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
-            border: 1px solid rgba(255, 255, 255, 0.12);
-            border-radius: 20px;
+            position: relative;
+            background: rgba(15, 23, 42, 0.75);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-radius: 22px;
             padding: 22px;
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6);
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.8);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: -2px; left: -2px; right: -2px; bottom: -2px;
+            background: linear-gradient(90deg, #00f2fe, #fe0050, #00f2fe);
+            border-radius: 24px;
+            z-index: -1;
+            opacity: 0.45;
+            background-size: 200% 200%;
+            animation: neonGlow 4s linear infinite;
+        }
+
+        @keyframes neonGlow {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
         }
 
         .input-group {
             display: flex;
             flex-direction: column;
-            gap: 12px;
+            gap: 14px;
         }
 
         .input-wrapper {
@@ -152,19 +186,20 @@
 
         .input-wrapper input {
             width: 100%;
-            padding: 16px 40px 16px 16px;
-            background: rgba(31, 41, 55, 0.8);
-            border: 1px solid #374151;
-            border-radius: 12px;
+            padding: 16px 42px 16px 16px;
+            background: rgba(30, 41, 59, 0.85);
+            border: 1px solid rgba(0, 242, 254, 0.35);
+            border-radius: 14px;
             color: #ffffff;
-            font-size: 0.95rem;
+            font-size: 0.92rem;
             outline: none;
-            transition: border-color 0.3s;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.4);
         }
 
         .input-wrapper input:focus {
             border-color: #00f2fe;
-            box-shadow: 0 0 12px rgba(0, 242, 254, 0.25);
+            box-shadow: 0 0 18px rgba(0, 242, 254, 0.45), inset 0 2px 4px rgba(0,0,0,0.4);
         }
 
         .clear-btn {
@@ -180,11 +215,13 @@
             display: none;
         }
 
+        .clear-btn:hover { color: #fe0050; }
+
         .btn {
             width: 100%;
-            padding: 14px;
+            padding: 15px;
             border: none;
-            border-radius: 12px;
+            border-radius: 14px;
             font-weight: 700;
             font-size: 0.95rem;
             cursor: pointer;
@@ -192,32 +229,34 @@
             align-items: center;
             justify-content: center;
             gap: 8px;
-            transition: transform 0.1s, opacity 0.2s;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
-        .btn:active {
-            transform: scale(0.98);
-        }
+        .btn:active { transform: scale(0.98); }
 
         .btn-fetch {
-            background: linear-gradient(135deg, #00f2fe 0%, #4facfe 100%);
-            color: #070a12;
-            box-shadow: 0 4px 15px rgba(0, 242, 254, 0.3);
+            background: linear-gradient(135deg, #00f2fe 0%, #00a8ff 100%);
+            color: #05070e;
+            box-shadow: 0 4px 20px rgba(0, 242, 254, 0.4);
         }
+
+        .btn-fetch:hover { box-shadow: 0 6px 25px rgba(0, 242, 254, 0.6); }
 
         .btn-refresh {
-            background: rgba(55, 65, 81, 0.6);
-            color: #d1d5db;
-            border: 1px solid rgba(255, 255, 255, 0.08);
+            background: rgba(30, 41, 59, 0.7);
+            color: #e2e8f0;
+            border: 1px solid rgba(255, 255, 255, 0.12);
         }
 
-        /* Status Toast */
+        .btn-refresh:hover { border-color: rgba(0, 242, 254, 0.5); color: #00f2fe; }
+
+        /* Toast Status */
         .status-toast {
             display: none;
             text-align: center;
             padding: 12px;
-            border-radius: 10px;
-            font-size: 0.88rem;
+            border-radius: 12px;
+            font-size: 0.86rem;
             margin-top: 14px;
         }
 
@@ -225,210 +264,311 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 8px;
+            gap: 10px;
             background: rgba(0, 242, 254, 0.1);
             color: #00f2fe;
-            border: 1px solid rgba(0, 242, 254, 0.25);
+            border: 1px solid rgba(0, 242, 254, 0.3);
         }
 
         .spinner {
-            width: 16px;
-            height: 16px;
+            width: 18px;
+            height: 18px;
             border: 2px solid rgba(0, 242, 254, 0.3);
             border-top: 2px solid #00f2fe;
             border-radius: 50%;
             animation: spin 0.8s linear infinite;
         }
 
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
+        @keyframes spin { 100% { transform: rotate(360deg); } }
 
         .status-error {
-            display: block;
-            background: rgba(254, 0, 80, 0.1);
+            background: rgba(254, 0, 80, 0.12);
             color: #fe0050;
-            border: 1px solid rgba(254, 0, 80, 0.25);
+            border: 1px solid rgba(254, 0, 80, 0.3);
         }
 
         /* Preview Card */
         .preview-card {
             display: none;
-            margin-top: 18px;
-            background: rgba(31, 41, 55, 0.6);
-            border-radius: 14px;
+            margin-top: 20px;
+            background: rgba(30, 41, 59, 0.65);
+            border-radius: 16px;
             padding: 16px;
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            animation: fadeIn 0.3s ease;
+            border: 1px solid rgba(0, 242, 254, 0.3);
+            animation: fadeIn 0.4s ease;
         }
 
         @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
+            from { opacity: 0; transform: translateY(12px); }
             to { opacity: 1; transform: translateY(0); }
         }
 
         .video-meta {
             display: flex;
-            gap: 12px;
+            gap: 14px;
             margin-bottom: 16px;
             align-items: center;
         }
 
         .thumb {
-            width: 80px;
-            height: 105px;
-            border-radius: 10px;
+            width: 85px;
+            height: 110px;
+            border-radius: 12px;
             object-fit: cover;
-            border: 1px solid rgba(255, 255, 255, 0.15);
+            border: 1px solid rgba(0, 242, 254, 0.4);
+            box-shadow: 0 4px 14px rgba(0,0,0,0.5);
             flex-shrink: 0;
         }
 
-        .meta-details {
-            flex: 1;
-            overflow: hidden;
-        }
+        .meta-details { flex: 1; overflow: hidden; }
 
         .author-info {
             display: flex;
             align-items: center;
-            gap: 6px;
+            gap: 8px;
             margin-bottom: 6px;
         }
 
         .author-avatar {
-            width: 22px;
-            height: 22px;
+            width: 24px;
+            height: 24px;
             border-radius: 50%;
             object-fit: cover;
+            border: 1px solid #00f2fe;
         }
 
-        .author-name {
-            font-size: 0.82rem;
-            font-weight: 700;
-            color: #00f2fe;
-        }
+        .author-name { font-size: 0.85rem; font-weight: 700; color: #00f2fe; }
 
         .caption {
             font-size: 0.82rem;
-            color: #d1d5db;
+            color: #cbd5e1;
             display: -webkit-box;
             -webkit-line-clamp: 3;
             -webkit-box-orient: vertical;
             overflow: hidden;
-            line-height: 1.3;
+            line-height: 1.35;
         }
 
-        /* Download Buttons */
-        .actions {
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-        }
+        .actions { display: flex; flex-direction: column; gap: 10px; }
 
-        .btn-dl-nowm { background: #10b981; color: #ffffff; }
-        .btn-dl-wm { background: #6366f1; color: #ffffff; }
-        .btn-dl-mp3 { background: #fe0050; color: #ffffff; }
+        .btn-dl-nowm { background: #10b981; color: #ffffff; box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3); }
+        .btn-dl-wm { background: #6366f1; color: #ffffff; box-shadow: 0 4px 15px rgba(99, 102, 241, 0.3); }
+        .btn-dl-mp3 { background: #fe0050; color: #ffffff; box-shadow: 0 4px 15px rgba(254, 0, 80, 0.3); }
 
-        /* Stats Grid */
+        /* Dynamic Stats Grid */
         .stats-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 10px;
-        }
-
-        .stat-box {
-            background: rgba(17, 24, 39, 0.6);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            border-radius: 14px;
-            padding: 14px;
-            text-align: center;
-        }
-
-        .stat-box h3 {
-            font-size: 1.4rem;
-            font-weight: 800;
-            color: #00f2fe;
-            margin-bottom: 2px;
-        }
-
-        .stat-box p {
-            font-size: 0.75rem;
-            color: #9ca3af;
-        }
-
-        /* Live Animated Waveform Visualizer for Audio Feature */
-        .audio-wave-box {
-            display: flex;
-            align-items: center;
-            gap: 4px;
-            margin-top: 8px;
-            height: 20px;
-        }
-
-        .wave-bar {
-            width: 3px;
-            height: 100%;
-            background: #fe0050;
-            border-radius: 2px;
-            animation: soundWave 1.2s ease-in-out infinite alternate;
-        }
-
-        .wave-bar:nth-child(2) { animation-delay: 0.2s; background: #00f2fe; }
-        .wave-bar:nth-child(3) { animation-delay: 0.4s; background: #fe0050; }
-        .wave-bar:nth-child(4) { animation-delay: 0.1s; background: #10b981; }
-        .wave-bar:nth-child(5) { animation-delay: 0.5s; background: #00f2fe; }
-
-        @keyframes soundWave {
-            0% { height: 20%; }
-            100% { height: 100%; }
-        }
-
-        .features-grid {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-        }
-
-        .feature-card {
-            background: rgba(17, 24, 39, 0.6);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            border-radius: 14px;
-            padding: 14px;
-            display: flex;
-            align-items: flex-start;
             gap: 12px;
         }
 
-        .feature-icon {
-            font-size: 1.2rem;
+        .stat-box {
+            background: rgba(15, 23, 42, 0.65);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 16px;
+            padding: 16px;
+            text-align: center;
+            backdrop-filter: blur(12px);
+            transition: border-color 0.3s;
         }
 
-        .feature-text h4 {
-            font-size: 0.88rem;
-            color: #f3f4f6;
+        .stat-box:hover { border-color: rgba(0, 242, 254, 0.4); }
+
+        .stat-box h3 {
+            font-size: 1.45rem;
+            font-weight: 800;
+            color: #00f2fe;
             margin-bottom: 2px;
+            letter-spacing: -0.5px;
         }
 
-        .feature-text p {
-            font-size: 0.78rem;
-            color: #9ca3af;
+        .stat-box p { font-size: 0.75rem; color: #94a3b8; }
+
+        /* Qwen AI Section Features */
+        .section-title {
+            font-size: 1.1rem;
+            font-weight: 800;
+            color: #f8fafc;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: 10px;
+        }
+
+        .feature-card {
+            background: rgba(15, 23, 42, 0.65);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 18px;
+            padding: 18px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            backdrop-filter: blur(12px);
+        }
+
+        .feature-head {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .feature-head h4 { font-size: 0.95rem; color: #f8fafc; }
+
+        .feature-desc { font-size: 0.8rem; color: #94a3b8; line-height: 1.4; }
+
+        /* Qwen 2 Phones Animation Box */
+        .phone-demo-wrapper {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 14px;
+            margin-top: 8px;
+            padding: 12px;
+            background: rgba(30, 41, 59, 0.4);
+            border-radius: 14px;
+        }
+
+        .mini-phone {
+            width: 52px;
+            height: 90px;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+            position: relative;
+            background: #090d16;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        .mini-phone.wm-phone { border-color: rgba(254, 0, 80, 0.5); }
+        .mini-phone.clean-phone { border-color: rgba(0, 242, 254, 0.8); box-shadow: 0 0 12px rgba(0, 242, 254, 0.3); }
+
+        .wm-tag {
+            background: #fe0050;
+            color: #fff;
+            font-size: 0.45rem;
+            padding: 2px 4px;
+            border-radius: 3px;
+            font-weight: bold;
+            animation: wmBounce 1.8s infinite alternate;
+        }
+
+        @keyframes wmBounce {
+            0% { transform: translateY(0); }
+            100% { transform: translateY(-4px); }
+        }
+
+        .arrow-flow {
+            color: #00f2fe;
+            font-size: 1.2rem;
+            animation: arrowPulse 1.2s infinite;
+        }
+
+        @keyframes arrowPulse {
+            0% { opacity: 0.3; transform: translateX(-3px); }
+            100% { opacity: 1; transform: translateX(3px); }
+        }
+
+        /* Qwen Gradient Animated Line */
+        .gradient-line-box {
+            width: 100%;
+            height: 4px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 4px;
+            overflow: hidden;
+            position: relative;
+            margin-top: 6px;
+        }
+
+        .gradient-line-inner {
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, #00f2fe, #fe0050, #00f2fe);
+            background-size: 200% 100%;
+            animation: lineFlow 2s linear infinite;
+        }
+
+        @keyframes lineFlow {
+            0% { background-position: 0% 0%; }
+            100% { background-position: 200% 0%; }
+        }
+
+        /* Qwen Multi-Color Audio Visualizer */
+        .audio-wave-box {
+            display: flex;
+            align-items: flex-end;
+            gap: 5px;
+            height: 24px;
+            margin-top: 6px;
+        }
+
+        .wave-bar {
+            width: 5px;
+            height: 100%;
+            border-radius: 3px;
+            animation: soundWave 1.2s ease-in-out infinite alternate;
+        }
+
+        .wave-bar:nth-child(1) { background: #00f2fe; animation-delay: 0.1s; }
+        .wave-bar:nth-child(2) { background: #8b5cf6; animation-delay: 0.3s; }
+        .wave-bar:nth-child(3) { background: #fe0050; animation-delay: 0.5s; }
+        .wave-bar:nth-child(4) { background: #10b981; animation-delay: 0.2s; }
+        .wave-bar:nth-child(5) { background: #3b82f6; animation-delay: 0.4s; }
+
+        @keyframes soundWave {
+            0% { height: 25%; }
+            100% { height: 100%; }
+        }
+
+        /* Qwen Animated Shield Icon */
+        .shield-icon {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background: rgba(16, 185, 129, 0.15);
+            border: 1px solid #10b981;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.85rem;
+            color: #10b981;
+            box-shadow: 0 0 10px rgba(16, 185, 129, 0.3);
+            animation: shieldGlow 2s infinite alternate;
+        }
+
+        @keyframes shieldGlow {
+            0% { box-shadow: 0 0 5px rgba(16, 185, 129, 0.3); }
+            100% { box-shadow: 0 0 16px rgba(16, 185, 129, 0.7); }
+        }
+
+        /* Device Adaptive Icon */
+        .device-icon {
+            font-size: 1.2rem;
+            animation: devicePulse 2s infinite ease-in-out;
+        }
+
+        @keyframes devicePulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.15); }
         }
 
         .footer {
             text-align: center;
-            padding: 10px 0;
-            color: #6b7280;
+            padding: 16px 0 0;
+            color: #64748b;
             font-size: 0.75rem;
         }
     </style>
 </head>
 <body>
 
-    <div class="bg-glow-1"></div>
-    <div class="bg-glow-2"></div>
+    <div class="bg-grid"></div>
+    <div class="bg-orb-1"></div>
+    <div class="bg-orb-2"></div>
 
-    <div class="app-wrapper">
+    <div class="app-container">
         
         <div class="header">
             <div class="status-badge">
@@ -472,12 +612,12 @@
 
         <div class="stats-grid">
             <div class="stat-box">
-                <h3>14.2M+</h3>
+                <h3 id="downloadsCounter">14.2M+</h3>
                 <p>Videos Downloaded</p>
             </div>
             <div class="stat-box">
                 <h3>0.9s</h3>
-                <p>Avg Fetch Time</p>
+                <p>Avg Fetch Speed</p>
             </div>
             <div class="stat-box">
                 <h3>1080p</h3>
@@ -489,148 +629,18 @@
             </div>
         </div>
 
-        <div class="features-grid">
-            <div class="feature-card">
-                <div class="feature-icon">💧</div>
-                <div class="feature-text">
-                    <h4>No Watermark. Ever.</h4>
-                    <p>Clean, logo-free master stream links straight from CDN.</p>
-                </div>
+        <div class="section-title">✨ Why Choose Snap-Tok?</div>
+
+        <div class="feature-card">
+            <div class="feature-head">
+                <span style="font-size: 1.2rem;">💧</span>
+                <h4>No Watermark. Ever.</h4>
             </div>
-            <div class="feature-card">
-                <div class="feature-icon">🎵</div>
-                <div class="feature-text">
-                    <h4>MP3 Audio Rip Visualizer</h4>
-                    <p>Extract sound tracks with live dynamic frequency equalizer.</p>
-                    <div class="audio-wave-box">
-                        <div class="wave-bar"></div>
-                        <div class="wave-bar"></div>
-                        <div class="wave-bar"></div>
-                        <div class="wave-bar"></div>
-                        <div class="wave-bar"></div>
-                    </div>
+            <p class="feature-desc">We resolve clean, logo-free master stream links straight from CDN.</p>
+            
+            <div class="phone-demo-wrapper">
+                <div class="mini-phone wm-phone">
+                    <span class="wm-tag">TikTok</span>
                 </div>
-            </div>
-        </div>
-
-        <div class="footer">
-            © 2026 Snap-Tok • Fast & Free Downloader
-        </div>
-
-    </div>
-
-    <script>
-        const inputField = document.getElementById('videoUrl');
-        const clearBtn = document.getElementById('clearBtn');
-        const statusToast = document.getElementById('statusToast');
-        const previewCard = document.getElementById('previewCard');
-
-        let videoData = { nowm: '', wm: '', mp3: '' };
-
-        inputField.addEventListener('input', () => {
-            clearBtn.style.display = inputField.value ? 'block' : 'none';
-        });
-
-        function clearInput() {
-            inputField.value = '';
-            clearBtn.style.display = 'none';
-            inputField.focus();
-        }
-
-        function resetPage() {
-            inputField.value = '';
-            clearBtn.style.display = 'none';
-            previewCard.style.display = 'none';
-            statusToast.className = 'status-toast';
-            statusToast.style.display = 'none';
-        }
-
-        async function fetchVideo() {
-            const url = inputField.value.trim();
-            if (!url) {
-                showStatus("Please paste a valid TikTok link first!", "error");
-                return;
-            }
-
-            showLoadingStatus("Fetching video details... Please wait");
-            previewCard.style.display = 'none';
-
-            try {
-                // Primary TikWM Endpoint
-                const res = await fetch(`https://www.tikwm.com/api/?url=${encodeURIComponent(url)}`);
-                const data = await res.json();
-
-                if (data && data.code === 0 && data.data) {
-                    const video = data.data;
-
-                    document.getElementById('coverImg').src = video.cover;
-                    document.getElementById('authorAvatar').src = (video.author && video.author.avatar) ? video.author.avatar : video.cover;
-                    document.getElementById('authorName').innerText = `@${(video.author && video.author.unique_id) ? video.author.unique_id : 'tiktok_user'}`;
-                    document.getElementById('videoCaption').innerText = video.title || 'TikTok Video';
-
-                    videoData.nowm = video.play;
-                    videoData.wm = video.wmplay;
-                    videoData.mp3 = video.music;
-
-                    statusToast.style.display = 'none';
-                    previewCard.style.display = 'block';
-                } else {
-                    showStatus("Could not fetch video. Make sure link is public and valid.", "error");
-                }
-            } catch (err) {
-                showStatus("Network error while connecting to TikTok CDN.", "error");
-            }
-        }
-
-        async function downloadFile(type) {
-            const fileUrl = videoData[type];
-            if (!fileUrl) {
-                alert("Download URL not found!");
-                return;
-            }
-
-            const btnId = type === 'nowm' ? 'dlNoWmBtn' : (type === 'wm' ? 'dlWmBtn' : 'dlMp3Btn');
-            const btn = document.getElementById(btnId);
-            const originalText = btn.innerText;
-
-            btn.innerText = "⏳ Downloading...";
-            btn.style.opacity = "0.7";
-
-            try {
-                const res = await fetch(fileUrl);
-                const blob = await res.blob();
-                const blobUrl = URL.createObjectURL(blob);
-
-                const a = document.createElement('a');
-                a.href = blobUrl;
-                a.download = `SnapTok_${type}_${Date.now()}.${type === 'mp3' ? 'mp3' : 'mp4'}`;
-                document.body.appendChild(a);
-                a.click();
-                document.body.removeChild(a);
-                URL.revokeObjectURL(blobUrl);
-
-                btn.innerText = originalText;
-                btn.style.opacity = "1";
-            } catch (e) {
-                // Fallback direct open if fetch blob blocked by CDN header
-                window.open(fileUrl, '_blank');
-                btn.innerText = originalText;
-                btn.style.opacity = "1";
-            }
-        }
-
-        function showLoadingStatus(msg) {
-            statusToast.innerHTML = `<div class="spinner"></div> <span>${msg}</span>`;
-            statusToast.className = 'status-toast status-loading';
-            statusToast.style.display = 'flex';
-        }
-
-        function showStatus(msg, type) {
-            statusToast.innerText = msg;
-            statusToast.className = `status-toast status-${type}`;
-            statusToast.style.display = 'block';
-        }
-    </script>
-</body>
-    </html>
-    
+                <div class="arrow-flow">➔</div>
+                <div class="mini-phone clean-phon
