@@ -1,702 +1,436 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Snap-Tok | Ultra-Fast & Dreamy TikTok Downloader</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Snap-Tok | Ultra-Fast TikTok Downloader</title>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <style>
     :root {
-      --bg-dark: #030712;
-      --card-bg: rgba(14, 23, 42, 0.65);
-      --card-border: rgba(186, 230, 253, 0.22);
-      --sky-glow: #38bdf8;
-      --sky-light: #f0f9ff;
-      --sky-bright: #0ea5e9;
-      --net-fast: #f0f9ff;
-      --net-slow: #facc15;
-      --net-offline: #f43f5e;
-      --text-main: #f8fafc;
-      --text-muted: #94a3b8;
+      --bg-color: #07090e;
+      --card-bg: rgba(18, 22, 33, 0.75);
+      --card-border: rgba(255, 255, 255, 0.08);
+      --accent-cyan: #00f2fe;
+      --accent-blue: #4facfe;
+      --accent-green: #00e676;
+      --accent-purple: #7928ca;
+      --accent-pink: #ff0080;
+      --text-main: #f3f4f6;
+      --text-muted: #9ca3af;
     }
 
     * {
       box-sizing: border-box;
       margin: 0;
       padding: 0;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      font-family: 'Plus Jakarta Sans', sans-serif;
     }
 
     body {
-      background-color: var(--bg-dark);
-      background-image: 
-        radial-gradient(circle at 50% -10%, rgba(56, 189, 248, 0.28) 0%, transparent 60%),
-        radial-gradient(circle at 100% 60%, rgba(240, 249, 255, 0.12) 0%, transparent 50%),
-        radial-gradient(circle at 0% 100%, rgba(14, 165, 233, 0.15) 0%, transparent 40%);
+      background-color: var(--bg-color);
       color: var(--text-main);
       min-height: 100vh;
       display: flex;
       flex-direction: column;
       align-items: center;
-      padding: 24px 16px;
-      overflow-x: hidden;
+      padding: 20px 15px;
+      background-image: 
+        radial-gradient(circle at 50% 0%, rgba(0, 242, 254, 0.15), transparent 50%),
+        radial-gradient(circle at 80% 80%, rgba(121, 40, 202, 0.15), transparent 50%);
+      background-attachment: fixed;
     }
 
     .container {
       width: 100%;
-      max-width: 480px;
-      display: flex;
-      flex-direction: column;
-      gap: 20px;
+      max-width: 460px;
+      margin: 0 auto;
     }
 
-    /* Top Navigation Bar */
-    .top-bar {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      width: 100%;
+    .header {
+      text-align: center;
+      margin-bottom: 24px;
     }
 
     .status-badge {
-      display: flex;
+      display: inline-flex;
       align-items: center;
-      gap: 8px;
+      gap: 6px;
       padding: 6px 14px;
-      background: rgba(56, 189, 248, 0.08);
-      border: 1px solid rgba(56, 189, 248, 0.25);
       border-radius: 20px;
+      background: rgba(0, 242, 254, 0.1);
+      border: 1px solid rgba(0, 242, 254, 0.2);
+      color: var(--accent-cyan);
       font-size: 11px;
-      font-weight: 600;
-      color: var(--sky-glow);
-      box-shadow: 0 0 12px rgba(56, 189, 248, 0.15);
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      margin-bottom: 12px;
+      text-transform: uppercase;
     }
 
     .status-dot {
-      width: 7px;
-      height: 7px;
-      background-color: var(--sky-glow);
+      width: 6px;
+      height: 6px;
+      background-color: var(--accent-cyan);
       border-radius: 50%;
-      box-shadow: 0 0 8px var(--sky-glow);
-      animation: pulseDot 1.8s infinite;
+      box-shadow: 0 0 8px var(--accent-cyan);
     }
 
-    @keyframes pulseDot {
-      0%, 100% { opacity: 1; }
-      50% { opacity: 0.3; }
-    }
-
-    /* Dynamic Network Wifi Icon (No MS Numbers) */
-    .wifi-status {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      padding: 6px 12px;
-      background: rgba(255, 255, 255, 0.03);
-      border: 1px solid var(--card-border);
-      border-radius: 20px;
-    }
-
-    .wifi-icon {
-      width: 16px;
-      height: 16px;
-      fill: var(--net-fast);
-      filter: drop-shadow(0 0 6px var(--net-fast));
-      transition: all 0.4s ease;
-    }
-
-    .wifi-text {
-      font-size: 11px;
-      font-weight: 600;
-      color: var(--text-muted);
-    }
-
-    /* Header Section */
-    .header {
-      text-align: center;
-    }
-
-    .header h1 {
-      font-size: 34px;
+    .title {
+      font-size: 32px;
       font-weight: 800;
-      background: linear-gradient(135deg, var(--sky-light) 20%, var(--sky-glow) 70%, var(--sky-bright) 100%);
+      background: linear-gradient(135deg, #00f2fe 0%, #4facfe 50%, #ff0080 100%);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
-      text-shadow: 0 0 25px rgba(56, 189, 248, 0.35);
-      margin-bottom: 6px;
       letter-spacing: -0.5px;
     }
 
-    .header p {
+    .subtitle {
       font-size: 13px;
       color: var(--text-muted);
-      line-height: 1.4;
+      margin-top: 6px;
     }
 
-    /* Core Box (Glassmorphic) */
-    .main-box {
+    /* Main Box */
+    .glass-card {
       background: var(--card-bg);
       backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
       border: 1px solid var(--card-border);
-      border-radius: 22px;
-      padding: 22px;
-      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(240, 249, 255, 0.15);
+      border-radius: 24px;
+      padding: 20px;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+      margin-bottom: 20px;
     }
 
-    .input-group {
+    .input-box {
       position: relative;
-      margin-bottom: 12px;
+      margin-bottom: 14px;
     }
 
-    .input-group input {
+    .input-box input {
       width: 100%;
-      padding: 15px 85px 15px 14px;
-      background: rgba(3, 7, 18, 0.7);
-      border: 1px solid var(--card-border);
+      padding: 16px 45px 16px 16px;
+      background: rgba(0, 0, 0, 0.4);
+      border: 1px solid rgba(255, 255, 255, 0.1);
       border-radius: 14px;
       color: #fff;
-      font-size: 14px;
+      font-size: 13px;
       outline: none;
       transition: all 0.3s ease;
     }
 
-    .input-group input:focus {
-      border-color: var(--sky-glow);
-      box-shadow: 0 0 18px rgba(56, 189, 248, 0.3);
+    .input-box input:focus {
+      border-color: var(--accent-cyan);
+      box-shadow: 0 0 15px rgba(0, 242, 254, 0.2);
     }
 
-    .input-actions {
+    .paste-btn {
       position: absolute;
       right: 10px;
       top: 50%;
       transform: translateY(-50%);
-      display: flex;
-      gap: 6px;
-      align-items: center;
-    }
-
-    .btn-paste {
-      background: rgba(56, 189, 248, 0.15);
-      border: 1px solid rgba(56, 189, 248, 0.3);
-      color: var(--sky-light);
+      background: rgba(255, 255, 255, 0.08);
+      border: none;
+      color: #fff;
       padding: 6px 12px;
       border-radius: 8px;
       font-size: 11px;
       font-weight: 600;
       cursor: pointer;
-      display: flex;
-      align-items: center;
-      gap: 4px;
-      transition: 0.2s;
     }
 
-    .btn-paste:hover {
-      background: var(--sky-glow);
-      color: #000;
-    }
-
-    .clear-input {
-      background: none;
-      border: none;
-      color: var(--text-muted);
-      font-size: 14px;
-      cursor: pointer;
-      display: none;
-      padding: 2px 6px;
-    }
-
-    .btn {
+    .btn-fetch {
       width: 100%;
-      padding: 14px;
-      border-radius: 14px;
+      padding: 16px;
       border: none;
-      font-size: 15px;
+      border-radius: 14px;
+      background: linear-gradient(135deg, var(--accent-cyan), var(--accent-blue));
+      color: #000;
+      font-size: 14px;
       font-weight: 700;
       cursor: pointer;
       display: flex;
       align-items: center;
       justify-content: center;
       gap: 8px;
-      transition: all 0.25s ease;
+      box-shadow: 0 8px 20px rgba(0, 242, 254, 0.3);
+      transition: all 0.3s ease;
     }
 
-    .btn-fetch {
-      background: linear-gradient(135deg, var(--sky-light), var(--sky-glow));
-      color: #030712;
-      margin-bottom: 10px;
-      box-shadow: 0 4px 20px rgba(56, 189, 248, 0.35);
-    }
-
-    .btn-fetch:hover {
-      box-shadow: 0 6px 25px rgba(56, 189, 248, 0.5);
-      transform: translateY(-1px);
+    .btn-fetch:active {
+      transform: scale(0.98);
     }
 
     .btn-refresh {
-      background: rgba(255, 255, 255, 0.04);
-      color: var(--text-main);
-      border: 1px solid var(--card-border);
+      width: 100%;
+      padding: 14px;
+      margin-top: 10px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 14px;
+      background: rgba(255, 255, 255, 0.03);
+      color: var(--text-muted);
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
     }
 
-    .btn-refresh:hover {
-      background: rgba(255, 255, 255, 0.08);
-    }
-
-    /* Result Preview Card */
+    /* Result Card (Futuristic) */
     .result-card {
       display: none;
-      margin-top: 18px;
-      background: rgba(3, 7, 18, 0.6);
-      border: 1px solid var(--card-border);
-      border-radius: 16px;
+      margin-top: 20px;
+      background: rgba(0, 0, 0, 0.4);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 18px;
       padding: 16px;
-      animation: fadeIn 0.3s ease-in-out;
+      animation: fadeIn 0.4s ease;
     }
 
     @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(8px); }
+      from { opacity: 0; transform: translateY(10px); }
       to { opacity: 1; transform: translateY(0); }
     }
 
-    .preview-header {
+    .video-info {
       display: flex;
-      gap: 12px;
+      gap: 14px;
       margin-bottom: 16px;
     }
 
     .cover-img {
-      width: 82px;
-      height: 110px;
-      border-radius: 10px;
+      width: 90px;
+      height: 120px;
+      border-radius: 12px;
       object-fit: cover;
-      background: #111;
-      border: 1px solid rgba(56, 189, 248, 0.25);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      background-color: #1a1a1a;
     }
 
-    .meta-info {
+    .details {
       flex: 1;
       display: flex;
       flex-direction: column;
       justify-content: center;
     }
 
-    .user-tag {
+    .author {
+      color: var(--accent-cyan);
       font-size: 14px;
       font-weight: 700;
-      color: var(--sky-glow);
-      margin-bottom: 4px;
+      margin-bottom: 6px;
     }
 
-    .caption-text {
+    .caption {
+      color: #d1d5db;
       font-size: 12px;
-      color: var(--text-muted);
+      line-height: 1.4;
       display: -webkit-box;
-      -webkit-line-clamp: 3;
+      -webkit-line-clamp: 4;
       -webkit-box-orient: vertical;
       overflow: hidden;
-      line-height: 1.4;
     }
 
-    .download-btns {
+    /* Futuristic Download Buttons */
+    .download-actions {
       display: flex;
       flex-direction: column;
       gap: 10px;
     }
 
-    .btn-dl-no-wm {
-      background: var(--sky-glow);
-      color: #030712;
-    }
-
-    .btn-dl-wm {
-      background: rgba(56, 189, 248, 0.15);
-      color: var(--sky-light);
-      border: 1px solid rgba(56, 189, 248, 0.3);
-    }
-
-    .btn-dl-mp3 {
-      background: rgba(240, 249, 255, 0.1);
-      color: var(--sky-light);
-      border: 1px solid rgba(240, 249, 255, 0.25);
-    }
-
-    /* Custom Vector Icon Styling */
-    .vector-icon {
-      width: 16px;
-      height: 16px;
-      fill: currentColor;
-    }
-
-    /* Stats Grid */
-    .stats-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 10px;
-    }
-
-    .stat-card {
-      background: var(--card-bg);
-      border: 1px solid var(--card-border);
-      border-radius: 16px;
-      padding: 16px;
-      text-align: center;
-    }
-
-    .stat-val {
-      font-size: 20px;
-      font-weight: 800;
-      color: var(--sky-glow);
-      text-shadow: 0 0 10px rgba(56, 189, 248, 0.3);
-    }
-
-    .stat-lbl {
-      font-size: 11px;
-      color: var(--text-muted);
-      margin-top: 2px;
-    }
-
-    /* Features Section */
-    .features-section {
-      display: flex;
-      flex-direction: column;
-      gap: 14px;
-      margin-top: 10px;
-    }
-
-    .section-title {
-      font-size: 15px;
-      font-weight: 700;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      color: var(--sky-light);
-    }
-
-    .feature-box {
-      background: var(--card-bg);
-      border: 1px solid var(--card-border);
-      border-radius: 18px;
-      padding: 18px;
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-    }
-
-    .feature-header {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-
-    .feature-icon-box {
-      width: 34px;
-      height: 34px;
-      border-radius: 10px;
-      background: rgba(56, 189, 248, 0.1);
-      border: 1px solid rgba(56, 189, 248, 0.25);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: var(--sky-glow);
-    }
-
-    .feature-title {
-      font-size: 15px;
-      font-weight: 700;
-    }
-
-    .feature-desc {
-      font-size: 12px;
-      color: var(--text-muted);
-      line-height: 1.5;
-    }
-
-    /* Visual 1: Dual Phone Transformation */
-    .mockup-container {
-      height: 90px;
-      background: rgba(3, 7, 18, 0.6);
+    .dl-btn {
+      width: 100%;
+      padding: 14px;
+      border: none;
       border-radius: 12px;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 14px;
-      border: 1px solid rgba(255, 255, 255, 0.05);
+      gap: 8px;
+      transition: all 0.2s ease;
+      color: #fff;
+      text-decoration: none;
     }
 
-    .phone-mockup {
-      width: 44px;
-      height: 68px;
-      border: 2px solid rgba(148, 163, 184, 0.4);
-      border-radius: 8px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 9px;
-      font-weight: bold;
-      color: var(--text-muted);
+    .dl-no-wm {
+      background: linear-gradient(135deg, #00b09b, #96c93d);
+      box-shadow: 0 4px 15px rgba(0, 176, 155, 0.25);
     }
 
-    .phone-mockup.hd {
-      border-color: var(--sky-glow);
-      background: rgba(56, 189, 248, 0.1);
-      color: var(--sky-glow);
-      box-shadow: 0 0 15px rgba(56, 189, 248, 0.25);
+    .dl-wm {
+      background: linear-gradient(135deg, #6a11cb, #2575fc);
+      box-shadow: 0 4px 15px rgba(106, 17, 203, 0.25);
     }
 
-    .arrow-icon {
-      color: var(--sky-glow);
-      font-size: 16px;
-      animation: pulseArrow 1.5s infinite ease-in-out;
+    .dl-mp3 {
+      background: linear-gradient(135deg, #ff0844, #ffb199);
+      box-shadow: 0 4px 15px rgba(255, 8, 68, 0.25);
     }
 
-    @keyframes pulseArrow {
-      0%, 100% { transform: translateX(0); opacity: 0.6; }
-      50% { transform: translateX(4px); opacity: 1; }
+    .dl-btn:active {
+      transform: scale(0.98);
     }
 
-    /* Visual 2: Speed Progress Bar */
-    .progress-track {
-      width: 100%;
-      height: 6px;
-      background: rgba(255,255,255,0.08);
-      border-radius: 4px;
-      overflow: hidden;
-    }
-
-    .progress-fill {
-      height: 100%;
-      width: 100%;
-      background: linear-gradient(90deg, var(--sky-bright), var(--sky-light));
-      box-shadow: 0 0 10px var(--sky-glow);
-      animation: fastProgress 1.8s infinite ease-in-out;
-    }
-
-    @keyframes fastProgress {
-      0% { transform: translateX(-100%); }
-      100% { transform: translateX(100%); }
-    }
-
-    /* Visual 3: Live Equalizer */
-    .equalizer {
-      display: flex;
-      align-items: flex-end;
-      gap: 4px;
-      height: 24px;
-    }
-
-    .eq-bar {
-      width: 4px;
-      background: var(--sky-glow);
-      border-radius: 2px;
-      box-shadow: 0 0 8px var(--sky-glow);
-      animation: bounceBar 1.2s infinite ease-in-out alternate;
-    }
-
-    .eq-bar:nth-child(1) { height: 40%; animation-delay: 0.1s; }
-    .eq-bar:nth-child(2) { height: 80%; animation-delay: 0.3s; }
-    .eq-bar:nth-child(3) { height: 60%; animation-delay: 0.2s; }
-    .eq-bar:nth-child(4) { height: 100%; animation-delay: 0.4s; }
-    .eq-bar:nth-child(5) { height: 50%; animation-delay: 0.15s; }
-
-    @keyframes bounceBar {
-      0% { height: 20%; }
-      100% { height: 100%; }
-    }
-
-    .footer {
+    .loader {
+      display: none;
       text-align: center;
-      font-size: 11px;
-      color: var(--text-muted);
-      margin-top: 20px;
-      padding-bottom: 20px;
+      padding: 15px;
+      font-size: 13px;
+      color: var(--accent-cyan);
     }
   </style>
 </head>
 <body>
 
   <div class="container">
-    <div class="top-bar">
-      <div class="status-badge">
-        <span class="status-dot"></span>
-        API V2.5 ONLINE
-      </div>
-
-      <div class="wifi-status" id="wifiStatus">
-        <svg class="wifi-icon" id="wifiIcon" viewBox="0 0 24 24">
-          <path d="M12 3c-4.97 0-9.47 2.01-12.73 5.27l2.12 2.12c2.72-2.72 6.47-4.39 10.61-4.39 4.14 0 7.89 1.67 10.61 4.39l2.12-2.12c-3.26-3.26-7.76-5.27-12.73-5.27zm0 6c-3.31 0-6.31 1.34-8.49 3.51l2.12 2.12c1.63-1.63 3.88-2.63 6.37-2.63 2.49 0 4.74 1 6.37 2.63l2.12-2.12c-2.18-2.17-5.18-3.51-8.49-3.51zm0 6c-1.66 0-3.16.67-4.24 1.76l4.24 4.24 4.24-4.24c-1.08-1.09-2.58-1.76-4.24-1.76z"/>
-        </svg>
-        <span class="wifi-text" id="wifiText">Speed Test...</span>
-      </div>
-    </div>
-
     <div class="header">
-      <h1>Snap-Tok</h1>
-      <p>Ultra-Fast Sky-Glow TikTok Downloader — Clean HD Streams & MP3 Rips.</p>
+      <div class="status-badge">
+        <span class="status-dot"></span> API ONLINE & READY
+      </div>
+      <h1 class="title">Snap-Tok</h1>
+      <p class="subtitle">Ultra-Fast TikTok Video & MP3 Downloader</p>
     </div>
 
-    <div class="main-box">
-      <div class="input-group">
-        <input type="text" id="tiktokUrl" placeholder="Paste TikTok link here..." oninput="handleInput()">
-        <div class="input-actions">
-          <button class="clear-input" id="clearInputBtn" onclick="clearInput()">✕</button>
-          <button class="btn-paste" id="pasteBtn" onclick="pasteClipboard()">
-            <svg class="vector-icon" viewBox="0 0 24 24"><path d="M19 2h-4.18C14.4 0.84 13.3 0 12 0c-1.3 0-2.4 0.84-2.82 2H5c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-7 0c.55 0 1 .45 1 1s-.45 1-1 1-1-.45-1-1 .45-1 1-1zm7 18H5V4h2v3h10V4h2v16z"/></svg>
-            Paste
-          </button>
-        </div>
+    <div class="glass-card">
+      <div class="input-box">
+        <input type="text" id="tiktokUrl" placeholder="Paste TikTok link here..." />
+        <button class="paste-btn" onclick="pasteClipboard()">Paste</button>
       </div>
 
-      <button class="btn btn-fetch" id="fetchBtn" onclick="fetchVideo()">
-        <svg class="vector-icon" viewBox="0 0 24 24"><path d="M7 2v11h3v9l7-12h-4l4-8z"/></svg>
-        Fetch Video
+      <button class="btn-fetch" onclick="fetchTikTokVideo()">
+        ⚡ Fetch Video
       </button>
-      <button class="btn btn-refresh" onclick="resetPage()">
-        <svg class="vector-icon" viewBox="0 0 24 24"><path d="M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"/></svg>
-        Refresh Page
+
+      <button class="btn-refresh" onclick="resetForm()">
+        🔄 Refresh Page
       </button>
+
+      <div class="loader" id="loader">
+        ⏳ Fetching media, please wait...
+      </div>
 
       <div class="result-card" id="resultCard">
-        <div class="preview-header">
-          <img src="" alt="Cover" class="cover-img" id="coverImg">
-          <div class="meta-info">
-            <div class="user-tag" id="authorTag">@user</div>
-            <div class="caption-text" id="videoCaption">Loading caption...</div>
+        <div class="video-info">
+          <img src="" id="coverImage" class="cover-img" alt="Cover Image" />
+          <div class="details">
+            <div class="author" id="authorHandle">@author</div>
+            <div class="caption" id="videoCaption">Video Caption Here</div>
           </div>
         </div>
 
-        <div class="download-btns">
-          <button class="btn btn-dl-no-wm" id="btnNoWm" onclick="triggerDirectDownload('nowm')">
-            <svg class="vector-icon" viewBox="0 0 24 24"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg>
-            Download Without Watermark
+        <div class="download-actions">
+          <button class="dl-btn dl-no-wm" id="btnNoWm">
+            ↓ Download Without Watermark
           </button>
-          <button class="btn btn-dl-wm" id="btnWm" onclick="triggerDirectDownload('wm')">
-            <svg class="vector-icon" viewBox="0 0 24 24"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg>
-            Download With Watermark
+          <button class="dl-btn dl-wm" id="btnWm">
+            ↓ Download With Watermark
           </button>
-          <button class="btn btn-dl-mp3" id="btnMp3" onclick="triggerDirectDownload('mp3')">
-            <svg class="vector-icon" viewBox="0 0 24 24"><path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/></svg>
-            Download MP3 Audio
+          <button class="dl-btn dl-mp3" id="btnMp3">
+            🎵 Download MP3 Audio
           </button>
         </div>
       </div>
-    </div>
-
-    <div class="stats-grid">
-      <div class="stat-card">
-        <div class="stat-val">15.4M+</div>
-        <div class="stat-lbl">Videos Downloaded</div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-val">0.6s</div>
-        <div class="stat-lbl">Avg Response Speed</div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-val">1080p</div>
-        <div class="stat-lbl">Ultra HD Stream</div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-val">100%</div>
-        <div class="stat-lbl">Free Forever</div>
-      </div>
-    </div>
-
-    <div class="features-section">
-      <div class="section-title">
-        <svg class="vector-icon" viewBox="0 0 24 24" style="color:var(--sky-glow)"><path d="M12 2L1 21h22L12 2zm0 3.45l8.15 14.1H3.85L12 5.45zM11 10h2v4h-2zm0 5h2v2h-2z"/></svg>
-        Futuristic Features
-      </div>
-
-      <div class="feature-box">
-        <div class="feature-header">
-          <div class="feature-icon-box">
-            <svg class="vector-icon" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
-          </div>
-          <div class="feature-title">No Watermark. Ever.</div>
-        </div>
-        <div class="feature-desc">
-          Direct master stream extraction from TikTok CDN without logos or overlays.
-        </div>
-        <div class="mockup-container">
-          <div class="phone-mockup">TikTok</div>
-          <div class="arrow-icon">➔</div>
-          <div class="phone-mockup hd">HD</div>
-        </div>
-      </div>
-
-      <div class="feature-box">
-        <div class="feature-header">
-          <div class="feature-icon-box">
-            <svg class="vector-icon" viewBox="0 0 24 24"><path d="M7 2v11h3v9l7-12h-4l4-8z"/></svg>
-          </div>
-          <div class="feature-title">Fetched Under a Second</div>
-        </div>
-        <div class="feature-desc">
-          Short-links like vt.tiktok.com are resolved server-side instantaneously.
-        </div>
-        <div class="progress-track">
-          <div class="progress-fill"></div>
-        </div>
-      </div>
-
-      <div class="feature-box">
-        <div class="feature-header">
-          <div class="feature-icon-box">
-            <svg class="vector-icon" viewBox="0 0 24 24"><path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/></svg>
-          </div>
-          <div class="feature-title">MP3 Audio Rip Visualizer</div>
-        </div>
-        <div class="feature-desc">
-          Extract sound tracks with live dynamic frequency equalizer support.
-        </div>
-        <div class="equalizer">
-          <div class="eq-bar"></div>
-          <div class="eq-bar"></div>
-          <div class="eq-bar"></div>
-          <div class="eq-bar"></div>
-          <div class="eq-bar"></div>
-        </div>
-      </div>
-
-      <div class="feature-box">
-        <div class="feature-header">
-          <div class="feature-icon-box">
-            <svg class="vector-icon" viewBox="0 0 24 24"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm0 10.99h7c-.53 4.12-3.28 7.79-7 8.94V12H5V6.3l7-3.11v8.8s0 0 0 0z"/></svg>
-          </div>
-          <div class="feature-title">Custom Vector Shield</div>
-        </div>
-        <div class="feature-desc">
-          Client-side execution with zero logging. Your links never touch database storage.
-        </div>
-      </div>
-    </div>
-
-    <div class="footer">
-      © 2026 Snap-Tok • Ultra-Fast TikTok Downloader
     </div>
   </div>
 
   <script>
-    let activeLinks = { nowm: '', wm: '', mp3: '' };
+    async function pasteClipboard() {
+      try {
+        const text = await navigator.clipboard.readText();
+        document.getElementById('tiktokUrl').value = text;
+      } catch (err) {
+        alert("Clipboard paste permission denied!");
+      }
+    }
 
-    // Dynamic Network Speed / WiFi Color Test
-    function checkNetworkSpeed() {
-      const wifiIcon = document.getElementById('wifiIcon');
-      const wifiText = document.getElementById('wifiText');
+    function resetForm() {
+      document.getElementById('tiktokUrl').value = '';
+      document.getElementById('resultCard').style.display = 'none';
+      document.getElementById('loader').style.display = 'none';
+    }
 
-      if (!navigator.onLine) {
-        wifiIcon.style.fill = 'var(--net-offline)';
-        wifiIcon.style.filter = 'drop-shadow(0 0 8px var(--net-offline))';
-        wifiText.innerText = 'Offline';
+    async function fetchTikTokVideo() {
+      const urlInput = document.getElementById('tiktokUrl').value.trim();
+      const loader = document.getElementById('loader');
+      const resultCard = document.getElementById('resultCard');
+
+      if (!urlInput) {
+        alert('Kripya pehle TikTok video ka link paste karein!');
         return;
       }
 
-      const startTime = Date.now();
-      fetch('https://www.google.com/favicon.ico?cache=' + Math.random(), { mode: 'no-cors' })
-        .then(() => {
-          const duration = Date.now() - startTime;
-          if (duration < 250) {
-            wifiIcon.style.fill = 'var(--net-fast)';
-            wifiIcon.style.filter = 'drop-shadow(0 0 8px var(--net-fast))';
-            wifiText.innerText = 'Fast';
-          } else {
-            wifiIcon.style.fill = 'var(--net-slow)';
-            wifiIcon.style.filter = 'drop-shadow(0 0 8px var(--net-slow)
+      loader.style.display = 'block';
+      resultCard.style.display = 'none';
+
+      try {
+        // High-reliability TikTok API Endpoint
+        const apiUrl = `https://api.tiklydown.eu.org/api/download?url=${encodeURIComponent(urlInput)}`;
+        const response = await fetch(apiUrl);
+        const data = await response.json();
+
+        loader.style.display = 'none';
+
+        if (data && (data.video || data.url)) {
+          // Video Details update (Dynamic for exact link)
+          document.getElementById('coverImage').src = data.cover || data.origin_cover || '';
+          document.getElementById('authorHandle').innerText = `@${data.author?.unique_id || data.author?.nickname || 'tiktok_user'}`;
+          document.getElementById('videoCaption').innerText = data.title || 'No caption available';
+
+          // Download links setup
+          const noWmUrl = data.video?.noWatermark || data.url || '';
+          const wmUrl = data.video?.watermark || data.url || '';
+          const mp3Url = data.music?.play_url || data.audio || '';
+
+          // Direct Download Handlers (Without external tab redirect)
+          document.getElementById('btnNoWm').onclick = () => triggerDirectDownload(noWmUrl, 'TikTok_NoWatermark.mp4');
+          document.getElementById('btnWm').onclick = () => triggerDirectDownload(wmUrl, 'TikTok_Watermark.mp4');
+          document.getElementById('btnMp3').onclick = () => triggerDirectDownload(mp3Url, 'TikTok_Audio.mp3');
+
+          resultCard.style.display = 'block';
+        } else {
+          alert('Video detail fetch nahi ho saki. Kripya valid link check karein!');
+        }
+      } catch (error) {
+        loader.style.display = 'none';
+        alert('Server se fetch karne me error aaya. Direct API call block ho sakti hai.');
+        console.error(error);
+      }
+    }
+
+    // Direct Seamless Download Function (Bina kisi extra page kholne ke)
+    async function triggerDirectDownload(fileUrl, fileName) {
+      if (!fileUrl) {
+        alert('Download link available nahi hai.');
+        return;
+      }
+
+      try {
+        const response = await fetch(fileUrl);
+        const blob = await response.blob();
+        const blobUrl = window.URL.createObjectURL(blob);
+        
+        const a = document.createElement('a');
+        a.style.display = 'none';
+        a.href = blobUrl;
+        a.download = fileName;
+        document.body.appendChild(a);
+        a.click();
+        
+        window.URL.revokeObjectURL(blobUrl);
+        document.body.removeChild(a);
+      } catch (err) {
+        // Fallback for cross-origin restricted direct links
+        const a = document.createElement('a');
+        a.href = fileUrl;
+        a.download = fileName;
+        a.target = '_self';
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+      }
+    }
+  </script>
+</body>
+  </html>
+  
