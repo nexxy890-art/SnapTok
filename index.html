@@ -46,7 +46,7 @@
       gap: 20px;
     }
 
-    /* Top Status Badge */
+    /* Status Badge */
     .status-badge {
       align-self: center;
       display: flex;
@@ -90,7 +90,7 @@
       line-height: 1.4;
     }
 
-    /* Main Downloader Card */
+    /* Main Box */
     .main-box {
       background: var(--card-bg);
       backdrop-filter: blur(12px);
@@ -229,19 +229,16 @@
     .btn-dl-no-wm {
       background: var(--accent-green);
       color: #000;
-      text-decoration: none;
     }
 
     .btn-dl-wm {
       background: var(--accent-purple);
       color: #fff;
-      text-decoration: none;
     }
 
     .btn-dl-mp3 {
       background: var(--accent-pink);
       color: #fff;
-      text-decoration: none;
     }
 
     /* Stats Grid */
@@ -349,7 +346,6 @@
       font-weight: bold;
       background: rgba(236, 72, 153, 0.1);
       color: var(--accent-pink);
-      position: relative;
     }
 
     .phone-mockup.hd {
@@ -464,9 +460,9 @@
         </div>
 
         <div class="download-btns">
-          <a href="#" target="_blank" class="btn btn-dl-no-wm" id="dlNoWm">⬇ Download Without Watermark</a>
-          <a href="#" target="_blank" class="btn btn-dl-wm" id="dlWm">⬇ Download With Watermark</a>
-          <a href="#" target="_blank" class="btn btn-dl-mp3" id="dlMp3">🎵 Download MP3 Audio</a>
+          <button class="btn btn-dl-no-wm" id="btnNoWm" onclick="triggerDirectDownload('nowm')">⬇ Download Without Watermark</button>
+          <button class="btn btn-dl-wm" id="btnWm" onclick="triggerDirectDownload('wm')">⬇ Download With Watermark</button>
+          <button class="btn btn-dl-mp3" id="btnMp3" onclick="triggerDirectDownload('mp3')">🎵 Download MP3 Audio</button>
         </div>
       </div>
     </div>
@@ -485,7 +481,7 @@
         <div class="stat-lbl">Max HD Quality</div>
       </div>
       <div class="stat-card">
-        <div class="stat-card-val stat-val">100%</div>
+        <div class="stat-val">100%</div>
         <div class="stat-lbl">Free Forever</div>
       </div>
     </div>
@@ -565,6 +561,8 @@
   </div>
 
   <script>
+    let activeLinks = { nowm: '', wm: '', mp3: '' };
+
     function toggleClearBtn() {
       const urlInput = document.getElementById('tiktokUrl');
       const clearBtn = document.getElementById('clearInputBtn');
@@ -582,6 +580,7 @@
       const fetchBtn = document.getElementById('fetchBtn');
       fetchBtn.disabled = false;
       fetchBtn.innerHTML = '⚡ Fetch Video';
+      activeLinks = { nowm: '', wm: '', mp3: '' };
     }
 
     async function fetchVideo() {
@@ -609,9 +608,10 @@
           document.getElementById('authorTag').innerText = `@${data.author.unique_id || 'creator'}`;
           document.getElementById('videoCaption').innerText = data.title || 'TikTok Video';
 
-          document.getElementById('dlNoWm').href = data.play;
-          document.getElementById('dlWm').href = data.wmplay;
-          document.getElementById('dlMp3').href = data.music;
+          // Store Direct Stream Links
+          activeLinks.nowm = data.play;
+          activeLinks.wm = data.wmplay || data.play;
+          activeLinks.mp3 = data.music;
 
           resultCard.style.display = 'block';
         } else {
@@ -619,13 +619,74 @@
         }
       } catch (error) {
         console.error(error);
-        alert('Network/API error. Please try again or refresh the page.');
+        alert('Network/API error. Please try again.');
       } finally {
         fetchBtn.disabled = false;
         fetchBtn.innerHTML = '⚡ Fetch Video';
       }
     }
+
+    // Direct Browser Download Engine (Bypasses new tab/3-dots player)
+    async function triggerDirectDownload(type) {
+      const targetUrl = activeLinks[type];
+      if (!targetUrl) {
+        alert('Link not ready. Please fetch video again.');
+        return;
+      }
+
+      const btnId = type === 'nowm' ? 'btnNoWm' : (type === 'wm' ? 'btnWm' : 'btnMp3');
+      const btn = document.getElementById(btnId);
+      const originalText = btn.innerText;
+
+      btn.disabled = true;
+      btn.innerText = '⏳ Downloading...';
+
+      try {
+        const response = await fetch(targetUrl);
+        const reader = response.body.getReader();
+        const contentLength = +response.headers.get('Content-Length') || 0;
+
+        let receivedBytes = 0;
+        let chunks = [];
+
+        while(true) {
+          const {done, value} = await reader.read();
+          if (done) break;
+
+          chunks.push(value);
+          receivedBytes += value.length;
+
+          if (contentLength > 0) {
+            let percent = Math.round((receivedBytes / contentLength) * 100);
+            btn.innerText = `⏳ Downloading... ${percent}%`;
+          }
+        }
+
+        const blob = new Blob(chunks, { type: type === 'mp3' ? 'audio/mp3' : 'video/mp4' });
+        const blobUrl = URL.createObjectURL(blob);
+
+        const downloadAnchor = document.createElement('a');
+        downloadAnchor.href = blobUrl;
+        downloadAnchor.download = `SnapTok_${type}_${Date.now()}.${type === 'mp3' ? 'mp3' : 'mp4'}`;
+        document.body.appendChild(downloadAnchor);
+        downloadAnchor.click();
+        document.body.removeChild(downloadAnchor);
+
+        setTimeout(() => URL.revokeObjectURL(blobUrl), 1000);
+
+      } catch (err) {
+        // Fallback for CORS restricted streams
+        const downloadAnchor = document.createElement('a');
+        downloadAnchor.href = targetUrl;
+        downloadAnchor.download = `SnapTok_${type}_${Date.now()}.${type === 'mp3' ? 'mp3' : 'mp4'}`;
+        downloadAnchor.target = '_self';
+        downloadAnchor.click();
+      } finally {
+        btn.disabled = false;
+        btn.innerText = originalText;
+      }
+    }
   </script>
 </body>
   </html>
-          
+  
