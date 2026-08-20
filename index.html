@@ -3,12 +3,15 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>Snap-Tok | Next-Gen TikTok Downloader</title>
+  <title>Snap-Tok | Ultra-Fast TikTok Downloader</title>
   <style>
     :root {
       --bg-dark: #030712;
-      --card-bg: #0f172a;
-      --card-border: rgba(255, 255, 255, 0.3);
+      --card-bg: rgba(15, 23, 42, 0.75);
+      --card-border: rgba(186, 230, 253, 0.25);
+      --sky-glow: #38bdf8;
+      --sky-light: #f0f9ff;
+      --sky-bright: #0ea5e9;
       --text-main: #f8fafc;
       --text-muted: #94a3b8;
     }
@@ -30,6 +33,10 @@
     }
 
     body {
+      background-image: 
+        radial-gradient(circle at 50% -10%, rgba(56, 189, 248, 0.25) 0%, transparent 60%),
+        radial-gradient(circle at 100% 60%, rgba(240, 249, 255, 0.1) 0%, transparent 50%),
+        radial-gradient(circle at 0% 100%, rgba(14, 165, 233, 0.12) 0%, transparent 40%);
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -55,19 +62,27 @@
       align-items: center;
       gap: 8px;
       padding: 6px 14px;
-      background: rgba(255, 255, 255, 0.05);
-      border: 1px solid var(--card-border);
+      background: rgba(56, 189, 248, 0.08);
+      border: 1px solid rgba(56, 189, 248, 0.3);
       border-radius: 20px;
       font-size: 11px;
       font-weight: 600;
-      letter-spacing: 1px;
+      color: var(--sky-glow);
+      box-shadow: 0 0 12px rgba(56, 189, 248, 0.2);
     }
 
     .status-dot {
       width: 7px;
       height: 7px;
-      background-color: #ffffff;
+      background-color: var(--sky-glow);
       border-radius: 50%;
+      box-shadow: 0 0 8px var(--sky-glow);
+      animation: pulseDot 1.8s infinite;
+    }
+
+    @keyframes pulseDot {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.3; }
     }
 
     .header { text-align: center; }
@@ -75,7 +90,10 @@
     .header h1 {
       font-size: 36px;
       font-weight: 900;
-      color: #ffffff;
+      background: linear-gradient(135deg, var(--sky-light) 20%, var(--sky-glow) 70%, var(--sky-bright) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      text-shadow: 0 0 25px rgba(56, 189, 248, 0.35);
       letter-spacing: -0.5px;
       margin-bottom: 6px;
     }
@@ -88,9 +106,11 @@
 
     .main-box {
       background: var(--card-bg);
+      backdrop-filter: blur(16px);
       border: 1px solid var(--card-border);
       border-radius: 22px;
       padding: 22px;
+      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(240, 249, 255, 0.15);
     }
 
     .input-group {
@@ -101,16 +121,18 @@
     .input-group input {
       width: 100%;
       padding: 16px 85px 16px 14px;
-      background: rgba(3, 7, 18, 0.9);
+      background: rgba(3, 7, 18, 0.8);
       border: 1px solid var(--card-border);
       border-radius: 14px;
       color: #fff;
       font-size: 14px;
       outline: none;
+      transition: all 0.3s ease;
     }
 
     .input-group input:focus {
-      border-color: #ffffff;
+      border-color: var(--sky-glow);
+      box-shadow: 0 0 18px rgba(56, 189, 248, 0.3);
     }
 
     .input-actions {
@@ -121,14 +143,20 @@
     }
 
     .btn-paste {
-      background: rgba(255, 255, 255, 0.1);
-      border: 1px solid rgba(255, 255, 255, 0.3);
-      color: #ffffff;
+      background: rgba(56, 189, 248, 0.15);
+      border: 1px solid rgba(56, 189, 248, 0.3);
+      color: var(--sky-light);
       padding: 7px 14px;
       border-radius: 8px;
       font-size: 11px;
       font-weight: 700;
       cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .btn-paste:hover {
+      background: var(--sky-glow);
+      color: #030712;
     }
 
     .btn {
@@ -144,13 +172,20 @@
       justify-content: center;
       text-transform: uppercase;
       letter-spacing: 0.5px;
+      transition: all 0.25s ease;
     }
 
     .btn-fetch {
-      background: #ffffff;
+      background: linear-gradient(135deg, var(--sky-light), var(--sky-glow));
       color: #030712;
       margin-bottom: 10px;
       border: none;
+      box-shadow: 0 4px 20px rgba(56, 189, 248, 0.35);
+    }
+
+    .btn-fetch:hover {
+      box-shadow: 0 6px 25px rgba(56, 189, 248, 0.5);
+      transform: translateY(-1px);
     }
 
     .btn-refresh {
@@ -165,6 +200,12 @@
       border: 1px solid var(--card-border);
       border-radius: 16px;
       padding: 16px;
+      animation: fadeIn 0.3s ease-in-out;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: translateY(0); }
     }
 
     .preview-header {
@@ -179,7 +220,7 @@
       border-radius: 10px;
       object-fit: cover;
       background: #111;
-      border: 1px solid rgba(255, 255, 255, 0.3);
+      border: 1px solid rgba(56, 189, 248, 0.3);
     }
 
     .meta-info {
@@ -192,7 +233,7 @@
     .user-tag {
       font-size: 14px;
       font-weight: 700;
-      color: #ffffff;
+      color: var(--sky-glow);
       margin-bottom: 4px;
     }
 
@@ -200,6 +241,10 @@
       font-size: 12px;
       color: var(--text-muted);
       line-height: 1.4;
+      display: -webkit-box;
+      -webkit-line-clamp: 3;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
     }
 
     .download-btns {
@@ -213,13 +258,19 @@
       border-radius: 10px;
       font-size: 12px;
       font-weight: 700;
-      border: 1px solid var(--card-border);
+      border: 1px solid rgba(56, 189, 248, 0.3);
       cursor: pointer;
       display: flex;
       align-items: center;
       justify-content: center;
-      background: rgba(255, 255, 255, 0.05);
-      color: #ffffff;
+      background: rgba(56, 189, 248, 0.12);
+      color: var(--sky-light);
+      transition: all 0.2s ease;
+    }
+
+    .btn-dl:hover {
+      background: var(--sky-glow);
+      color: #030712;
     }
 
     .stats-grid {
@@ -239,7 +290,8 @@
     .stat-val {
       font-size: 20px;
       font-weight: 800;
-      color: #ffffff;
+      color: var(--sky-glow);
+      text-shadow: 0 0 10px rgba(56, 189, 248, 0.3);
     }
 
     .stat-lbl {
@@ -258,7 +310,7 @@
     .section-title {
       font-size: 14px;
       font-weight: 700;
-      color: #ffffff;
+      color: var(--sky-light);
       letter-spacing: 1px;
       text-transform: uppercase;
     }
@@ -276,10 +328,11 @@
     .feature-title { font-size: 14px; font-weight: 700; color: #fff; }
     .feature-desc { font-size: 12px; color: var(--text-muted); line-height: 1.5; }
 
+    /* Animated Fast Progress Track */
     .progress-track {
       width: 100%;
-      height: 4px;
-      background: rgba(255,255,255,0.1);
+      height: 5px;
+      background: rgba(255, 255, 255, 0.08);
       border-radius: 4px;
       overflow: hidden;
     }
@@ -287,7 +340,42 @@
     .progress-fill {
       height: 100%;
       width: 100%;
-      background: #ffffff;
+      background: linear-gradient(90deg, var(--sky-bright), var(--sky-light));
+      box-shadow: 0 0 10px var(--sky-glow);
+      animation: fastProgress 1.8s infinite ease-in-out;
+    }
+
+    @keyframes fastProgress {
+      0% { transform: translateX(-100%); }
+      100% { transform: translateX(100%); }
+    }
+
+    /* Live Animated Equalizer Bars */
+    .equalizer {
+      display: flex;
+      align-items: flex-end;
+      gap: 5px;
+      height: 24px;
+      margin-top: 4px;
+    }
+
+    .eq-bar {
+      width: 5px;
+      background: var(--sky-glow);
+      border-radius: 3px;
+      box-shadow: 0 0 8px var(--sky-glow);
+      animation: bounceBar 1.2s infinite ease-in-out alternate;
+    }
+
+    .eq-bar:nth-child(1) { height: 40%; animation-delay: 0.1s; }
+    .eq-bar:nth-child(2) { height: 80%; animation-delay: 0.3s; }
+    .eq-bar:nth-child(3) { height: 60%; animation-delay: 0.2s; }
+    .eq-bar:nth-child(4) { height: 100%; animation-delay: 0.4s; }
+    .eq-bar:nth-child(5) { height: 50%; animation-delay: 0.15s; }
+
+    @keyframes bounceBar {
+      0% { height: 20%; }
+      100% { height: 100%; }
     }
 
     .footer {
@@ -335,9 +423,9 @@
         </div>
 
         <div class="download-btns">
-          <button class="btn-dl" onclick="downloadDirect('nowm')">DOWNLOAD WITHOUT WATERMARK</button>
-          <button class="btn-dl" onclick="downloadDirect('wm')">DOWNLOAD WITH WATERMARK</button>
-          <button class="btn-dl" onclick="downloadDirect('mp3')">DOWNLOAD MP3 AUDIO</button>
+          <button class="btn-dl" id="dlNoWmBtn" onclick="downloadDirect('nowm')">DOWNLOAD WITHOUT WATERMARK</button>
+          <button class="btn-dl" id="dlWmBtn" onclick="downloadDirect('wm')">DOWNLOAD WITH WATERMARK</button>
+          <button class="btn-dl" id="dlMp3Btn" onclick="downloadDirect('mp3')">DOWNLOAD MP3 AUDIO</button>
         </div>
       </div>
     </div>
@@ -370,7 +458,7 @@
       </div>
 
       <div class="feature-box">
-        <div class="feature-title">Instant Response Time</div>
+        <div class="feature-title">Fetched Under a Second</div>
         <div class="feature-desc">Shortened links are decoded dynamically in real time.</div>
         <div class="progress-track"><div class="progress-fill"></div></div>
       </div>
@@ -378,6 +466,13 @@
       <div class="feature-box">
         <div class="feature-title">MP3 Audio Rip Engine</div>
         <div class="feature-desc">High quality direct MP3 audio extraction straight from original source files.</div>
+        <div class="equalizer">
+          <div class="eq-bar"></div>
+          <div class="eq-bar"></div>
+          <div class="eq-bar"></div>
+          <div class="eq-bar"></div>
+          <div class="eq-bar"></div>
+        </div>
       </div>
 
       <div class="feature-box">
@@ -410,7 +505,7 @@
 
       if (!url) {
         btn.innerText = 'PASTE LINK FIRST!';
-        setTimeout(() => btn.innerText = 'FETCH VIDEO', 2000);
+        setTimeout(function() { btn.innerText = 'FETCH VIDEO'; }, 2000);
         return;
       }
 
@@ -437,12 +532,18 @@
       } catch (err) {}
 
       btn.innerText = 'TRY AGAIN';
-      setTimeout(() => btn.innerText = 'FETCH VIDEO', 2000);
+      setTimeout(function() { btn.innerText = 'FETCH VIDEO'; }, 2000);
     }
 
     async function downloadDirect(type) {
       var targetUrl = mediaStore[type];
       if (!targetUrl) return;
+
+      var btnId = type === 'nowm' ? 'dlNoWmBtn' : (type === 'wm' ? 'dlWmBtn' : 'dlMp3Btn');
+      var btnObj = document.getElementById(btnId);
+      var originalText = btnObj.innerText;
+
+      btnObj.innerText = 'DOWNLOADING...';
 
       var ext = type === 'mp3' ? '.mp3' : '.mp4';
       var filename = 'SnapTok_' + Date.now() + ext;
@@ -459,16 +560,22 @@
         document.body.appendChild(a);
         a.click();
         
-        window.URL.revokeObjectURL(blobUrl);
-        document.body.removeChild(a);
+        setTimeout(function() {
+          window.URL.revokeObjectURL(blobUrl);
+          document.body.removeChild(a);
+          btnObj.innerText = originalText;
+        }, 1000);
       } catch (e) {
         let a = document.createElement('a');
         a.href = targetUrl;
         a.download = filename;
+        document.body.appendChild(a);
         a.click();
+        document.body.removeChild(a);
+        btnObj.innerText = originalText;
       }
     }
   </script>
 </body>
-          </html>
-              
+  </html>
+  
