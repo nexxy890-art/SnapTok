@@ -2,7 +2,8 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <!-- Viewport Lock to prevent mobile zoom-in/zoom-out glitches -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no">
   <title>Snap-Tok | Ultra-Fast TikTok Downloader</title>
   <link rel="icon" type="image/png" href="1787310331551.png">
   <style>
@@ -23,6 +24,7 @@
       padding: 0;
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
       touch-action: manipulation;
+      -webkit-text-size-adjust: 100%;
     }
 
     html, body {
@@ -103,6 +105,39 @@
       font-size: 13px;
       color: var(--text-muted);
       letter-spacing: 0.3px;
+    }
+
+    /* Top Navigation Tabs */
+    .tab-nav {
+      display: flex;
+      background: rgba(3, 7, 18, 0.8);
+      border: 1px solid var(--card-border);
+      border-radius: 14px;
+      padding: 4px;
+      gap: 6px;
+    }
+
+    .tab-btn {
+      flex: 1;
+      padding: 10px;
+      font-size: 12px;
+      font-weight: 800;
+      border: none;
+      border-radius: 10px;
+      background: transparent;
+      color: var(--text-muted);
+      cursor: pointer;
+      transition: all 0.25s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+    }
+
+    .tab-btn.active {
+      background: linear-gradient(135deg, var(--sky-glow), var(--sky-bright));
+      color: #030712;
+      box-shadow: 0 0 15px rgba(56, 189, 248, 0.4);
     }
 
     .main-box {
@@ -194,6 +229,16 @@
       color: var(--text-main);
     }
 
+    /* Tab Page Views */
+    .tab-page {
+      display: none;
+    }
+
+    .tab-page.active {
+      display: block;
+      animation: fadeIn 0.3s ease-in-out;
+    }
+
     .result-card {
       display: none;
       margin-top: 18px;
@@ -272,6 +317,97 @@
     .btn-dl:hover {
       background: var(--sky-glow);
       color: #030712;
+    }
+
+    /* Image Gallery Grid for Photos Page */
+    .gallery-title-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--sky-light);
+    }
+
+    .select-all-label {
+      font-size: 11px;
+      color: var(--text-muted);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .select-all-label input {
+      accent-color: var(--sky-glow);
+    }
+
+    .image-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      max-height: 260px;
+      overflow-y: auto;
+      margin-bottom: 16px;
+      padding-right: 4px;
+    }
+
+    .image-grid::-webkit-scrollbar {
+      width: 4px;
+    }
+
+    .image-grid::-webkit-scrollbar-thumb {
+      background: rgba(56, 189, 248, 0.3);
+      border-radius: 4px;
+    }
+
+    .img-card {
+      position: relative;
+      border-radius: 10px;
+      overflow: hidden;
+      border: 2px solid transparent;
+      cursor: pointer;
+      aspect-ratio: 3 / 4;
+      background: #111;
+      transition: all 0.2s ease;
+    }
+
+    .img-card.selected {
+      border-color: var(--sky-glow);
+      box-shadow: 0 0 10px rgba(56, 189, 248, 0.4);
+    }
+
+    .img-card img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .img-card .checkbox-overlay {
+      position: absolute;
+      top: 6px;
+      right: 6px;
+      width: 18px;
+      height: 18px;
+      background: rgba(3, 7, 18, 0.7);
+      border: 1px solid var(--sky-glow);
+      border-radius: 4px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s ease;
+    }
+
+    .img-card.selected .checkbox-overlay {
+      background: var(--sky-glow);
+    }
+
+    .img-card.selected .checkbox-overlay::after {
+      content: '✓';
+      color: #030712;
+      font-size: 12px;
+      font-weight: 900;
     }
 
     .stats-grid {
@@ -403,34 +539,83 @@
       <p>Ultra-Fast Snap-Tok Engine — Dirext CDN Downloads</p>
     </div>
 
-    <div class="main-box">
-      <div class="input-group">
-        <input type="text" id="tiktokUrl" placeholder="Paste TikTok video link...">
-        <div class="input-actions">
-          <button type="button" class="btn-paste" onclick="pasteLink()">PASTE</button>
-        </div>
-      </div>
+    <!-- Navigation Tabs -->
+    <div class="tab-nav">
+      <button class="tab-btn active" id="tabBtnVideo" onclick="switchTab('video')">🎬 VIDEO & AUDIO</button>
+      <button class="tab-btn" id="tabBtnImage" onclick="switchTab('image')">📸 TIKTOK PHOTOS</button>
+    </div>
 
-      <button type="button" class="btn btn-fetch" id="fetchBtn" onclick="processVideo()">FETCH VIDEO</button>
-      <button type="button" class="btn btn-refresh" onclick="window.location.reload()">REFRESH PAGE</button>
-
-      <div class="result-card" id="resultCard">
-        <div class="preview-header">
-          <img src="" alt="Cover" class="cover-img" id="coverImg">
-          <div class="meta-info">
-            <div class="user-tag" id="authorTag">@user</div>
-            <div class="caption-text" id="videoCaption">Loading...</div>
+    <!-- PAGE 1: VIDEO & AUDIO DOWNLOADER -->
+    <div class="tab-page active" id="pageVideo">
+      <div class="main-box">
+        <div class="input-group">
+          <input type="text" id="tiktokUrlVideo" placeholder="Paste TikTok video link...">
+          <div class="input-actions">
+            <button type="button" class="btn-paste" onclick="pasteLink('tiktokUrlVideo')">PASTE</button>
           </div>
         </div>
 
-        <div class="download-btns">
-          <button class="btn-dl" id="dlNoWmBtn" onclick="downloadDirect('nowm')">DOWNLOAD WITHOUT WATERMARK HDR</button>
-          <button class="btn-dl" id="dlWmBtn" onclick="downloadDirect('wm')">DOWNLOAD WITH WATERMARK HDR</button>
-          <button class="btn-dl" id="dlMp3Btn" onclick="downloadDirect('mp3')">DOWNLOAD MP3 AUDIO</button>
+        <button type="button" class="btn btn-fetch" id="fetchBtnVideo" onclick="processMedia('video')">FETCH VIDEO</button>
+        <button type="button" class="btn btn-refresh" onclick="window.location.reload()">REFRESH PAGE</button>
+
+        <div class="result-card" id="resultCardVideo">
+          <div class="preview-header">
+            <img src="" alt="Cover" class="cover-img" id="coverImgVideo">
+            <div class="meta-info">
+              <div class="user-tag" id="authorTagVideo">@user</div>
+              <div class="caption-text" id="videoCaption">Loading...</div>
+            </div>
+          </div>
+
+          <div class="download-btns">
+            <button class="btn-dl" id="dlNoWmBtn" onclick="downloadVideo('nowm')">DOWNLOAD WITHOUT WATERMARK HDR</button>
+            <button class="btn-dl" id="dlWmBtn" onclick="downloadVideo('wm')">DOWNLOAD WITH WATERMARK HDR</button>
+            <button class="btn-dl" id="dlMp3Btn" onclick="downloadVideo('mp3')">DOWNLOAD MP3 AUDIO</button>
+          </div>
         </div>
       </div>
     </div>
 
+    <!-- PAGE 2: TIKTOK PHOTOS DOWNLOADER -->
+    <div class="tab-page" id="pageImage">
+      <div class="main-box">
+        <div class="input-group">
+          <input type="text" id="tiktokUrlImage" placeholder="Paste TikTok photo slide link...">
+          <div class="input-actions">
+            <button type="button" class="btn-paste" onclick="pasteLink('tiktokUrlImage')">PASTE</button>
+          </div>
+        </div>
+
+        <button type="button" class="btn btn-fetch" id="fetchBtnImage" onclick="processMedia('image')">FETCH IMAGES</button>
+        <button type="button" class="btn btn-refresh" onclick="window.location.reload()">REFRESH PAGE</button>
+
+        <div class="result-card" id="resultCardImage">
+          <div class="preview-header">
+            <img src="" alt="Cover" class="cover-img" id="coverImgImage">
+            <div class="meta-info">
+              <div class="user-tag" id="authorTagImage">@user</div>
+              <div class="caption-text" id="imageCaption">Loading...</div>
+            </div>
+          </div>
+
+          <div class="gallery-title-bar">
+            <span>SELECT IMAGES TO DOWNLOAD</span>
+            <label class="select-all-label">
+              <input type="checkbox" id="selectAllCheckbox" checked onclick="toggleSelectAll(this)"> Select All
+            </label>
+          </div>
+
+          <div class="image-grid" id="imageGrid"></div>
+
+          <div class="download-btns">
+            <button class="btn-dl" id="dlImgNoWmBtn" onclick="downloadSelectedImages('nowm')">DOWNLOAD WITHOUT WATERMARK</button>
+            <button class="btn-dl" id="dlImgWmBtn" onclick="downloadSelectedImages('wm')">DOWNLOAD WITH WATERMARK</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- STATS GRID -->
     <div class="stats-grid">
       <div class="stat-card">
         <div class="stat-val">1.34M+</div>
@@ -450,6 +635,7 @@
       </div>
     </div>
 
+    <!-- FEATURES SECTION -->
     <div class="features-section">
       <div class="section-title">How it Work's</div>
 
@@ -488,94 +674,50 @@
   </div>
 
   <script>
-    var mediaStore = { nowm: '', wm: '', mp3: '' };
+    var currentTab = 'video';
+    var videoStore = { nowm: '', wm: '', mp3: '' };
+    var imageStore = { images: [] };
+    var selectedImageIndices = [];
 
-    async function pasteLink() {
+    function switchTab(tab) {
+      currentTab = tab;
+      if (tab === 'video') {
+        document.getElementById('tabBtnVideo').classList.add('active');
+        document.getElementById('tabBtnImage').classList.remove('active');
+        document.getElementById('pageVideo').classList.add('active');
+        document.getElementById('pageImage').classList.remove('active');
+      } else {
+        document.getElementById('tabBtnImage').classList.add('active');
+        document.getElementById('tabBtnVideo').classList.remove('active');
+        document.getElementById('pageImage').classList.add('active');
+        document.getElementById('pageVideo').classList.remove('active');
+      }
+    }
+
+    async function pasteLink(inputId) {
       try {
         if (navigator.clipboard && navigator.clipboard.readText) {
           var text = await navigator.clipboard.readText();
-          if (text) document.getElementById('tiktokUrl').value = text;
+          if (text) document.getElementById(inputId).value = text;
         }
       } catch (e) {}
     }
 
-    async function processVideo() {
-      var url = document.getElementById('tiktokUrl').value.trim();
-      var btn = document.getElementById('fetchBtn');
-      var resultCard = document.getElementById('resultCard');
+    async function processMedia(mode) {
+      var isVideoMode = mode === 'video';
+      var inputId = isVideoMode ? 'tiktokUrlVideo' : 'tiktokUrlImage';
+      var btnId = isVideoMode ? 'fetchBtnVideo' : 'fetchBtnImage';
+      var cardId = isVideoMode ? 'resultCardVideo' : 'resultCardImage';
+
+      var url = document.getElementById(inputId).value.trim();
+      var btn = document.getElementById(btnId);
+      var resultCard = document.getElementById(cardId);
 
       if (!url) {
         btn.innerText = 'PASTE LINK FIRST!';
-        setTimeout(function() { btn.innerText = 'FETCH VIDEO'; }, 2000);
+        setTimeout(function() { btn.innerText = isVideoMode ? 'FETCH VIDEO' : 'FETCH IMAGES'; }, 2000);
         return;
       }
 
       btn.innerText = 'FETCHING...';
-      resultCard.style.display = 'none';
-
-      try {
-        let res = await fetch('https://www.tikwm.com/api/?url=' + encodeURIComponent(url));
-        let json = await res.json();
-
-        if (json && json.code === 0 && json.data) {
-          mediaStore.nowm = json.data.play;
-          mediaStore.wm = json.data.wmplay || json.data.play;
-          mediaStore.mp3 = json.data.music;
-
-          document.getElementById('coverImg').src = json.data.cover || '';
-          document.getElementById('authorTag').innerText = '@' + (json.data.author ? json.data.author.unique_id : 'user');
-          document.getElementById('videoCaption').innerText = json.data.title || 'TikTok Video';
-
-          resultCard.style.display = 'block';
-          btn.innerText = 'FETCH VIDEO';
-          return;
-        }
-      } catch (err) {}
-
-      btn.innerText = 'Try Again';
-      setTimeout(function() { btn.innerText = 'FETCH VIDEO'; }, 2000);
-    }
-
-    async function downloadDirect(type) {
-      var targetUrl = mediaStore[type];
-      if (!targetUrl) return;
-
-      var btnId = type === 'nowm' ? 'dlNoWmBtn' : (type === 'wm' ? 'dlWmBtn' : 'dlMp3Btn');
-      var btnObj = document.getElementById(btnId);
-      var originalText = btnObj.innerText;
-
-      btnObj.innerText = 'Downloding...';
-
-      var ext = type === 'mp3' ? '.mp3' : '.mp4';
-      var filename = 'SnapTok_' + Date.now() + ext;
-
-      try {
-        let response = await fetch(targetUrl);
-        let blob = await response.blob();
-        let blobUrl = window.URL.createObjectURL(blob);
-        
-        let a = document.createElement('a');
-        a.style.display = 'none';
-        a.href = blobUrl;
-        a.download = filename;
-        document.body.appendChild(a);
-        a.click();
-        
-        setTimeout(function() {
-          window.URL.revokeObjectURL(blobUrl);
-          document.body.removeChild(a);
-          btnObj.innerText = originalText;
-        }, 1000);
-      } catch (e) {
-        let a = document.createElement('a');
-        a.href = targetUrl;
-        a.download = filename;
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-        btnObj.innerText = originalText;
-      }
-    }
-  </script>
-</body>
-  </html>
+      resultCard.style.display = 'none'
