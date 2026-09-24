@@ -1,929 +1,1169 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>Snap-Tok | Ultra-Fast TikTok Downloader</title>
-  <link rel="icon" type="image/png" href="1787310331551.png">
+<script>
 
-  <style>
-    :root {
-      --bg-dark: #030712;
-      --card-bg: rgba(15, 23, 42, 0.75);
-      --card-border: rgba(186, 230, 253, 0.25);
-      --sky-glow: #38bdf8;
-      --sky-light: #f0f9ff;
-      --sky-bright: #0ea5e9;
-      --text-main: #f8fafc;
-      --text-muted: #94a3b8;
-    }
+var mediaStore = {
+  nowm: '',
+  wm: '',
+  mp3: ''
+};
 
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-      touch-action: manipulation;
-    }
+var imageStore = [];
 
-    html, body {
-      width: 100%;
-      min-height: 100%;
-      overflow-x: hidden;
-      background-color: var(--bg-dark);
-      color: var(--text-main);
-    }
 
-    body {
-      background-image: 
-        radial-gradient(circle at 50% -10%, rgba(56, 189, 248, 0.25) 0%, transparent 60%),
-        radial-gradient(circle at 100% 60%, rgba(240, 249, 255, 0.1) 0%, transparent 50%),
-        radial-gradient(circle at 0% 100%, rgba(14, 165, 233, 0.12) 0%, transparent 40%);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      padding: 24px 16px;
-    }
+/* =========================
+   PASTE BUTTON
+========================= */
 
-    .container {
-      width: 100%;
-      max-width: 480px;
-      display: flex;
-      flex-direction: column;
-      gap: 20px;
-    }
+async function pasteLink() {
+  var input = document.getElementById('tiktokUrl');
 
-    .top-bar {
-      display: flex;
-      justify-content: flex-start;
-      align-items: center;
-    }
+  try {
 
-    .status-badge {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      padding: 6px 14px;
-      background: rgba(56, 189, 248, 0.08);
-      border: 1px solid rgba(56, 189, 248, 0.3);
-      border-radius: 20px;
-      font-size: 11px;
-      font-weight: 600;
-      color: var(--sky-glow);
-      box-shadow: 0 0 12px rgba(56, 189, 248, 0.2);
-    }
+    if (navigator.clipboard && navigator.clipboard.readText) {
 
-    .status-dot {
-      width: 7px;
-      height: 7px;
-      background-color: var(--sky-glow);
-      border-radius: 50%;
-      box-shadow: 0 0 8px var(--sky-glow);
-      animation: pulseDot 1.8s infinite;
-    }
+      var text = await navigator.clipboard.readText();
 
-    @keyframes pulseDot {
-      0%, 100% { opacity: 1; }
-      50% { opacity: 0.3; }
-    }
-
-    .header {
-      text-align: center;
-    }
-
-    .header h1 {
-      font-size: 36px;
-      font-weight: 900;
-      background: linear-gradient(135deg, var(--sky-light) 20%, var(--sky-glow) 70%, var(--sky-bright) 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      text-shadow: 0 0 25px rgba(56, 189, 248, 0.35);
-      letter-spacing: -0.5px;
-      margin-bottom: 6px;
-    }
-
-    .header p {
-      font-size: 13px;
-      color: var(--text-muted);
-      letter-spacing: 0.3px;
-    }
-
-    .main-box {
-      background: var(--card-bg);
-      backdrop-filter: blur(16px);
-      border: 1px solid var(--card-border);
-      border-radius: 22px;
-      padding: 22px;
-      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(240, 249, 255, 0.15);
-    }
-
-    .input-group {
-      position: relative;
-      margin-bottom: 12px;
-    }
-
-    .input-group input {
-      width: 100%;
-      padding: 16px 85px 16px 14px;
-      background: rgba(3, 7, 18, 0.8);
-      border: 1px solid var(--card-border);
-      border-radius: 14px;
-      color: #fff;
-      font-size: 14px;
-      outline: none;
-      transition: all 0.3s ease;
-    }
-
-    .input-group input:focus {
-      border-color: var(--sky-glow);
-      box-shadow: 0 0 18px rgba(56, 189, 248, 0.3);
-    }
-
-    .input-actions {
-      position: absolute;
-      right: 10px;
-      top: 50%;
-      transform: translateY(-50%);
-    }
-
-    .btn-paste {
-      background: rgba(56, 189, 248, 0.15);
-      border: 1px solid rgba(56, 189, 248, 0.3);
-      color: var(--sky-light);
-      padding: 7px 14px;
-      border-radius: 8px;
-      font-size: 11px;
-      font-weight: 700;
-      cursor: pointer;
-      transition: all 0.2s ease;
-    }
-
-    .btn-paste:hover {
-      background: var(--sky-glow);
-      color: #030712;
-    }
-
-    .btn {
-      width: 100%;
-      padding: 15px;
-      border-radius: 14px;
-      border: 1px solid var(--card-border);
-      font-size: 14px;
-      font-weight: 700;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-      transition: all 0.25s ease;
-    }
-
-    .btn-fetch {
-      background: linear-gradient(135deg, var(--sky-light), var(--sky-glow));
-      color: #030712;
-      margin-bottom: 10px;
-      border: none;
-      box-shadow: 0 4px 20px rgba(56, 189, 248, 0.35);
-    }
-
-    .btn-fetch:hover {
-      box-shadow: 0 6px 25px rgba(56, 189, 248, 0.5);
-      transform: translateY(-1px);
-    }
-
-    .btn-refresh {
-      background: rgba(255, 255, 255, 0.03);
-      color: var(--text-main);
-    }
-
-    .result-card {
-      display: none;
-      margin-top: 18px;
-      background: rgba(3, 7, 18, 0.9);
-      border: 1px solid var(--card-border);
-      border-radius: 16px;
-      padding: 16px;
-      animation: fadeIn 0.3s ease-in-out;
-    }
-
-    @keyframes fadeIn {
-      from {
-        opacity: 0;
-        transform: translateY(8px);
-      }
-
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
-    }
-
-    .preview-header {
-      display: flex;
-      gap: 12px;
-      margin-bottom: 16px;
-    }
-
-    .cover-img {
-      width: 85px;
-      height: 110px;
-      border-radius: 10px;
-      object-fit: cover;
-      background: #111;
-      border: 1px solid rgba(56, 189, 248, 0.3);
-    }
-
-    .meta-info {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-    }
-
-    .user-tag {
-      font-size: 14px;
-      font-weight: 700;
-      color: var(--sky-glow);
-      margin-bottom: 4px;
-    }
-
-    .caption-text {
-      font-size: 12px;
-      color: var(--text-muted);
-      line-height: 1.4;
-      display: -webkit-box;
-      -webkit-line-clamp: 3;
-      -webkit-box-orient: vertical;
-      overflow: hidden;
-    }
-
-    .download-btns {
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-    }
-
-    .btn-dl {
-      padding: 13px;
-      border-radius: 10px;
-      font-size: 12px;
-      font-weight: 700;
-      border: 1px solid rgba(56, 189, 248, 0.3);
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      background: rgba(56, 189, 248, 0.12);
-      color: var(--sky-light);
-      transition: all 0.2s ease;
-    }
-
-    .btn-dl:hover {
-      background: var(--sky-glow);
-      color: #030712;
-    }
-
-    /* =========================================
-       NEW IMAGE DOWNLOAD SECTION
-       Existing design is untouched.
-       This section only appears for photo posts.
-       ========================================= */
-
-    .image-section {
-      display: none;
-      margin-top: 12px;
-      padding-top: 14px;
-      border-top: 1px solid rgba(186, 230, 253, 0.15);
-    }
-
-    .image-section-title {
-      font-size: 12px;
-      font-weight: 800;
-      color: var(--sky-light);
-      margin-bottom: 10px;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-    }
-
-    .image-count {
-      color: var(--sky-glow);
-    }
-
-    .image-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 8px;
-      margin-bottom: 10px;
-    }
-
-    .image-item {
-      position: relative;
-      height: 125px;
-      border-radius: 9px;
-      overflow: hidden;
-      border: 1px solid rgba(186, 230, 253, 0.18);
-      background: #080d18;
-      cursor: pointer;
-    }
-
-    .image-item img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      display: block;
-    }
-
-    .image-item.selected {
-      border: 2px solid var(--sky-glow);
-      box-shadow: 0 0 12px rgba(56, 189, 248, 0.45);
-    }
-
-    .image-check {
-      position: absolute;
-      top: 6px;
-      right: 6px;
-      width: 21px;
-      height: 21px;
-      border-radius: 50%;
-      border: 1px solid rgba(255,255,255,0.6);
-      background: rgba(3,7,18,0.75);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 12px;
-      font-weight: 900;
-      color: transparent;
-    }
-
-    .image-item.selected .image-check {
-      background: var(--sky-glow);
-      color: #030712;
-      border-color: var(--sky-glow);
-    }
-
-    .image-number {
-      position: absolute;
-      left: 5px;
-      bottom: 5px;
-      padding: 2px 6px;
-      border-radius: 6px;
-      background: rgba(3,7,18,0.75);
-      color: #fff;
-      font-size: 9px;
-      font-weight: 700;
-    }
-
-    .select-all-row {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 8px;
-      margin-bottom: 10px;
-    }
-
-    .select-all-btn {
-      flex: 1;
-      padding: 9px 8px;
-      border-radius: 8px;
-      border: 1px solid rgba(56, 189, 248, 0.25);
-      background: rgba(56, 189, 248, 0.08);
-      color: var(--sky-light);
-      font-size: 10px;
-      font-weight: 700;
-      cursor: pointer;
-    }
-
-    .selected-info {
-      font-size: 10px;
-      color: var(--text-muted);
-      text-align: right;
-      white-space: nowrap;
-    }
-
-    .image-download-btns {
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-    }
-
-    .image-download-btn {
-      width: 100%;
-      padding: 11px;
-      border-radius: 9px;
-      border: 1px solid rgba(56, 189, 248, 0.3);
-      background: rgba(56, 189, 248, 0.12);
-      color: var(--sky-light);
-      font-size: 11px;
-      font-weight: 800;
-      cursor: pointer;
-      transition: all 0.2s ease;
-    }
-
-    .image-download-btn:hover {
-      background: var(--sky-glow);
-      color: #030712;
-    }
-
-    .image-download-btn:disabled {
-      opacity: 0.45;
-      cursor: not-allowed;
-    }
-
-    .stats-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 10px;
-    }
-
-    .stat-card {
-      background: var(--card-bg);
-      border: 1px solid var(--card-border);
-      border-radius: 16px;
-      padding: 16px;
-      text-align: center;
-    }
-
-    .stat-val {
-      font-size: 20px;
-      font-weight: 800;
-      color: var(--sky-glow);
-      text-shadow: 0 0 10px rgba(56, 189, 248, 0.3);
-    }
-
-    .stat-lbl {
-      font-size: 11px;
-      color: var(--text-muted);
-      margin-top: 2px;
-    }
-
-    .features-section {
-      display: flex;
-      flex-direction: column;
-      gap: 14px;
-      margin-top: 10px;
-    }
-
-    .section-title {
-      font-size: 14px;
-      font-weight: 700;
-      color: var(--sky-light);
-      letter-spacing: 1px;
-      text-transform: uppercase;
-    }
-
-    .feature-box {
-      background: var(--card-bg);
-      border: 1px solid var(--card-border);
-      border-radius: 18px;
-      padding: 18px;
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-    }
-
-    .feature-title {
-      font-size: 14px;
-      font-weight: 700;
-      color: #fff;
-    }
-
-    .feature-desc {
-      font-size: 12px;
-      color: var(--text-muted);
-      line-height: 1.5;
-    }
-
-    .progress-track {
-      width: 100%;
-      height: 5px;
-      background: rgba(255, 255, 255, 0.08);
-      border-radius: 4px;
-      overflow: hidden;
-    }
-
-    .progress-fill {
-      height: 100%;
-      width: 100%;
-      background: linear-gradient(90deg, var(--sky-bright), var(--sky-light));
-      box-shadow: 0 0 10px var(--sky-glow);
-      animation: fastProgress 1.8s infinite ease-in-out;
-    }
-
-    @keyframes fastProgress {
-      0% {
-        transform: translateX(-100%);
-      }
-
-      100% {
-        transform: translateX(100%);
-      }
-    }
-
-    .equalizer {
-      display: flex;
-      align-items: flex-end;
-      gap: 5px;
-      height: 24px;
-      margin-top: 4px;
-    }
-
-    .eq-bar {
-      width: 5px;
-      background: var(--sky-glow);
-      border-radius: 3px;
-      box-shadow: 0 0 8px var(--sky-glow);
-      animation: bounceBar 1.2s infinite ease-in-out alternate;
-    }
-
-    .eq-bar:nth-child(1) {
-      height: 40%;
-      animation-delay: 0.1s;
-    }
-
-    .eq-bar:nth-child(2) {
-      height: 80%;
-      animation-delay: 0.3s;
-    }
-
-    .eq-bar:nth-child(3) {
-      height: 60%;
-      animation-delay: 0.2s;
-    }
-
-    .eq-bar:nth-child(4) {
-      height: 100%;
-      animation-delay: 0.4s;
-    }
-
-    .eq-bar:nth-child(5) {
-      height: 50%;
-      animation-delay: 0.15s;
-    }
-
-    @keyframes bounceBar {
-      0% {
-        height: 20%;
-      }
-
-      100% {
-        height: 100%;
-      }
-    }
-
-    .footer {
-      text-align: center;
-      font-size: 11px;
-      color: var(--text-muted);
-      margin-top: 15px;
-      padding-bottom: 20px;
-    }
-
-    /* Mobile adjustment only for image grid */
-    @media (max-width: 360px) {
-      .image-grid {
-        grid-template-columns: repeat(2, 1fr);
-      }
-
-      .image-item {
-        height: 145px;
-      }
-    }
-  </style>
-</head>
-
-<body>
-
-  <div class="container">
-
-    <div class="top-bar">
-      <div class="status-badge">
-        <span class="status-dot"></span>
-        Sʏsᴛᴇᴍ Oɴʟɪɴᴇ  V4.6
-      </div>
-    </div>
-
-    <div class="header">
-      <h1>Snap-Tok</h1>
-      <p>Ultra-Fast Snap-Tok Engine — Dirext CDN Downloads</p>
-    </div>
-
-    <div class="main-box">
-
-      <div class="input-group">
-        <input type="text" id="tiktokUrl" placeholder="Paste TikTok video link...">
-
-        <div class="input-actions">
-          <button type="button" class="btn-paste" onclick="pasteLink()">PASTE</button>
-        </div>
-      </div>
-
-      <button type="button" class="btn btn-fetch" id="fetchBtn" onclick="processVideo()">
-        FETCH VIDEO
-      </button>
-
-      <button type="button" class="btn btn-refresh" onclick="window.location.reload()">
-        REFRESH PAGE
-      </button>
-
-      <div class="result-card" id="resultCard">
-
-        <div class="preview-header">
-          <img src="" alt="Cover" class="cover-img" id="coverImg">
-
-          <div class="meta-info">
-            <div class="user-tag" id="authorTag">@user</div>
-
-            <div class="caption-text" id="videoCaption">
-              Loading...
-            </div>
-          </div>
-        </div>
-
-        <!-- EXISTING VIDEO/AUDIO BUTTONS -->
-        <div class="download-btns">
-
-          <button class="btn-dl" id="dlNoWmBtn" onclick="downloadDirect('nowm')">
-            DOWNLOAD WITHOUT WATERMARK HDR
-          </button>
-
-          <button class="btn-dl" id="dlWmBtn" onclick="downloadDirect('wm')">
-            DOWNLOAD WITH WATERMARK HDR
-          </button>
-
-          <button class="btn-dl" id="dlMp3Btn" onclick="downloadDirect('mp3')">
-            DOWNLOAD MP3 AUDIO
-          </button>
-
-        </div>
-
-        <!-- NEW IMAGE DOWNLOAD AREA -->
-        <div class="image-section" id="imageSection">
-
-          <div class="image-section-title">
-            TIKTOK IMAGES —
-            <span class="image-count" id="imageCount">0</span>
-          </div>
-
-          <div class="select-all-row">
-
-            <button
-              type="button"
-              class="select-all-btn"
-              id="selectAllBtn"
-              onclick="toggleSelectAll()">
-              SELECT ALL
-            </button>
-
-            <div class="selected-info" id="selectedInfo">
-              0 SELECTED
-            </div>
-
-          </div>
-
-          <div class="image-grid" id="imageGrid"></div>
-
-          <div class="image-download-btns">
-
-            <button
-              type="button"
-              class="image-download-btn"
-              id="imageNoWmBtn"
-              onclick="downloadSelectedImages('nowm')">
-              DOWNLOAD SELECTED IMAGES WITHOUT WATERMARK
-            </button>
-
-            <button
-              type="button"
-              class="image-download-btn"
-              id="imageWmBtn"
-              onclick="downloadSelectedImages('wm')">
-              DOWNLOAD SELECTED IMAGES WITH WATERMARK
-            </button>
-
-          </div>
-
-        </div>
-
-      </div>
-    </div>
-
-    <div class="stats-grid">
-
-      <div class="stat-card">
-        <div class="stat-val">1.34M+</div>
-        <div class="stat-lbl">Downloads Processed</div>
-      </div>
-
-      <div class="stat-card">
-        <div class="stat-val">0.9s</div>
-        <div class="stat-lbl">Fetch Speed</div>
-      </div>
-
-      <div class="stat-card">
-        <div class="stat-val">1080p</div>
-        <div class="stat-lbl">Master Quality</div>
-      </div>
-
-      <div class="stat-card">
-        <div class="stat-val">100%</div>
-        <div class="stat-lbl">Free Access</div>
-      </div>
-
-    </div>
-
-    <div class="features-section">
-
-      <div class="section-title">How it Work's</div>
-
-      <div class="feature-box">
-        <div class="feature-title">
-          No Watermark Snap-Tok Engine
-        </div>
-
-        <div class="feature-desc">
-          Direct extraction from master edge servers bypassing graphic overlays.
-        </div>
-      </div>
-
-      <div class="feature-box">
-
-        <div class="feature-title">
-          Fetched Under a Second
-        </div>
-
-        <div class="feature-desc">
-          Shortened links are decoded dynamically in real time.
-        </div>
-
-        <div class="progress-track">
-          <div class="progress-fill"></div>
-        </div>
-
-      </div>
-
-      <div class="feature-box">
-
-        <div class="feature-title">
-          MP3 Audio Rip
-        </div>
-
-        <div class="feature-desc">
-          High quality direct MP3 audio extraction straight from original source files.
-        </div>
-
-        <div class="equalizer">
-
-          <div class="eq-bar"></div>
-          <div class="eq-bar"></div>
-          <div class="eq-bar"></div>
-          <div class="eq-bar"></div>
-          <div class="eq-bar"></div>
-
-        </div>
-
-      </div>
-
-      <div class="feature-box">
-
-        <div class="feature-title">
-          Zero Log Network
-        </div>
-
-        <div class="feature-desc">
-          Client-side operations ensure links are never cached or logged.
-        </div>
-
-      </div>
-
-    </div>
-
-    <div class="footer">
-      SNAP-TOK ENGINE &bull; 2025-2026
-    </div>
-
-  </div>
-
-  <script>
-
-    /*
-      EXISTING MEDIA STORE
-    */
-    var mediaStore = {
-      nowm: '',
-      wm: '',
-      mp3: ''
-    };
-
-
-    /*
-      NEW IMAGE STORE
-
-      Each image:
-      {
-        nowm: "clean image URL",
-        wm: "watermarked image URL or fallback",
-        selected: true/false
-      }
-    */
-    var imageStore = [];
-
-
-    /*
-      PASTE
-    */
-    async function pasteLink() {
-
-      try {
-
-        if (
-          navigator.clipboard &&
-          navigator.clipboard.readText
-        ) {
-
-          var text = await navigator.clipboard.readText();
-
-          if (text) {
-            document.getElementById('tiktokUrl').value = text;
-          }
-
-        }
-
-      } catch (e) {}
-
-    }
-
-
-    /*
-      PROCESS TIKTOK LINK
-    */
-    async function processVideo() {
-
-      var url =
-        document.getElementById('tiktokUrl').value.trim();
-
-      var btn =
-        document.getElementById('fetchBtn');
-
-      var resultCard =
-        document.getElementById('resultCard');
-
-
-      if (!url) {
-
-        btn.innerText = 'PASTE LINK FIRST!';
-
-        setTimeout(function() {
-          btn.innerText = 'FETCH VIDEO';
-        }, 2000);
-
+      if (text) {
+        input.value = text;
+        input.focus();
         return;
       }
+    }
+
+  } catch (e) {}
+
+  /*
+    Clipboard permission fail hone par
+    input ko focus kar do.
+  */
+
+  input.focus();
+}
 
 
-      btn.innerText = 'FETCHING...';
+/* =========================
+   FETCH TIKTOK
+========================= */
 
-      resultCard.style.display = 'none';
+async function processVideo() {
+
+  var url = document
+    .getElementById('tiktokUrl')
+    .value
+    .trim();
+
+  var btn = document.getElementById('fetchBtn');
+
+  var resultCard = document.getElementById('resultCard');
+
+
+  if (!url) {
+
+    btn.innerText = 'PASTE LINK FIRST!';
+
+    setTimeout(function() {
+      btn.innerText = 'FETCH VIDEO';
+    }, 2000);
+
+    return;
+  }
+
+
+  /*
+    Basic TikTok URL check
+  */
+
+  if (
+    !url.includes('tiktok.com') &&
+    !url.includes('vt.tiktok.com') &&
+    !url.includes('vm.tiktok.com')
+  ) {
+
+    btn.innerText = 'INVALID TIKTOK LINK!';
+
+    setTimeout(function() {
+      btn.innerText = 'FETCH VIDEO';
+    }, 2000);
+
+    return;
+  }
+
+
+  btn.innerText = 'FETCHING...';
+  btn.disabled = true;
+
+  resultCard.style.display = 'none';
+
+
+  /*
+    Reset old data
+  */
+
+  mediaStore = {
+    nowm: '',
+    wm: '',
+    mp3: ''
+  };
+
+  imageStore = [];
+
+  hideImageSection();
+
+
+  try {
+
+    /*
+      IMPORTANT:
+
+      TikWM API current request:
+      POST
+      NOT GET
+    */
+
+    var response = await fetch(
+      'https://www.tikwm.com/api/',
+      {
+        method: 'POST',
+
+        headers: {
+          'Content-Type':
+            'application/x-www-form-urlencoded; charset=UTF-8',
+
+          'Accept':
+            'application/json, text/plain, */*'
+        },
+
+        body: new URLSearchParams({
+          url: url,
+          hd: '1'
+        })
+      }
+    );
+
+
+    if (!response.ok) {
+      throw new Error(
+        'API HTTP ERROR: ' +
+        response.status
+      );
+    }
+
+
+    var json = await response.json();
+
+
+    console.log(
+      'TikWM Response:',
+      json
+    );
+
+
+    /*
+      API failed
+    */
+
+    if (
+      !json ||
+      json.code !== 0 ||
+      !json.data
+    ) {
+
+      throw new Error(
+        json && json.msg
+          ? json.msg
+          : 'TikTok data not found'
+      );
+    }
+
+
+    var data = json.data;
+
+
+    /* =========================
+       VIDEO
+    ========================= */
+
+    mediaStore.nowm =
+      data.play ||
+      data.hdplay ||
+      data.wmplay ||
+      '';
+
+
+    mediaStore.wm =
+      data.wmplay ||
+      data.play ||
+      '';
+
+
+    /* =========================
+       MP3
+    ========================= */
+
+    mediaStore.mp3 =
+      data.music ||
+      '';
+
+
+    /* =========================
+       COVER
+    ========================= */
+
+    document.getElementById(
+      'coverImg'
+    ).src =
+      data.cover ||
+      data.origin_cover ||
+      '';
+
+
+    /* =========================
+       AUTHOR
+    ========================= */
+
+    var username = 'user';
+
+    if (
+      data.author &&
+      typeof data.author === 'object'
+    ) {
+
+      username =
+        data.author.unique_id ||
+        data.author.nickname ||
+        'user';
+
+    }
+
+
+    document.getElementById(
+      'authorTag'
+    ).innerText =
+      '@' + username;
+
+
+    /* =========================
+       CAPTION
+    ========================= */
+
+    document.getElementById(
+      'videoCaption'
+    ).innerText =
+      data.title ||
+      'TikTok Video';
+
+
+    /* =========================
+       IMAGE / SLIDESHOW
+    ========================= */
+
+    processTikTokImages(data);
+
+
+    /* =========================
+       SHOW RESULT
+    ========================= */
+
+    resultCard.style.display =
+      'block';
+
+
+    btn.innerText =
+      'FETCH VIDEO';
+
+
+  } catch (error) {
+
+    console.error(
+      'Snap-Tok Error:',
+      error
+    );
+
+
+    btn.innerText =
+      'FETCH FAILED';
+
+
+    /*
+      Result card ko completely hide
+      rakho agar API fail ho.
+    */
+
+    resultCard.style.display =
+      'none';
+
+
+    setTimeout(function() {
+
+      btn.innerText =
+        'FETCH VIDEO';
+
+    }, 2500);
+
+  }
+
+
+  btn.disabled = false;
+
+}
+
+
+/* =========================
+   PROCESS TIKTOK IMAGES
+========================= */
+
+function processTikTokImages(data) {
+
+  var images = [];
+
+
+  /*
+    Normal TikWM image array
+  */
+
+  if (Array.isArray(data.images)) {
+    images = data.images;
+  }
+
+
+  /*
+    Kuch responses mein image_post
+    ya image arrays aa sakti hain.
+  */
+
+  if (
+    !images.length &&
+    Array.isArray(data.image_post)
+  ) {
+
+    images =
+      data.image_post;
+
+  }
+
+
+  if (
+    !images.length &&
+    Array.isArray(data.image_urls)
+  ) {
+
+    images =
+      data.image_urls;
+
+  }
+
+
+  /*
+    No images
+  */
+
+  if (!images.length) {
+
+    hideImageSection();
+
+    return;
+  }
+
+
+  imageStore = [];
+
+
+  images.forEach(function(item) {
+
+    var cleanUrl = '';
+    var watermarkUrl = '';
+
+
+    /*
+      Agar item direct string ho
+    */
+
+    if (
+      typeof item === 'string'
+    ) {
+
+      cleanUrl = item;
+
+    }
+
+
+    /*
+      Agar item object ho
+    */
+
+    else if (
+      item &&
+      typeof item === 'object'
+    ) {
+
+      cleanUrl =
+        item.url ||
+        item.image ||
+        item.src ||
+        item.download ||
+        item.image_url ||
+        item.origin ||
+        '';
+
+
+      watermarkUrl =
+        item.wm_url ||
+        item.wm ||
+        item.watermark_url ||
+        item.watermark ||
+        '';
 
 
       /*
-        Reset old image data
+        URL list support
       */
-      imageStore = [];
 
-      hideImageSection();
+      if (
+        !cleanUrl &&
+        Array.isArray(item.url_list)
+      ) {
+
+        cleanUrl =
+          item.url_list[0] ||
+          '';
+
+      }
+
+    }
 
 
-      try {
+    if (cleanUrl) {
 
-        let res = await fetch(
-          'https://www.tikwm.com/api/?url=' +
-          encodeURIComponent(url)
+      imageStore.push({
+
+        nowm: cleanUrl,
+
+        wm: watermarkUrl,
+
+        selected: true
+
+      });
+
+    }
+
+  });
+
+
+  if (!imageStore.length) {
+
+    hideImageSection();
+
+    return;
+  }
+
+
+  renderImageSelector();
+
+}
+
+
+/* =========================
+   IMAGE SELECTOR
+========================= */
+
+function renderImageSelector() {
+
+  var section =
+    document.getElementById(
+      'imageSection'
+    );
+
+  var grid =
+    document.getElementById(
+      'imageGrid'
+    );
+
+  var count =
+    document.getElementById(
+      'imageCount'
+    );
+
+
+  if (!section || !grid) {
+    return;
+  }
+
+
+  grid.innerHTML = '';
+
+
+  count.innerText =
+    imageStore.length;
+
+
+  imageStore.forEach(
+    function(item, index) {
+
+      var box =
+        document.createElement(
+          'div'
         );
 
-        let json = await res.json();
+      box.className =
+        'image-item selected';
 
+      box.setAttribute(
+        'data-index',
+        index
+      );
+
+
+      var img =
+        document.createElement(
+          'img'
+        );
+
+      img.src =
+        item.nowm;
+
+      img.alt =
+        'TikTok Image ' +
+        (index + 1);
+
+
+      /*
+        Broken image protection
+      */
+
+      img.onerror =
+        function() {
+
+          this.style.opacity =
+            '0.35';
+
+        };
+
+
+      var check =
+        document.createElement(
+          'div'
+        );
+
+      check.className =
+        'image-check';
+
+      check.innerText =
+        '✓';
+
+
+      var number =
+        document.createElement(
+          'div'
+        );
+
+      number.className =
+        'image-number';
+
+      number.innerText =
+        '#' +
+        (index + 1);
+
+
+      box.appendChild(img);
+
+      box.appendChild(check);
+
+      box.appendChild(number);
+
+
+      box.onclick =
+        function() {
+
+          toggleImageSelection(
+            index
+          );
+
+        };
+
+
+      grid.appendChild(box);
+
+    }
+  );
+
+
+  updateSelectedInfo();
+
+
+  section.style.display =
+    'block';
+
+}
+
+
+/* =========================
+   SELECT / UNSELECT IMAGE
+========================= */
+
+function toggleImageSelection(
+  index
+) {
+
+  if (!imageStore[index]) {
+    return;
+  }
+
+
+  imageStore[index].selected =
+    !imageStore[index].selected;
+
+
+  var item =
+    document.querySelector(
+      '.image-item[data-index="' +
+      index +
+      '"]'
+    );
+
+
+  if (item) {
+
+    if (
+      imageStore[index].selected
+    ) {
+
+      item.classList.add(
+        'selected'
+      );
+
+    } else {
+
+      item.classList.remove(
+        'selected'
+      );
+
+    }
+
+  }
+
+
+  updateSelectedInfo();
+
+}
+
+
+/* =========================
+   SELECT ALL
+========================= */
+
+function toggleSelectAll() {
+
+  if (!imageStore.length) {
+    return;
+  }
+
+
+  var allSelected =
+    imageStore.every(
+      function(item) {
+        return item.selected;
+      }
+    );
+
+
+  imageStore.forEach(
+    function(item) {
+
+      item.selected =
+        !allSelected;
+
+    }
+  );
+
+
+  document
+    .querySelectorAll(
+      '.image-item'
+    )
+    .forEach(
+      function(item, index) {
 
         if (
-          json &&
-          json.code === 0 &&
-          json.data
+          imageStore[index].selected
         ) {
 
-          /*
-            EXISTING VIDEO DATA
-          */
+          item.classList.add(
+            'selected'
+          );
 
-          mediaStore.nowm =
-            json.data.play || '';
+        } else {
 
-          mediaStore.wm =
-            json.data.wmplay ||
-            json.data.play ||
-            '';
+          item.classList.remove(
+            'selected'
+          );
 
-          mediaStore.mp3 =
-            json.data.music || '';
+        }
+
+      }
+    );
 
 
-  
+  updateSelectedInfo();
+
+}
+
+
+/* =========================
+   SELECTED COUNTER
+========================= */
+
+function updateSelectedInfo() {
+
+  var info =
+    document.getElementById(
+      'selectedInfo'
+    );
+
+  var button =
+    document.getElementById(
+      'selectAllBtn'
+    );
+
+
+  if (!info || !button) {
+    return;
+  }
+
+
+  var selectedCount =
+    imageStore.filter(
+      function(item) {
+        return item.selected;
+      }
+    ).length;
+
+
+  info.innerText =
+    selectedCount +
+    ' SELECTED';
+
+
+  var allSelected =
+    imageStore.length > 0 &&
+    selectedCount ===
+      imageStore.length;
+
+
+  button.innerText =
+    allSelected
+      ? 'UNSELECT ALL'
+      : 'SELECT ALL';
+
+}
+
+
+/* =========================
+   DOWNLOAD IMAGES
+========================= */
+
+async function downloadSelectedImages(
+  type
+) {
+
+  var selected =
+    imageStore.filter(
+      function(item) {
+        return item.selected;
+      }
+    );
+
+
+  if (!selected.length) {
+
+    var info =
+      document.getElementById(
+        'selectedInfo'
+      );
+
+    info.innerText =
+      'SELECT AN IMAGE FIRST!';
+
+
+    setTimeout(
+      function() {
+        updateSelectedInfo();
+      },
+      1800
+    );
+
+
+    return;
+  }
+
+
+  var buttonId =
+    type === 'nowm'
+      ? 'imageNoWmBtn'
+      : 'imageWmBtn';
+
+
+  var button =
+    document.getElementById(
+      buttonId
+    );
+
+
+  var originalText =
+    button.innerText;
+
+
+  button.disabled =
+    true;
+
+  button.innerText =
+    'DOWNLOADING...';
+
+
+  for (
+    var i = 0;
+    i < selected.length;
+    i++
+  ) {
+
+    var item =
+      selected[i];
+
+
+    var targetUrl =
+      type === 'wm'
+        ? (
+            item.wm ||
+            item.nowm
+          )
+        : item.nowm;
+
+
+    if (!targetUrl) {
+      continue;
+    }
+
+
+    await downloadImageFile(
+      targetUrl,
+      'SnapTok_Image_' +
+      (imageStore.indexOf(item) + 1) +
+      '_' +
+      Date.now() +
+      '.jpg'
+    );
+
+
+    await sleep(500);
+
+  }
+
+
+  button.innerText =
+    originalText;
+
+  button.disabled =
+    false;
+
+}
+
+
+/* =========================
+   IMAGE DOWNLOAD
+========================= */
+
+async function downloadImageFile(
+  url,
+  filename
+) {
+
+  try {
+
+    var response =
+      await fetch(url);
+
+
+    if (!response.ok) {
+      throw new Error(
+        'Image download failed'
+      );
+    }
+
+
+    var blob =
+      await response.blob();
+
+
+    var blobUrl =
+      URL.createObjectURL(
+        blob
+      );
+
+
+    var a =
+      document.createElement(
+        'a'
+      );
+
+
+    a.href =
+      blobUrl;
+
+    a.download =
+      filename;
+
+    a.style.display =
+      'none';
+
+
+    document.body.appendChild(a);
+
+    a.click();
+
+
+    setTimeout(
+      function() {
+
+        URL.revokeObjectURL(
+          blobUrl
+        );
+
+        a.remove();
+
+      },
+      1000
+    );
+
+
+  } catch (error) {
+
+    /*
+      Direct fallback
+    */
+
+    var a =
+      document.createElement(
+        'a'
+      );
+
+
+    a.href =
+      url;
+
+    a.download =
+      filename;
+
+    a.target =
+      '_blank';
+
+
+    document.body.appendChild(a);
+
+    a.click();
+
+    a.remove();
+
+  }
+
+}
+
+
+/* =========================
+   HIDE IMAGE AREA
+========================= */
+
+function hideImageSection() {
+
+  var section =
+    document.getElementById(
+      'imageSection'
+    );
+
+
+  if (section) {
+
+    section.style.display =
+      'none';
+
+  }
+
+}
+
+
+/* =========================
+   DELAY
+========================= */
+
+function sleep(ms) {
+
+  return new Promise(
+    function(resolve) {
+
+      setTimeout(
+        resolve,
+        ms
+      );
+
+    }
+  );
+
+}
+
+
+/* =========================
+   VIDEO / MP3 DOWNLOAD
+========================= */
+
+async function downloadDirect(
+  type
+) {
+
+  var targetUrl =
+    mediaStore[type];
+
+
+  if (!targetUrl) {
+
+    return;
+
+  }
+
+
+  var buttonId =
+    type === 'nowm'
+      ? 'dlNoWmBtn'
+      : (
+          type === 'wm'
+            ? 'dlWmBtn'
+            : 'dlMp3Btn'
+        );
+
+
+  var button =
+    document.getElementById(
+      buttonId
+    );
+
+
+  var originalText =
+    button.innerText;
+
+
+  button.innerText =
+    'DOWNLOADING...';
+
+
+  button.disabled =
+    true;
+
+
+  var extension =
+    type === 'mp3'
+      ? '.mp3'
+      : '.mp4';
+
+
+  var filename =
+    'SnapTok_' +
+    Date.now() +
+    extension;
+
+
+  try {
+
+    var response =
+      await fetch(
+        targetUrl
+      );
+
+
+    if (!response.ok) {
+      throw new Error(
+        'Download failed'
+      );
+    }
+
+
+    var blob =
+      await response.blob();
+
+
+    var blobUrl =
+      URL.createObjectURL(
+        blob
+      );
+
+
+    var a =
+      document.createElement(
+        'a'
+      );
+
+
+    a.href =
+      blobUrl;
+
+    a.download =
+      filename;
+
+    a.style.display =
+      'none';
+
+
+    document.body.appendChild(a);
+
+    a.click();
+
+
+    setTimeout(
+      function() {
+
+        URL.revokeObjectURL(
+          blobUrl
+        );
+
+        a.remove();
+
+      },
+      1000
+    );
+
+
+  } catch (error) {
+
+    /*
+      Direct URL fallback
+    */
+
+    var a =
+      document.createElement(
+        'a'
+      );
+
+
+    a.href =
+      targetUrl;
+
+    a.download =
+      filename;
+
+    a.target =
+      '_blank';
+
+
+    document.body.appendChild(a);
+
+    a.click();
+
+    a.remove();
+
+  }
+
+
+  button.innerText =
+    originalText;
+
+  button.disabled =
+    false;
+
+}
+
+  </script>
