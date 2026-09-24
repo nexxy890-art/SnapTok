@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>Snap-Tok | Ultra-Fast TikTok Downloader</title>
   <link rel="icon" type="image/png" href="1787310331551.png">
+
   <style>
     :root {
       --bg-dark: #030712;
@@ -86,7 +87,9 @@
       50% { opacity: 0.3; }
     }
 
-    .header { text-align: center; }
+    .header {
+      text-align: center;
+    }
 
     .header h1 {
       font-size: 36px;
@@ -205,8 +208,15 @@
     }
 
     @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(8px); }
-      to { opacity: 1; transform: translateY(0); }
+      from {
+        opacity: 0;
+        transform: translateY(8px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
     }
 
     .preview-header {
@@ -274,99 +284,150 @@
       color: #030712;
     }
 
-    /* Image Gallery & Selector Styles */
-    .image-selector-section {
+    /* =========================================
+       NEW IMAGE DOWNLOAD SECTION
+       Existing design is untouched.
+       This section only appears for photo posts.
+       ========================================= */
+
+    .image-section {
       display: none;
-      margin-bottom: 16px;
+      margin-top: 12px;
+      padding-top: 14px;
+      border-top: 1px solid rgba(186, 230, 253, 0.15);
     }
 
-    .gallery-title-bar {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 10px;
+    .image-section-title {
       font-size: 12px;
-      font-weight: 700;
+      font-weight: 800;
       color: var(--sky-light);
+      margin-bottom: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
     }
 
-    .select-all-label {
-      font-size: 11px;
-      color: var(--text-muted);
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-    }
-
-    .select-all-label input {
-      accent-color: var(--sky-glow);
+    .image-count {
+      color: var(--sky-glow);
     }
 
     .image-grid {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
-      gap: 10px;
-      max-height: 260px;
-      overflow-y: auto;
-      padding-right: 4px;
+      gap: 8px;
+      margin-bottom: 10px;
     }
 
-    .image-grid::-webkit-scrollbar {
-      width: 4px;
-    }
-
-    .image-grid::-webkit-scrollbar-thumb {
-      background: rgba(56, 189, 248, 0.3);
-      border-radius: 4px;
-    }
-
-    .img-card {
+    .image-item {
       position: relative;
-      border-radius: 10px;
+      height: 125px;
+      border-radius: 9px;
       overflow: hidden;
-      border: 2px solid transparent;
+      border: 1px solid rgba(186, 230, 253, 0.18);
+      background: #080d18;
       cursor: pointer;
-      aspect-ratio: 3 / 4;
-      background: #111;
-      transition: all 0.2s ease;
     }
 
-    .img-card.selected {
-      border-color: var(--sky-glow);
-      box-shadow: 0 0 10px rgba(56, 189, 248, 0.4);
-    }
-
-    .img-card img {
+    .image-item img {
       width: 100%;
       height: 100%;
       object-fit: cover;
+      display: block;
     }
 
-    .img-card .checkbox-overlay {
+    .image-item.selected {
+      border: 2px solid var(--sky-glow);
+      box-shadow: 0 0 12px rgba(56, 189, 248, 0.45);
+    }
+
+    .image-check {
       position: absolute;
       top: 6px;
       right: 6px;
-      width: 18px;
-      height: 18px;
-      background: rgba(3, 7, 18, 0.7);
-      border: 1px solid var(--sky-glow);
-      border-radius: 4px;
+      width: 21px;
+      height: 21px;
+      border-radius: 50%;
+      border: 1px solid rgba(255,255,255,0.6);
+      background: rgba(3,7,18,0.75);
       display: flex;
       align-items: center;
       justify-content: center;
+      font-size: 12px;
+      font-weight: 900;
+      color: transparent;
+    }
+
+    .image-item.selected .image-check {
+      background: var(--sky-glow);
+      color: #030712;
+      border-color: var(--sky-glow);
+    }
+
+    .image-number {
+      position: absolute;
+      left: 5px;
+      bottom: 5px;
+      padding: 2px 6px;
+      border-radius: 6px;
+      background: rgba(3,7,18,0.75);
+      color: #fff;
+      font-size: 9px;
+      font-weight: 700;
+    }
+
+    .select-all-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      margin-bottom: 10px;
+    }
+
+    .select-all-btn {
+      flex: 1;
+      padding: 9px 8px;
+      border-radius: 8px;
+      border: 1px solid rgba(56, 189, 248, 0.25);
+      background: rgba(56, 189, 248, 0.08);
+      color: var(--sky-light);
+      font-size: 10px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .selected-info {
+      font-size: 10px;
+      color: var(--text-muted);
+      text-align: right;
+      white-space: nowrap;
+    }
+
+    .image-download-btns {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .image-download-btn {
+      width: 100%;
+      padding: 11px;
+      border-radius: 9px;
+      border: 1px solid rgba(56, 189, 248, 0.3);
+      background: rgba(56, 189, 248, 0.12);
+      color: var(--sky-light);
+      font-size: 11px;
+      font-weight: 800;
+      cursor: pointer;
       transition: all 0.2s ease;
     }
 
-    .img-card.selected .checkbox-overlay {
+    .image-download-btn:hover {
       background: var(--sky-glow);
+      color: #030712;
     }
 
-    .img-card.selected .checkbox-overlay::after {
-      content: '✓';
-      color: #030712;
-      font-size: 12px;
-      font-weight: 900;
+    .image-download-btn:disabled {
+      opacity: 0.45;
+      cursor: not-allowed;
     }
 
     .stats-grid {
@@ -421,10 +482,18 @@
       gap: 12px;
     }
 
-    .feature-title { font-size: 14px; font-weight: 700; color: #fff; }
-    .feature-desc { font-size: 12px; color: var(--text-muted); line-height: 1.5; }
+    .feature-title {
+      font-size: 14px;
+      font-weight: 700;
+      color: #fff;
+    }
 
-    /* Animated Fast Progress Track */
+    .feature-desc {
+      font-size: 12px;
+      color: var(--text-muted);
+      line-height: 1.5;
+    }
+
     .progress-track {
       width: 100%;
       height: 5px;
@@ -442,11 +511,15 @@
     }
 
     @keyframes fastProgress {
-      0% { transform: translateX(-100%); }
-      100% { transform: translateX(100%); }
+      0% {
+        transform: translateX(-100%);
+      }
+
+      100% {
+        transform: translateX(100%);
+      }
     }
 
-    /* Live Animated Equalizer Bars */
     .equalizer {
       display: flex;
       align-items: flex-end;
@@ -463,15 +536,39 @@
       animation: bounceBar 1.2s infinite ease-in-out alternate;
     }
 
-    .eq-bar:nth-child(1) { height: 40%; animation-delay: 0.1s; }
-    .eq-bar:nth-child(2) { height: 80%; animation-delay: 0.3s; }
-    .eq-bar:nth-child(3) { height: 60%; animation-delay: 0.2s; }
-    .eq-bar:nth-child(4) { height: 100%; animation-delay: 0.4s; }
-    .eq-bar:nth-child(5) { height: 50%; animation-delay: 0.15s; }
+    .eq-bar:nth-child(1) {
+      height: 40%;
+      animation-delay: 0.1s;
+    }
+
+    .eq-bar:nth-child(2) {
+      height: 80%;
+      animation-delay: 0.3s;
+    }
+
+    .eq-bar:nth-child(3) {
+      height: 60%;
+      animation-delay: 0.2s;
+    }
+
+    .eq-bar:nth-child(4) {
+      height: 100%;
+      animation-delay: 0.4s;
+    }
+
+    .eq-bar:nth-child(5) {
+      height: 50%;
+      animation-delay: 0.15s;
+    }
 
     @keyframes bounceBar {
-      0% { height: 20%; }
-      100% { height: 100%; }
+      0% {
+        height: 20%;
+      }
+
+      100% {
+        height: 100%;
+      }
     }
 
     .footer {
@@ -481,11 +578,24 @@
       margin-top: 15px;
       padding-bottom: 20px;
     }
+
+    /* Mobile adjustment only for image grid */
+    @media (max-width: 360px) {
+      .image-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .image-item {
+        height: 145px;
+      }
+    }
   </style>
 </head>
+
 <body>
 
   <div class="container">
+
     <div class="top-bar">
       <div class="status-badge">
         <span class="status-dot"></span>
@@ -499,228 +609,321 @@
     </div>
 
     <div class="main-box">
+
       <div class="input-group">
         <input type="text" id="tiktokUrl" placeholder="Paste TikTok video link...">
+
         <div class="input-actions">
           <button type="button" class="btn-paste" onclick="pasteLink()">PASTE</button>
         </div>
       </div>
 
-      <button type="button" class="btn btn-fetch" id="fetchBtn" onclick="processVideo()">FETCH VIDEO</button>
-      <button type="button" class="btn btn-refresh" onclick="window.location.reload()">REFRESH PAGE</button>
+      <button type="button" class="btn btn-fetch" id="fetchBtn" onclick="processVideo()">
+        FETCH VIDEO
+      </button>
+
+      <button type="button" class="btn btn-refresh" onclick="window.location.reload()">
+        REFRESH PAGE
+      </button>
 
       <div class="result-card" id="resultCard">
+
         <div class="preview-header">
           <img src="" alt="Cover" class="cover-img" id="coverImg">
+
           <div class="meta-info">
             <div class="user-tag" id="authorTag">@user</div>
-            <div class="caption-text" id="videoCaption">Loading...</div>
+
+            <div class="caption-text" id="videoCaption">
+              Loading...
+            </div>
           </div>
         </div>
 
-        <!-- Image Selector Grid for Multi-Image Posts -->
-        <div class="image-selector-section" id="imageSelectorSection">
-          <div class="gallery-title-bar">
-            <span>SELECT IMAGES TO DOWNLOAD</span>
-            <label class="select-all-label">
-              <input type="checkbox" id="selectAllCheckbox" checked onclick="toggleSelectAll(this)"> Select All
-            </label>
-          </div>
-          <div class="image-grid" id="imageGrid"></div>
-        </div>
-
+        <!-- EXISTING VIDEO/AUDIO BUTTONS -->
         <div class="download-btns">
-          <button class="btn-dl" id="dlNoWmBtn" onclick="downloadDirect('nowm')">DOWNLOAD WITHOUT WATERMARK HDR</button>
-          <button class="btn-dl" id="dlWmBtn" onclick="downloadDirect('wm')">DOWNLOAD WITH WATERMARK HDR</button>
-          <button class="btn-dl" id="dlMp3Btn" onclick="downloadDirect('mp3')">DOWNLOAD MP3 AUDIO</button>
+
+          <button class="btn-dl" id="dlNoWmBtn" onclick="downloadDirect('nowm')">
+            DOWNLOAD WITHOUT WATERMARK HDR
+          </button>
+
+          <button class="btn-dl" id="dlWmBtn" onclick="downloadDirect('wm')">
+            DOWNLOAD WITH WATERMARK HDR
+          </button>
+
+          <button class="btn-dl" id="dlMp3Btn" onclick="downloadDirect('mp3')">
+            DOWNLOAD MP3 AUDIO
+          </button>
+
         </div>
+
+        <!-- NEW IMAGE DOWNLOAD AREA -->
+        <div class="image-section" id="imageSection">
+
+          <div class="image-section-title">
+            TIKTOK IMAGES —
+            <span class="image-count" id="imageCount">0</span>
+          </div>
+
+          <div class="select-all-row">
+
+            <button
+              type="button"
+              class="select-all-btn"
+              id="selectAllBtn"
+              onclick="toggleSelectAll()">
+              SELECT ALL
+            </button>
+
+            <div class="selected-info" id="selectedInfo">
+              0 SELECTED
+            </div>
+
+          </div>
+
+          <div class="image-grid" id="imageGrid"></div>
+
+          <div class="image-download-btns">
+
+            <button
+              type="button"
+              class="image-download-btn"
+              id="imageNoWmBtn"
+              onclick="downloadSelectedImages('nowm')">
+              DOWNLOAD SELECTED IMAGES WITHOUT WATERMARK
+            </button>
+
+            <button
+              type="button"
+              class="image-download-btn"
+              id="imageWmBtn"
+              onclick="downloadSelectedImages('wm')">
+              DOWNLOAD SELECTED IMAGES WITH WATERMARK
+            </button>
+
+          </div>
+
+        </div>
+
       </div>
     </div>
 
     <div class="stats-grid">
+
       <div class="stat-card">
         <div class="stat-val">1.34M+</div>
         <div class="stat-lbl">Downloads Processed</div>
       </div>
+
       <div class="stat-card">
         <div class="stat-val">0.9s</div>
         <div class="stat-lbl">Fetch Speed</div>
       </div>
+
       <div class="stat-card">
         <div class="stat-val">1080p</div>
         <div class="stat-lbl">Master Quality</div>
       </div>
+
       <div class="stat-card">
         <div class="stat-val">100%</div>
         <div class="stat-lbl">Free Access</div>
       </div>
+
     </div>
 
     <div class="features-section">
+
       <div class="section-title">How it Work's</div>
 
       <div class="feature-box">
-        <div class="feature-title">No Watermark Snap-Tok Engine</div>
-        <div class="feature-desc">Direct extraction from master edge servers bypassing graphic overlays.</div>
-      </div>
+        <div class="feature-title">
+          No Watermark Snap-Tok Engine
+        </div>
 
-      <div class="feature-box">
-        <div class="feature-title">Fetched Under a Second</div>
-        <div class="feature-desc">Shortened links are decoded dynamically in real time.</div>
-        <div class="progress-track"><div class="progress-fill"></div></div>
-      </div>
-
-      <div class="feature-box">
-        <div class="feature-title">MP3 Audio Rip </div>
-        <div class="feature-desc">High quality direct MP3 audio extraction straight from original source files.</div>
-        <div class="equalizer">
-          <div class="eq-bar"></div>
-          <div class="eq-bar"></div>
-          <div class="eq-bar"></div>
-          <div class="eq-bar"></div>
-          <div class="eq-bar"></div>
+        <div class="feature-desc">
+          Direct extraction from master edge servers bypassing graphic overlays.
         </div>
       </div>
 
       <div class="feature-box">
-        <div class="feature-title">Zero Log Network</div>
-        <div class="feature-desc">Client-side operations ensure links are never cached or logged.</div>
+
+        <div class="feature-title">
+          Fetched Under a Second
+        </div>
+
+        <div class="feature-desc">
+          Shortened links are decoded dynamically in real time.
+        </div>
+
+        <div class="progress-track">
+          <div class="progress-fill"></div>
+        </div>
+
       </div>
+
+      <div class="feature-box">
+
+        <div class="feature-title">
+          MP3 Audio Rip
+        </div>
+
+        <div class="feature-desc">
+          High quality direct MP3 audio extraction straight from original source files.
+        </div>
+
+        <div class="equalizer">
+
+          <div class="eq-bar"></div>
+          <div class="eq-bar"></div>
+          <div class="eq-bar"></div>
+          <div class="eq-bar"></div>
+          <div class="eq-bar"></div>
+
+        </div>
+
+      </div>
+
+      <div class="feature-box">
+
+        <div class="feature-title">
+          Zero Log Network
+        </div>
+
+        <div class="feature-desc">
+          Client-side operations ensure links are never cached or logged.
+        </div>
+
+      </div>
+
     </div>
 
     <div class="footer">
       SNAP-TOK ENGINE &bull; 2025-2026
     </div>
+
   </div>
 
   <script>
-    var mediaStore = { nowm: '', wm: '', mp3: '', images: [], isImagePost: false };
-    var selectedImageIndices = [];
 
+    /*
+      EXISTING MEDIA STORE
+    */
+    var mediaStore = {
+      nowm: '',
+      wm: '',
+      mp3: ''
+    };
+
+
+    /*
+      NEW IMAGE STORE
+
+      Each image:
+      {
+        nowm: "clean image URL",
+        wm: "watermarked image URL or fallback",
+        selected: true/false
+      }
+    */
+    var imageStore = [];
+
+
+    /*
+      PASTE
+    */
     async function pasteLink() {
+
       try {
-        if (navigator.clipboard && navigator.clipboard.readText) {
+
+        if (
+          navigator.clipboard &&
+          navigator.clipboard.readText
+        ) {
+
           var text = await navigator.clipboard.readText();
-          if (text) document.getElementById('tiktokUrl').value = text;
+
+          if (text) {
+            document.getElementById('tiktokUrl').value = text;
+          }
+
         }
+
       } catch (e) {}
+
     }
 
+
+    /*
+      PROCESS TIKTOK LINK
+    */
     async function processVideo() {
-      var url = document.getElementById('tiktokUrl').value.trim();
-      var btn = document.getElementById('fetchBtn');
-      var resultCard = document.getElementById('resultCard');
-      var imgSection = document.getElementById('imageSelectorSection');
+
+      var url =
+        document.getElementById('tiktokUrl').value.trim();
+
+      var btn =
+        document.getElementById('fetchBtn');
+
+      var resultCard =
+        document.getElementById('resultCard');
+
 
       if (!url) {
+
         btn.innerText = 'PASTE LINK FIRST!';
-        setTimeout(function() { btn.innerText = 'FETCH VIDEO'; }, 2000);
+
+        setTimeout(function() {
+          btn.innerText = 'FETCH VIDEO';
+        }, 2000);
+
         return;
       }
 
+
       btn.innerText = 'FETCHING...';
+
       resultCard.style.display = 'none';
-      imgSection.style.display = 'none';
+
+
+      /*
+        Reset old image data
+      */
+      imageStore = [];
+
+      hideImageSection();
+
 
       try {
-        let res = await fetch('https://www.tikwm.com/api/?url=' + encodeURIComponent(url));
+
+        let res = await fetch(
+          'https://www.tikwm.com/api/?url=' +
+          encodeURIComponent(url)
+        );
+
         let json = await res.json();
 
-        if (json && json.code === 0 && json.data) {
-          var data = json.data;
-          mediaStore.nowm = data.play;
-          mediaStore.wm = data.wmplay || data.play;
-          mediaStore.mp3 = data.music;
-          mediaStore.images = data.images || [];
-          mediaStore.isImagePost = data.images && data.images.length > 0;
 
-          document.getElementById('coverImg').src = data.cover || '';
-          document.getElementById('authorTag').innerText = '@' + (data.author ? data.author.unique_id : 'user');
-          document.getElementById('videoCaption').innerText = data.title || 'TikTok Content';
+        if (
+          json &&
+          json.code === 0 &&
+          json.data
+        ) {
 
-          var dlNoWmBtn = document.getElementById('dlNoWmBtn');
-          var dlWmBtn = document.getElementById('dlWmBtn');
+          /*
+            EXISTING VIDEO DATA
+          */
 
-          if (mediaStore.isImagePost) {
-            imgSection.style.display = 'block';
-            dlNoWmBtn.innerText = 'DOWNLOAD SELECTED (WITHOUT WATERMARK)';
-            dlWmBtn.innerText = 'DOWNLOAD SELECTED (WITH WATERMARK)';
-            renderImageGallery(mediaStore.images);
-          } else {
-            imgSection.style.display = 'none';
-            dlNoWmBtn.innerText = 'DOWNLOAD WITHOUT WATERMARK HDR';
-            dlWmBtn.innerText = 'DOWNLOAD WITH WATERMARK HDR';
-          }
+          mediaStore.nowm =
+            json.data.play || '';
 
-          resultCard.style.display = 'block';
-          btn.innerText = 'FETCH VIDEO';
-          return;
-        }
-      } catch (err) {}
+          mediaStore.wm =
+            json.data.wmplay ||
+            json.data.play ||
+            '';
 
-      btn.innerText = 'Try Again';
-      setTimeout(function() { btn.innerText = 'FETCH VIDEO'; }, 2000);
-    }
+          mediaStore.mp3 =
+            json.data.music || '';
 
-    function renderImageGallery(images) {
-      var grid = document.getElementById('imageGrid');
-      grid.innerHTML = '';
-      selectedImageIndices = [];
 
-      images.forEach(function(imgUrl, idx) {
-        selectedImageIndices.push(idx);
-
-        var card = document.createElement('div');
-        card.className = 'img-card selected';
-        card.dataset.index = idx;
-        card.onclick = function() { toggleImageSelection(this, idx); };
-
-        var img = document.createElement('img');
-        img.src = imgUrl;
-
-        var overlay = document.createElement('div');
-        overlay.className = 'checkbox-overlay';
-
-        card.appendChild(img);
-        card.appendChild(overlay);
-        grid.appendChild(card);
-      });
-
-      document.getElementById('selectAllCheckbox').checked = true;
-    }
-
-    function toggleImageSelection(cardElem, index) {
-      var pos = selectedImageIndices.indexOf(index);
-      if (pos > -1) {
-        selectedImageIndices.splice(pos, 1);
-        cardElem.classList.remove('selected');
-      } else {
-        selectedImageIndices.push(index);
-        cardElem.classList.add('selected');
-      }
-
-      var allCards = document.querySelectorAll('.img-card');
-      document.getElementById('selectAllCheckbox').checked = (selectedImageIndices.length === allCards.length);
-    }
-
-    function toggleSelectAll(checkboxElem) {
-      var cards = document.querySelectorAll('.img-card');
-      selectedImageIndices = [];
-
-      cards.forEach(function(card) {
-        var idx = parseInt(card.dataset.index);
-        if (checkboxElem.checked) {
-          card.classList.add('selected');
-          selectedImageIndices.push(idx);
-        } else {
-          card.classList.remove('selected');
-        }
-      });
-    }
-
-    async function downloadDirect(type) {
-      var btnId = type === 'nowm' ? 'dlNoWmBtn' : (type === 'wm' ? 'dlWmBtn' : 'dlMp3Btn');
-      var btnObj = document.getElementById(btnId);
-      var originalText = btnObj.innerText;
-
-      if (mediaStore.isImagePost && (type === 'nowm' || type =
+  
