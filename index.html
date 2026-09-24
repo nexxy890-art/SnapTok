@@ -274,6 +274,101 @@
       color: #030712;
     }
 
+    /* Image Gallery & Selector Styles */
+    .image-selector-section {
+      display: none;
+      margin-bottom: 16px;
+    }
+
+    .gallery-title-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--sky-light);
+    }
+
+    .select-all-label {
+      font-size: 11px;
+      color: var(--text-muted);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .select-all-label input {
+      accent-color: var(--sky-glow);
+    }
+
+    .image-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      max-height: 260px;
+      overflow-y: auto;
+      padding-right: 4px;
+    }
+
+    .image-grid::-webkit-scrollbar {
+      width: 4px;
+    }
+
+    .image-grid::-webkit-scrollbar-thumb {
+      background: rgba(56, 189, 248, 0.3);
+      border-radius: 4px;
+    }
+
+    .img-card {
+      position: relative;
+      border-radius: 10px;
+      overflow: hidden;
+      border: 2px solid transparent;
+      cursor: pointer;
+      aspect-ratio: 3 / 4;
+      background: #111;
+      transition: all 0.2s ease;
+    }
+
+    .img-card.selected {
+      border-color: var(--sky-glow);
+      box-shadow: 0 0 10px rgba(56, 189, 248, 0.4);
+    }
+
+    .img-card img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .img-card .checkbox-overlay {
+      position: absolute;
+      top: 6px;
+      right: 6px;
+      width: 18px;
+      height: 18px;
+      background: rgba(3, 7, 18, 0.7);
+      border: 1px solid var(--sky-glow);
+      border-radius: 4px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s ease;
+    }
+
+    .img-card.selected .checkbox-overlay {
+      background: var(--sky-glow);
+    }
+
+    .img-card.selected .checkbox-overlay::after {
+      content: '✓';
+      color: #030712;
+      font-size: 12px;
+      font-weight: 900;
+    }
+
     .stats-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
@@ -423,6 +518,17 @@
           </div>
         </div>
 
+        <!-- Image Selector Grid for Multi-Image Posts -->
+        <div class="image-selector-section" id="imageSelectorSection">
+          <div class="gallery-title-bar">
+            <span>SELECT IMAGES TO DOWNLOAD</span>
+            <label class="select-all-label">
+              <input type="checkbox" id="selectAllCheckbox" checked onclick="toggleSelectAll(this)"> Select All
+            </label>
+          </div>
+          <div class="image-grid" id="imageGrid"></div>
+        </div>
+
         <div class="download-btns">
           <button class="btn-dl" id="dlNoWmBtn" onclick="downloadDirect('nowm')">DOWNLOAD WITHOUT WATERMARK HDR</button>
           <button class="btn-dl" id="dlWmBtn" onclick="downloadDirect('wm')">DOWNLOAD WITH WATERMARK HDR</button>
@@ -488,7 +594,8 @@
   </div>
 
   <script>
-    var mediaStore = { nowm: '', wm: '', mp3: '' };
+    var mediaStore = { nowm: '', wm: '', mp3: '', images: [], isImagePost: false };
+    var selectedImageIndices = [];
 
     async function pasteLink() {
       try {
@@ -503,6 +610,7 @@
       var url = document.getElementById('tiktokUrl').value.trim();
       var btn = document.getElementById('fetchBtn');
       var resultCard = document.getElementById('resultCard');
+      var imgSection = document.getElementById('imageSelectorSection');
 
       if (!url) {
         btn.innerText = 'PASTE LINK FIRST!';
@@ -512,19 +620,37 @@
 
       btn.innerText = 'FETCHING...';
       resultCard.style.display = 'none';
+      imgSection.style.display = 'none';
 
       try {
         let res = await fetch('https://www.tikwm.com/api/?url=' + encodeURIComponent(url));
         let json = await res.json();
 
         if (json && json.code === 0 && json.data) {
-          mediaStore.nowm = json.data.play;
-          mediaStore.wm = json.data.wmplay || json.data.play;
-          mediaStore.mp3 = json.data.music;
+          var data = json.data;
+          mediaStore.nowm = data.play;
+          mediaStore.wm = data.wmplay || data.play;
+          mediaStore.mp3 = data.music;
+          mediaStore.images = data.images || [];
+          mediaStore.isImagePost = data.images && data.images.length > 0;
 
-          document.getElementById('coverImg').src = json.data.cover || '';
-          document.getElementById('authorTag').innerText = '@' + (json.data.author ? json.data.author.unique_id : 'user');
-          document.getElementById('videoCaption').innerText = json.data.title || 'TikTok Video';
+          document.getElementById('coverImg').src = data.cover || '';
+          document.getElementById('authorTag').innerText = '@' + (data.author ? data.author.unique_id : 'user');
+          document.getElementById('videoCaption').innerText = data.title || 'TikTok Content';
+
+          var dlNoWmBtn = document.getElementById('dlNoWmBtn');
+          var dlWmBtn = document.getElementById('dlWmBtn');
+
+          if (mediaStore.isImagePost) {
+            imgSection.style.display = 'block';
+            dlNoWmBtn.innerText = 'DOWNLOAD SELECTED (WITHOUT WATERMARK)';
+            dlWmBtn.innerText = 'DOWNLOAD SELECTED (WITH WATERMARK)';
+            renderImageGallery(mediaStore.images);
+          } else {
+            imgSection.style.display = 'none';
+            dlNoWmBtn.innerText = 'DOWNLOAD WITHOUT WATERMARK HDR';
+            dlWmBtn.innerText = 'DOWNLOAD WITH WATERMARK HDR';
+          }
 
           resultCard.style.display = 'block';
           btn.innerText = 'FETCH VIDEO';
@@ -536,47 +662,65 @@
       setTimeout(function() { btn.innerText = 'FETCH VIDEO'; }, 2000);
     }
 
-    async function downloadDirect(type) {
-      var targetUrl = mediaStore[type];
-      if (!targetUrl) return;
+    function renderImageGallery(images) {
+      var grid = document.getElementById('imageGrid');
+      grid.innerHTML = '';
+      selectedImageIndices = [];
 
+      images.forEach(function(imgUrl, idx) {
+        selectedImageIndices.push(idx);
+
+        var card = document.createElement('div');
+        card.className = 'img-card selected';
+        card.dataset.index = idx;
+        card.onclick = function() { toggleImageSelection(this, idx); };
+
+        var img = document.createElement('img');
+        img.src = imgUrl;
+
+        var overlay = document.createElement('div');
+        overlay.className = 'checkbox-overlay';
+
+        card.appendChild(img);
+        card.appendChild(overlay);
+        grid.appendChild(card);
+      });
+
+      document.getElementById('selectAllCheckbox').checked = true;
+    }
+
+    function toggleImageSelection(cardElem, index) {
+      var pos = selectedImageIndices.indexOf(index);
+      if (pos > -1) {
+        selectedImageIndices.splice(pos, 1);
+        cardElem.classList.remove('selected');
+      } else {
+        selectedImageIndices.push(index);
+        cardElem.classList.add('selected');
+      }
+
+      var allCards = document.querySelectorAll('.img-card');
+      document.getElementById('selectAllCheckbox').checked = (selectedImageIndices.length === allCards.length);
+    }
+
+    function toggleSelectAll(checkboxElem) {
+      var cards = document.querySelectorAll('.img-card');
+      selectedImageIndices = [];
+
+      cards.forEach(function(card) {
+        var idx = parseInt(card.dataset.index);
+        if (checkboxElem.checked) {
+          card.classList.add('selected');
+          selectedImageIndices.push(idx);
+        } else {
+          card.classList.remove('selected');
+        }
+      });
+    }
+
+    async function downloadDirect(type) {
       var btnId = type === 'nowm' ? 'dlNoWmBtn' : (type === 'wm' ? 'dlWmBtn' : 'dlMp3Btn');
       var btnObj = document.getElementById(btnId);
       var originalText = btnObj.innerText;
 
-      btnObj.innerText = 'Downloding...';
-
-      var ext = type === 'mp3' ? '.mp3' : '.mp4';
-      var filename = 'SnapTok_' + Date.now() + ext;
-
-      try {
-        let response = await fetch(targetUrl);
-        let blob = await response.blob();
-        let blobUrl = window.URL.createObjectURL(blob);
-        
-        let a = document.createElement('a');
-        a.style.display = 'none';
-        a.href = blobUrl;
-        a.download = filename;
-        document.body.appendChild(a);
-        a.click();
-        
-        setTimeout(function() {
-          window.URL.revokeObjectURL(blobUrl);
-          document.body.removeChild(a);
-          btnObj.innerText = originalText;
-        }, 1000);
-      } catch (e) {
-        let a = document.createElement('a');
-        a.href = targetUrl;
-        a.download = filename;
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-        btnObj.innerText = originalText;
-      }
-    }
-  </script>
-</body>
-  </html>
-            
+      if (mediaStore.isImagePost && (type === 'nowm' || type =
